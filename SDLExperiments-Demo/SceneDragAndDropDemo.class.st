@@ -76,7 +76,7 @@ SceneDragAndDropDemo >> newSquareElement [
 					yourself.
 
 			cairoContext
-				source: aGradient;
+				sourcePattern: aGradient;
 				rectangleX: padding
 					y: padding
 					width: squareSide

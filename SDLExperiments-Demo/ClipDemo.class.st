@@ -144,7 +144,7 @@ ClipDemo >> newGradientSquareElement: squareSide innerColor: aColor outerColor: 
 					addStopAt: 1.0 color: anotherColor;
 					yourself.
 			cairoContext
-				source: aGradient;
+				sourcePattern: aGradient;
 				rectangleX: padding
 					y: padding
 					width: squareSide
