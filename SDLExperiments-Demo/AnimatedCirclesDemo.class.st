@@ -355,19 +355,16 @@ AnimatedCirclesDemo >> prepareSceneWindow [
 				anElement position: from + (relativeTo * amount) ];
 			renderBlock: [ :cairoContext |
 				cairoContext
-					sourceColor: (isAnimated
-						ifTrue: [ Color random: random ]
-						ifFalse: [ initialColor ]);
+					sourceColor:
+						(isAnimated
+							ifTrue: [ Color random: random ]
+							ifFalse: [ initialColor ]);
 					translateByX: padding y: padding;
-					lineWidth: lineWidth;
-					lineCap: AeCairoCapStyle square;
-					dash: (AeFFIDoubleArray
-						newFrom: { 0. (lineWidth*2) })
-						offset: 0;
+					strokeSize: lineWidth;
+					strokeCap: AeCairoStrokeCap square;
+					strokeDashPattern: { 0. lineWidth * 2 };
 					circleRadius: circleRadius;
-					stroke ]
-		]
-
+					stroke ] ]
 ]
 
 { #category : #running }
