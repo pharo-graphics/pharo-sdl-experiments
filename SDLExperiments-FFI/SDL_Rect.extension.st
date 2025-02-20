@@ -59,7 +59,11 @@ SDL_Rect >> printOn: aStream [
 
 	super printOn: aStream.
 	aStream
-		nextPut: $(;
-		print: self asRectangle;
-		nextPut: $)
+		nextPut: $(.
+		
+	self isNull
+		ifTrue: [ aStream nextPutAll: 'NULL' ]
+		ifFalse: [ aStream print: self asRectangle ].
+	
+	aStream nextPut: $)
 ]
