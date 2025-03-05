@@ -35,7 +35,7 @@ ScenePositionDemo >> prepareSceneWindow [
 		renderBlock: [ :cairoContext |
 			cairoContext
 				sourceColor: Color black;
-				lineWidth:  lineWidth;
+				strokeSize: lineWidth;
 				translateByX: padding y: padding;
 				rectangleX: lineWidth
 					y: lineWidth

@@ -118,7 +118,7 @@ AtlasTest >> testRender [
 			sourceColor: Color red;
 			moveToX: 2 y: 0;
 			lineToX: 2 y: tileExtent y;
-			lineWidth: 2;
+			strokeSize: 2;
 			stroke ].
 
 	"Render the frame"	
