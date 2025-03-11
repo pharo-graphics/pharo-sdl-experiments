@@ -144,10 +144,12 @@ CrRTree >> initializeWith: itemCount boundsBlock: boundsBlock valueBlock: valueB
 CrRTree >> inspectionTree: aBuilder [
 	<inspectorPresentationOrder: 1 title: 'Nodes'>
 
-	^ aBuilder newTree
+	^ aBuilder newTreeTable
 		roots: { root };
 		children: [ :each | each children ];
-		expandRoots;
+		addColumn: (SpStringTableColumn title: 'bounds' evaluated: [ :each | each bounds ]);
+		addColumn: (SpStringTableColumn title: 'details' evaluated: [ :each | each detailsColumnString ]);
+		expandAll;
 		yourself
 
 ]
@@ -176,6 +178,19 @@ CrRTree >> nodeCount [
 	count := 0.
 	root childrenDepthFirstDo: [ :each | count := count + 1 ].
 	^ count
+]
+
+{ #category : #printing }
+CrRTree >> printOn: aStream [
+	"Generate a string representation of the receiver based on its instance variables."
+
+	super printOn: aStream.
+	aStream
+		nextPutAll: ' bounds: ';
+		print: self bounds;
+		space;
+		print: self nodeCount;
+		nextPutAll: ' nodes'
 ]
 
 { #category : #accessing }

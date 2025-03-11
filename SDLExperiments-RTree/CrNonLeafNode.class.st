@@ -28,6 +28,12 @@ CrNonLeafNode >> childrenDo: aBlock [
 	1 to: self size do: [ :index | aBlock value: (self at: index) ]
 ]
 
+{ #category : #printing }
+CrNonLeafNode >> detailsColumnString [
+
+	^ '({1} children)' format: { self childrenCount }
+]
+
 { #category : #initialization }
 CrNonLeafNode >> initializeFrom: nodeCollection startAt: startIndex [
 		

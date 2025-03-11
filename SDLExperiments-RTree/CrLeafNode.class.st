@@ -28,6 +28,12 @@ CrLeafNode >> childrenCount [
 CrLeafNode >> childrenDo: aBlock [
 ]
 
+{ #category : #printing }
+CrLeafNode >> detailsColumnString [
+
+	^ value asString
+]
+
 { #category : #initialization }
 CrLeafNode >> initializeWith: anObject bounds: aBounds [
 

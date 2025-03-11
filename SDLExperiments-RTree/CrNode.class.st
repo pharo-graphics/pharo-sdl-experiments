@@ -72,6 +72,12 @@ CrNode >> containsX: x y: y [
 	^ true
 ]
 
+{ #category : #printing }
+CrNode >> detailsColumnString [
+
+	^ self subclassResponsibility
+]
+
 { #category : #enumerating }
 CrNode >> intersectionAt: aRectangle do: aBlock [
 
