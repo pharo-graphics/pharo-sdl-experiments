@@ -182,15 +182,12 @@ CrRTree >> nodeCount [
 
 { #category : #printing }
 CrRTree >> printOn: aStream [
-	"Generate a string representation of the receiver based on its instance variables."
 
 	super printOn: aStream.
 	aStream
-		nextPutAll: ' bounds: ';
-		print: self bounds;
-		space;
+		nextPutAll: '(';
 		print: self nodeCount;
-		nextPutAll: ' nodes'
+		nextPutAll: ' nodes)'
 ]
 
 { #category : #accessing }
