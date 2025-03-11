@@ -114,6 +114,12 @@ CrRTree >> bulkLoad: leaves until: lastIndex [
 	^ targetIndex
 ]
 
+{ #category : #accessing }
+CrRTree >> height [
+	
+	^ root height
+]
+
 { #category : #initialization }
 CrRTree >> initializeWith: itemCount boundsBlock: boundsBlock valueBlock: valueBlock [
 	"Create the structure from the leaves. Override the input
@@ -185,9 +191,11 @@ CrRTree >> printOn: aStream [
 
 	super printOn: aStream.
 	aStream
-		nextPutAll: '(';
+		nextPut: $(;
 		print: self nodeCount;
-		nextPutAll: ' nodes)'
+		nextPutAll: ' nodes; ';
+		print: self height;
+		nextPutAll: ' height)'
 ]
 
 { #category : #accessing }

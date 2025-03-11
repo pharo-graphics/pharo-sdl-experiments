@@ -25,7 +25,9 @@ CrRTreeTest >> test01SingleNode [
 		equals: #().
 	self
 		assert: (rtree valuesAtPoint: 1@2)
-		equals: #(1)
+		equals: #(1).
+	
+	self assert: rtree height equals: 0
 ]
 
 { #category : #tests }
@@ -52,7 +54,9 @@ CrRTreeTest >> test02SomeNodes [
 		equals: #(1).
 	self
 		assert: (rtree valuesAtPoint: 3@3)
-		equals: #(11)
+		equals: #(11).
+	
+	self assert: rtree height equals: 2
 ]
 
 { #category : #tests }
@@ -86,6 +90,7 @@ CrRTreeTest >> test03NonOverlappingNodes [
 		assert: (rtree valuesAtPoint: 50@50)
 		equals: #().
 
+	self assert: rtree height equals: 4
 ]
 
 { #category : #tests }
@@ -112,4 +117,5 @@ CrRTreeTest >> test04OverlappingNodes [
 	results := rtree valuesAtPoint: 0@49.
 	self assert: results equals: (2451 to: 2500).
 
+	self assert: rtree height equals: 4
 ]

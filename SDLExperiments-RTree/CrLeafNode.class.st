@@ -34,6 +34,12 @@ CrLeafNode >> detailsColumnString [
 	^ value asString
 ]
 
+{ #category : #accessing }
+CrLeafNode >> height [
+	
+	^ 0
+]
+
 { #category : #initialization }
 CrLeafNode >> initializeWith: anObject bounds: aBounds [
 

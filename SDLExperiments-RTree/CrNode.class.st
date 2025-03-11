@@ -78,6 +78,12 @@ CrNode >> detailsColumnString [
 	^ self subclassResponsibility
 ]
 
+{ #category : #accessing }
+CrNode >> height [
+
+	^ self subclassResponsibility
+]
+
 { #category : #enumerating }
 CrNode >> intersectionAt: aRectangle do: aBlock [
 

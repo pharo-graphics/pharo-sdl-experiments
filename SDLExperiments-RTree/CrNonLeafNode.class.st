@@ -34,6 +34,15 @@ CrNonLeafNode >> detailsColumnString [
 	^ '({1} children)' format: { self childrenCount }
 ]
 
+{ #category : #accessing }
+CrNonLeafNode >> height [
+	
+	| maxChildrenHeight |
+	maxChildrenHeight := 0.
+	self childrenDo: [ :each | maxChildrenHeight := maxChildrenHeight max: each height ].
+	^ 1 + maxChildrenHeight
+]
+
 { #category : #initialization }
 CrNonLeafNode >> initializeFrom: nodeCollection startAt: startIndex [
 		
