@@ -39,11 +39,26 @@ Class {
 
 { #category : #'instance creation' }
 CrRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBlock [
+	"Answer a new instance with the default min and max children sizes for nodes. 
+	These values were empirically determined to produce reasonable performance in most cases."
 
+	^ self
+		new: itemCount
+		boundsBlock: boundsBlock
+		valueBlock: valueBlock
+		minChildren: 6
+		maxChildren: 11
+]
+
+{ #category : #'instance creation' }
+CrRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBlock minChildren: aMin maxChildren: aMax [
+	
 	^ self basicNew
 		initializeWith: itemCount
 			boundsBlock: boundsBlock
-			valueBlock: valueBlock;
+			valueBlock: valueBlock
+			minChildren: aMin
+			maxChildren: aMax;
 		yourself
 ]
 
@@ -121,24 +136,24 @@ CrRTree >> height [
 ]
 
 { #category : #initialization }
-CrRTree >> initializeWith: itemCount boundsBlock: boundsBlock valueBlock: valueBlock [
+CrRTree >> initializeWith: itemCount boundsBlock: boundsBlock valueBlock: valueBlock minChildren: aMin maxChildren: aMax [
 	"Create the structure from the leaves. Override the input
 	collection with new non-leaf nodes."
 
 	| leaves lastIndex |
-	"These values were empirically determined to produce reasonable
-	performance in most cases."
-	minChildren := 6.
-	maxChildren := 11.
+	minChildren := aMin.
+	maxChildren := aMax.
 
-	leaves :=
-		(1 to: itemCount)
-			collect: [ :index |
+	leaves := Array new: itemCount.
+	1 to: itemCount do: [ :index |
+		leaves
+			at: index
+			put:
 				(CrLeafNode
 					bounds: (boundsBlock value: index)
 					value: (valueBlock value: index)) ].
 
-	lastIndex := leaves size.
+	lastIndex := itemCount.
 
 	[ lastIndex > 1 ] whileTrue: [
 	 	lastIndex := self bulkLoad: leaves until: lastIndex ].

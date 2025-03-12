@@ -9,10 +9,10 @@ Class {
 }
 
 { #category : #'instance creation' }
-CrNonLeafNode class >> newFrom: nodeCollection startAt: startIndex size: aSize [
+CrNonLeafNode class >> newFrom: sourceNodes startAt: startIndex size: aSize [
 
 	^ (self basicNew: aSize)
-		initializeFrom: nodeCollection startAt: startIndex;
+		initializeFrom: sourceNodes startAt: startIndex;
 		yourself
 ]
 
@@ -44,26 +44,27 @@ CrNonLeafNode >> height [
 ]
 
 { #category : #initialization }
-CrNonLeafNode >> initializeFrom: nodeCollection startAt: startIndex [
+CrNonLeafNode >> initializeFrom: sourceNodes startAt: startIndex [
 		
 	"First node"
 	| firstNode |
-	firstNode := nodeCollection at: startIndex.
+	firstNode := sourceNodes at: startIndex.
 	self at: 1 put: firstNode.
-	left := firstNode left.
-	right := firstNode right.
-	top := firstNode top.
+
+	left   := firstNode left.
+	right  := firstNode right.
+	top    := firstNode top.
 	bottom := firstNode bottom.
 
 	"Remaining nodes"
 	2 to: self size do: [ :index |
 		| aNode |
-		aNode := nodeCollection at: startIndex + index - 1.
+		aNode := sourceNodes at: startIndex + index - 1.
 		self at: index put: aNode.
 
-		aNode left < left ifTrue: [ left := aNode left ].
-		aNode right > right ifTrue: [ right := aNode right ].
-		aNode top < top ifTrue: [ top := aNode top ].
+		aNode left < left     ifTrue: [ left := aNode left ].
+		aNode right > right   ifTrue: [ right := aNode right ].
+		aNode top < top       ifTrue: [ top := aNode top ].
 		aNode bottom > bottom ifTrue: [ bottom := aNode bottom ] ]
 ]
 
