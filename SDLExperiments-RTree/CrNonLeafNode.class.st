@@ -5,7 +5,7 @@ Class {
 	#name : #CrNonLeafNode,
 	#superclass : #CrNode,
 	#type : #variable,
-	#category : #'SDLExperiments-RTree'
+	#category : #'SDLExperiments-RTree-Classic'
 }
 
 { #category : #'instance creation' }

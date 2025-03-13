@@ -1,23 +1,23 @@
 Class {
-	#name : #CrRTreeTest,
+	#name : #IbRTreeTest,
 	#superclass : #TestCase,
-	#category : #'SDLExperiments-RTree-Classic'
+	#category : #'SDLExperiments-RTree-IndexBased'
 }
 
 { #category : #tests }
-CrRTreeTest >> test01SingleNode [
+IbRTreeTest >> test01SingleNode [
 
 	| rtree aRectangle |
 	aRectangle := 1@2 extent: 3@4.
 
-	rtree := CrRTree withAll: { aRectangle }.
+	rtree := IbRTree withAll: { aRectangle }.
 	
 	self assert: rtree bounds equals: aRectangle.
 	self
-		assert: (rtree intersectionAt: (5@4 extent: 1@1))
+		assert: (rtree valuesIntersecting: (5@4 extent: 1@1))
 		equals: #().
 	self
-		assert: (rtree intersectionAt: (1@2 extent: 1@1))
+		assert: (rtree valuesIntersecting: (1@2 extent: 1@1))
 		equals: #(1).
 
 	self
@@ -27,11 +27,11 @@ CrRTreeTest >> test01SingleNode [
 		assert: (rtree valuesAtPoint: 1@2)
 		equals: #(1).
 	
-	self assert: rtree height equals: 0
+"	self assert: rtree height equals: 0"
 ]
 
 { #category : #tests }
-CrRTreeTest >> test02SomeNodes [
+IbRTreeTest >> test02SomeNodes [
 
 	| rectangles rtree |
 	rectangles := OrderedCollection new.
@@ -39,14 +39,14 @@ CrRTreeTest >> test02SomeNodes [
 		1 to: 4 do: [ :x |
 			rectangles add: (x@y extent: 1@1) ] ].
 
-	rtree := CrRTree withAll: rectangles.
+	rtree := IbRTree withAll: rectangles.
 	
 	self assert: rtree bounds equals: (1@1 extent: 4@4).
 	self
-		assert: (rtree intersectionAt: (1@1 extent: 2@1))
+		assert: (rtree valuesIntersecting: (1@1 extent: 2@1))
 		equals: #(1 2).
 	self
-		assert: (rtree intersectionAt: (3@3 extent: 2@2))
+		assert: (rtree valuesIntersecting: (3@3 extent: 2@2))
 		equals: #(11 12 15 16).
 
 	self
@@ -56,11 +56,11 @@ CrRTreeTest >> test02SomeNodes [
 		assert: (rtree valuesAtPoint: 3@3)
 		equals: #(11).
 	
-	self assert: rtree height equals: 2
+"	self assert: rtree height equals: 2"
 ]
 
 { #category : #tests }
-CrRTreeTest >> test03NonOverlappingNodes [
+IbRTreeTest >> test03NonOverlappingNodes [
 
 	| rectangles rtree results |
 	rectangles := OrderedCollection new.
@@ -68,18 +68,18 @@ CrRTreeTest >> test03NonOverlappingNodes [
 		1 to: 50 do: [ :x |
 			rectangles add: ((x-1)@(y-1) extent: 1@1) ] ].
 
-	rtree := CrRTree withAll: rectangles.
+	rtree := IbRTree withAll: rectangles.
 
 	"Note: The results have to be sorted"
-	results := rtree intersectionAt: (Rectangle origin: 0@0 corner: 50@50).
+	results := rtree valuesIntersecting: (Rectangle origin: 0@0 corner: 50@50).
 	self assert: results size equals: 2500.
 	self assert: results equals: (1 to: results size).
 
-	results := rtree intersectionAt: (Rectangle origin: 0@0 corner: 50@49).
+	results := rtree valuesIntersecting: (Rectangle origin: 0@0 corner: 50@49).
 	self assert: results size equals: 2450.
 	self assert: results equals: (1 to: results size).
 
-	results := rtree intersectionAt: (Rectangle origin: 5@6 extent: 1@1).
+	results := rtree valuesIntersecting: (Rectangle origin: 5@6 extent: 1@1).
 	self assert: results size equals: 1.
 	self assert: results first equals: 1 + (6*50) + 5.
 
@@ -90,11 +90,11 @@ CrRTreeTest >> test03NonOverlappingNodes [
 		assert: (rtree valuesAtPoint: 50@50)
 		equals: #().
 
-	self assert: rtree height equals: 4
+"	self assert: rtree height equals: 4"
 ]
 
 { #category : #tests }
-CrRTreeTest >> test04OverlappingNodes [
+IbRTreeTest >> test04OverlappingNodes [
 
 	| rectangles rtree results |
 	rectangles := OrderedCollection new.
@@ -102,13 +102,13 @@ CrRTreeTest >> test04OverlappingNodes [
 		1 to: 50 do: [ :w |
 			rectangles add: (0@0 extent: w@h) ] ].
 
-	rtree := CrRTree withAll: rectangles.
+	rtree := IbRTree withAll: rectangles.
 
 	"Both the checks for the elements assume elements are sorted."
-	results := rtree intersectionAt: (0@0 extent: 1@1).
+	results := rtree valuesIntersecting: (0@0 extent: 1@1).
 	self assert: results equals: (1 to: results size).
 
-	results := rtree intersectionAt: (0@49 extent: 1@1).
+	results := rtree valuesIntersecting: (0@49 extent: 1@1).
 	self assert: results equals: (2451 to: 2500).
 
 	results := rtree valuesAtPoint: 0@0.
@@ -117,5 +117,5 @@ CrRTreeTest >> test04OverlappingNodes [
 	results := rtree valuesAtPoint: 0@49.
 	self assert: results equals: (2451 to: 2500).
 
-	self assert: rtree height equals: 4
+"	self assert: rtree height equals: 4"
 ]

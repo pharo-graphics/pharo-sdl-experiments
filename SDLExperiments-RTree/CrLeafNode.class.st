@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'value'
 	],
-	#category : #'SDLExperiments-RTree'
+	#category : #'SDLExperiments-RTree-Classic'
 }
 
 { #category : #'instance creation' }

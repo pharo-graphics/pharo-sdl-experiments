@@ -12,7 +12,7 @@ Class {
 		'right',
 		'bottom'
 	],
-	#category : #'SDLExperiments-RTree'
+	#category : #'SDLExperiments-RTree-Classic'
 }
 
 { #category : #accessing }

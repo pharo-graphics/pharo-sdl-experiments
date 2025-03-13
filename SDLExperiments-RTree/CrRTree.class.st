@@ -34,7 +34,7 @@ Class {
 		'minChildren',
 		'maxChildren'
 	],
-	#category : #'SDLExperiments-RTree'
+	#category : #'SDLExperiments-RTree-Classic'
 }
 
 { #category : #'instance creation' }
@@ -99,22 +99,22 @@ CrRTree >> bulkLoad: leaves until: lastIndex [
 			ifFalse: [ minChildren - remainder ] ].
 
 	sourceIndex := 1.
-	targetIndex := 0.
+	targetIndex := 1.
 	[ sourceIndex <= lastIndex ] whileTrue: [ 
-		| size |
-		targetIndex := targetIndex + 1.
-		
-		size := maxChildren.
+		| nodeSize |
+
 		"If need be, omit some nodes to make up for remainder"
-		remainder = 0 ifFalse: [
-			(remainder <= (maxChildren - minChildren))
-				ifTrue: [
-					size := size - remainder.
-					remainder := 0 ]
-				ifFalse: [
-					size := minChildren.
-					remainder := remainder - (maxChildren - minChildren) ] ].
-		size := size min: (lastIndex - sourceIndex + 1).
+		remainder = 0
+			ifTrue: [ nodeSize := maxChildren ]
+			ifFalse: [
+				(remainder <= (maxChildren - minChildren))
+					ifTrue: [
+						nodeSize := maxChildren - remainder.
+						remainder := 0 ]
+					ifFalse: [
+						nodeSize := minChildren.
+						remainder := remainder - (maxChildren - minChildren) ] ].
+		nodeSize := nodeSize min: (lastIndex - sourceIndex + 1).
 
 		leaves
 			at: targetIndex
@@ -122,11 +122,12 @@ CrRTree >> bulkLoad: leaves until: lastIndex [
 				(CrNonLeafNode
 					newFrom: leaves
 					startAt: sourceIndex
-					size: size).
+					size: nodeSize).
 
-		sourceIndex := sourceIndex + size ].
+		sourceIndex := sourceIndex + nodeSize.
+		targetIndex := targetIndex + 1 ].
 	
-	^ targetIndex
+	^ targetIndex - 1
 ]
 
 { #category : #accessing }
