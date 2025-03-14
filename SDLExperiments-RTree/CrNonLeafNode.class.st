@@ -91,6 +91,5 @@ CrNonLeafNode >> valuesAtX: x y: y do: aBlock [
 
 	(self containsX: x y: y) ifFalse: [ ^ self ].
 
-	self childrenDo: [ :each |
-		each valuesAtX: x y: y do: aBlock ]
+	self childrenDo: [ :each | each valuesAtX: x y: y do: aBlock ]
 ]

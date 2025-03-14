@@ -133,7 +133,19 @@ CrNode >> top [
 ]
 
 { #category : #enumerating }
+CrNode >> valuesAtPoint: aPoint do: aBlock [
+
+	self valuesAtX: aPoint x y: aPoint y do: aBlock
+]
+
+{ #category : #enumerating }
 CrNode >> valuesAtRectangle: aRectangle do: aBlock [
+
+	self subclassResponsibility
+]
+
+{ #category : #enumerating }
+CrNode >> valuesAtX: x y: y do: aBlock [
 
 	self subclassResponsibility
 ]

@@ -105,7 +105,7 @@ CrRTree >> printOn: aStream [
 { #category : #searching }
 CrRTree >> valuesAtPoint: aPoint do: aBlock [
 
-	^ root valuesAtX: aPoint x y: aPoint y do: aBlock
+	^ root valuesAtPoint: aPoint do: aBlock
 ]
 
 { #category : #searching }
