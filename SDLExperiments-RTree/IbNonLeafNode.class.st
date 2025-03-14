@@ -15,9 +15,10 @@ IbNonLeafNode >> childrenDo: aBlock [
 ]
 
 { #category : #enumerating }
-IbNonLeafNode >> rectanglesDo: aBlock [
+IbNonLeafNode >> childrenRectanglesDo: aBlock [
 
-	"NOTE: we cuold take advantage nodes are currently polymorphic with bounds"
+	"NOTE: For optimization purposes, we evaluate directly on nodes, as
+	they are polymorphic with Rectangle (we avoid creation of a Rectangle)"
 	self childrenDo: [ :each | aBlock value: each "bounds" ]
 ]
 

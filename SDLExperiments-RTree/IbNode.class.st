@@ -44,6 +44,12 @@ IbNode >> childrenCount [
 	^ childrenCount
 ]
 
+{ #category : #accessing }
+IbNode >> childrenRectanglesDo: aBlock [
+
+	self subclassResponsibility
+]
+
 { #category : #testing }
 IbNode >> containsPoint: aPoint [
 	"Answer whether aPoint is within the receiver. Pay attention the self origin is considered less than but the corner is strict"
@@ -65,7 +71,7 @@ IbNode >> containsX: x y: y [
 { #category : #initialization }
 IbNode >> initializeBounds [
 
-	self rectanglesDo: [ :each |
+	self childrenRectanglesDo: [ :each |
 		left
 			ifNil: [
 				"First node"
@@ -129,12 +135,6 @@ IbNode >> printOn: aStream [
 	aStream
 		nextPutAll: ' children: ';
 		print: self childrenCount
-]
-
-{ #category : #accessing }
-IbNode >> rectanglesDo: aBlock [
-
-	self subclassResponsibility
 ]
 
 { #category : #accessing }

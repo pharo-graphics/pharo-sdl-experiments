@@ -13,7 +13,7 @@ Class {
 }
 
 { #category : #accessing }
-IbLeafNode >> rectanglesAndValuesDo: aBlock [
+IbLeafNode >> childrenRectanglesAndValuesDo: aBlock [
 
 	0 to: childrenCount - 1 do: [ :offset |
 		| index |
@@ -24,7 +24,7 @@ IbLeafNode >> rectanglesAndValuesDo: aBlock [
 ]
 
 { #category : #private }
-IbLeafNode >> rectanglesDo: aBlock [
+IbLeafNode >> childrenRectanglesDo: aBlock [
 
 	0 to: childrenCount - 1 do: [ :offset |
 		aBlock value: (tree itemRectangleAt: startIndex + offset) ]
@@ -37,7 +37,7 @@ IbLeafNode >> valuesAtPoint: aPoint do: aBlock [
 	(self containsPoint: aPoint) ifFalse: [ ^ self ].
 
 	"Evaluate block on each leaf that contains the point"
-	self rectanglesAndValuesDo: [ :eachBounds :eachValue |
+	self childrenRectanglesAndValuesDo: [ :eachBounds :eachValue |
 		(eachBounds containsPoint: aPoint)
 			ifTrue: [ aBlock value: eachValue ] ]
 ]
@@ -49,7 +49,7 @@ IbLeafNode >> valuesAtRectangle: aRectangle do: aBlock [
 	(self intersects: aRectangle) ifFalse: [ ^ self ].
 
 	"Evaluate the block on each leaf that intersects the rectangle"
-	self rectanglesAndValuesDo: [ :eachBounds :eachValue |
+	self childrenRectanglesAndValuesDo: [ :eachBounds :eachValue |
 		(eachBounds intersects: aRectangle)
 			ifTrue: [ aBlock value: eachValue ] ]
 ]
