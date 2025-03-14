@@ -38,7 +38,7 @@ Class {
 		'maxChildren',
 		'rtree'
 	],
-	#category : #'SDLExperiments-RTree'
+	#category : #'SDLExperiments-RTree-Classic'
 }
 
 { #category : #'instance creation' }
@@ -74,15 +74,6 @@ CrRTreeBulkLoadBuilder class >> root: aNode [
 		yourself
 ]
 
-{ #category : #'instance creation' }
-CrRTreeBulkLoadBuilder class >> withAll: aCollection [
-
-	^ self
-		new: aCollection size 
-		boundsBlock: [ :index | aCollection at: index ]
-		valueBlock: [ :index | index ]
-]
-
 { #category : #initialization }
 CrRTreeBulkLoadBuilder >> bulkLoadUntil: lastIndex [
 
@@ -96,22 +87,22 @@ CrRTreeBulkLoadBuilder >> bulkLoadUntil: lastIndex [
 			ifFalse: [ minChildren - remainder ] ].
 
 	sourceIndex := 1.
-	targetIndex := 0.
+	targetIndex := 1.
 	[ sourceIndex <= lastIndex ] whileTrue: [ 
-		| nextSize |
-		targetIndex := targetIndex + 1.
-		
-		nextSize := maxChildren.
+		| nodeSize |
+
 		"If need be, omit some nodes to make up for remainder"
-		remainder = 0 ifFalse: [
-			(remainder <= (maxChildren - minChildren))
-				ifTrue: [
-					nextSize := nextSize - remainder.
-					remainder := 0 ]
-				ifFalse: [
-					nextSize := minChildren.
-					remainder := remainder - (maxChildren - minChildren) ] ].
-		nextSize := nextSize min: (lastIndex - sourceIndex + 1).
+		remainder = 0
+			ifTrue: [ nodeSize := maxChildren ]
+			ifFalse: [
+				(remainder <= (maxChildren - minChildren))
+					ifTrue: [
+						nodeSize := maxChildren - remainder.
+						remainder := 0 ]
+					ifFalse: [
+						nodeSize := minChildren.
+						remainder := remainder - (maxChildren - minChildren) ] ].
+		nodeSize := nodeSize min: (lastIndex - sourceIndex + 1).
 
 		nodesBuffer
 			at: targetIndex
@@ -119,11 +110,12 @@ CrRTreeBulkLoadBuilder >> bulkLoadUntil: lastIndex [
 				(CrNonLeafNode
 					newBulkLoadingFrom: self
 					startAt: sourceIndex
-					size: nextSize).
+					size: nodeSize).
 
-		sourceIndex := sourceIndex + nextSize ].
+		sourceIndex := sourceIndex + nodeSize.
+		targetIndex := targetIndex + 1 ].
 	
-	^ targetIndex
+	^ targetIndex - 1
 ]
 
 { #category : #initialization }

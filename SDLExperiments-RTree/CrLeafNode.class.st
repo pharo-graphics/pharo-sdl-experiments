@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'value'
 	],
-	#category : #'SDLExperiments-RTree'
+	#category : #'SDLExperiments-RTree-Classic'
 }
 
 { #category : #'instance creation' }
@@ -51,14 +51,6 @@ CrLeafNode >> initializeWith: anObject bounds: aBounds [
 	bottom := aBounds bottom
 ]
 
-{ #category : #enumerating }
-CrLeafNode >> intersectionAt: aRectangle do: aBlock [
-
-	(self intersects: aRectangle) ifFalse: [ ^self ].
-
-	aBlock value: value
-]
-
 { #category : #printing }
 CrLeafNode >> printOn: aStream [
 
@@ -72,6 +64,14 @@ CrLeafNode >> printOn: aStream [
 CrLeafNode >> value [
 
 	^ value
+]
+
+{ #category : #enumerating }
+CrLeafNode >> valuesAtRectangle: aRectangle do: aBlock [
+
+	(self intersects: aRectangle) ifFalse: [ ^self ].
+
+	aBlock value: value
 ]
 
 { #category : #enumerating }

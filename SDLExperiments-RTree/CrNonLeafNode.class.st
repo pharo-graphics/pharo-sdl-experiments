@@ -5,7 +5,7 @@ Class {
 	#name : #CrNonLeafNode,
 	#superclass : #CrNode,
 	#type : #variable,
-	#category : #'SDLExperiments-RTree'
+	#category : #'SDLExperiments-RTree-Classic'
 }
 
 { #category : #'instance creation' }
@@ -68,15 +68,6 @@ CrNonLeafNode >> height [
 	^ 1 + maxChildrenHeight
 ]
 
-{ #category : #enumerating }
-CrNonLeafNode >> intersectionAt: aRectangle do: aBlock [
-	
-	(self intersects: aRectangle) ifFalse: [ ^self ].
-
-	self childrenDo: [ :each |
-		each intersectionAt: aRectangle do: aBlock ]
-]
-
 { #category : #printing }
 CrNonLeafNode >> printOn: aStream [
 
@@ -84,6 +75,15 @@ CrNonLeafNode >> printOn: aStream [
 	aStream
 		nextPutAll: ' children: ';
 		print: self childrenCount
+]
+
+{ #category : #enumerating }
+CrNonLeafNode >> valuesAtRectangle: aRectangle do: aBlock [
+	
+	(self intersects: aRectangle) ifFalse: [ ^self ].
+
+	self childrenDo: [ :each |
+		each valuesAtRectangle: aRectangle do: aBlock ]
 ]
 
 { #category : #enumerating }

@@ -3,25 +3,28 @@ I'm a collection where each item is composed of an Object (the value) associated
 "
 Class {
 	#name : #CrRTree,
-	#superclass : #Object,
+	#superclass : #RectangleKeyDictionary,
 	#instVars : [
 		'root'
 	],
-	#category : #'SDLExperiments-RTree'
+	#category : #'SDLExperiments-RTree-Classic'
 }
 
-{ #category : #accessing }
+{ #category : #'instance creation' }
+CrRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBlock [
+
+	^ (CrRTreeBulkLoadBuilder
+		   new: itemCount
+		   boundsBlock: boundsBlock
+		   valueBlock: valueBlock) rtree
+]
+
+{ #category : #'instance creation' }
 CrRTree class >> root: aNode [
 
 	^ self basicNew
 		initializeWith: aNode;
 		yourself
-]
-
-{ #category : #'instance creation' }
-CrRTree class >> withAll: aCollection [
-
-	^ (CrRTreeBulkLoadBuilder withAll: aCollection) rtree
 ]
 
 { #category : #accessing }
@@ -67,21 +70,15 @@ CrRTree >> inspectionTree: aBuilder [
 
 ]
 
-{ #category : #searching }
-CrRTree >> intersectionAt: aRectangle [ 
-	
-	^ Array streamContents: [ :stream |
-		self
-			intersectionAt: aRectangle
-			do: [ :each | stream nextPut: each ] ]
-]
+{ #category : #accessing }
+CrRTree >> itemCount [
+	"Inefficient"
 
-{ #category : #searching }
-CrRTree >> intersectionAt: aRectangle do: aBlockClosure [
-
-	^ root
-		intersectionAt: aRectangle
-		do: aBlockClosure
+	| result |
+	result := 0.
+	root childrenDepthFirstDo: [ :each |
+		each childrenCount = 0 ifTrue: [ result := result + 1 ] ].
+	^ result
 ]
 
 { #category : #accessing }
@@ -105,23 +102,16 @@ CrRTree >> printOn: aStream [
 		nextPutAll: ' height)'
 ]
 
-{ #category : #accessing }
-CrRTree >> reset [
-
-  root := nil
-]
-
-{ #category : #searching }
-CrRTree >> valuesAtPoint: aPoint [
-	
-	^ Array streamContents: [ :stream |
-		self
-			valuesAtPoint: aPoint
-			do: [ :each | stream nextPut: each ] ]
-]
-
 { #category : #searching }
 CrRTree >> valuesAtPoint: aPoint do: aBlock [
 
 	^ root valuesAtX: aPoint x y: aPoint y do: aBlock
+]
+
+{ #category : #searching }
+CrRTree >> valuesAtRectangle: aRectangle do: aBlockClosure [
+
+	^ root
+		valuesAtRectangle: aRectangle
+		do: aBlockClosure
 ]
