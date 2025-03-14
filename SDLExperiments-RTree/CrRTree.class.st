@@ -3,12 +3,21 @@ I'm a collection where each item is composed of an Object (the value) associated
 "
 Class {
 	#name : #CrRTree,
-	#superclass : #Object,
+	#superclass : #RectangleKeyDictionary,
 	#instVars : [
 		'root'
 	],
-	#category : #'SDLExperiments-RTree'
+	#category : #'SDLExperiments-RTree-Classic'
 }
+
+{ #category : #'instance creation' }
+CrRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBlock [
+
+	^ (CrRTreeBulkLoadBuilder
+		   new: itemCount
+		   boundsBlock: boundsBlock
+		   valueBlock: valueBlock) rtree
+]
 
 { #category : #accessing }
 CrRTree class >> root: aNode [
@@ -33,50 +42,6 @@ CrRTree >> bounds [
 	^ root bounds
 ]
 
-{ #category : #initialization }
-CrRTree >> bulkLoad: leaves until: lastIndex [
-
-	| remainder sourceIndex targetIndex |
-	remainder := lastIndex % maxChildren.
-	remainder > 0 ifTrue: [
-		"If the remainder isn't enough to fill a node, we'll add
-		fewer children to other nodes."
-		remainder := remainder >= minChildren
-			ifTrue: [ 0 ]
-			ifFalse: [ minChildren - remainder ] ].
-
-	sourceIndex := 1.
-	targetIndex := 1.
-	[ sourceIndex <= lastIndex ] whileTrue: [ 
-		| nodeSize |
-
-		"If need be, omit some nodes to make up for remainder"
-		remainder = 0
-			ifTrue: [ nodeSize := maxChildren ]
-			ifFalse: [
-				(remainder <= (maxChildren - minChildren))
-					ifTrue: [
-						nodeSize := maxChildren - remainder.
-						remainder := 0 ]
-					ifFalse: [
-						nodeSize := minChildren.
-						remainder := remainder - (maxChildren - minChildren) ] ].
-		nodeSize := nodeSize min: (lastIndex - sourceIndex + 1).
-
-		leaves
-			at: targetIndex
-			put:
-				(CrNonLeafNode
-					newFrom: leaves
-					startAt: sourceIndex
-					size: nodeSize).
-
-		sourceIndex := sourceIndex + nodeSize.
-		targetIndex := targetIndex + 1 ].
-	
-	^ targetIndex - 1
-]
-
 { #category : #accessing }
 CrRTree >> height [
 	
@@ -89,33 +54,6 @@ CrRTree >> initializeWith: aRootNode [
 	self initialize.
 	
 	root := aRootNode
-]
-
-{ #category : #initialization }
-CrRTree >> initializeWith: anItemCount boundsBlock: boundsBlock valueBlock: valueBlock minChildren: aMin maxChildren: aMax [
-	"Create the structure from the leaves. Override the input
-	collection with new non-leaf nodes."
-
-	| leaves lastIndex |
-	minChildren := aMin.
-	maxChildren := aMax.
-	itemCount := anItemCount.
-
-	leaves := Array new: itemCount.
-	1 to: itemCount do: [ :index |
-		leaves
-			at: index
-			put:
-				(CrLeafNode
-					bounds: (boundsBlock value: index)
-					value: (valueBlock value: index)) ].
-
-	lastIndex := itemCount.
-
-	[ lastIndex > 1 ] whileTrue: [
-	 	lastIndex := self bulkLoad: leaves until: lastIndex ].
-
-	root := leaves first
 ]
 
 { #category : #inspector }
@@ -134,8 +72,13 @@ CrRTree >> inspectionTree: aBuilder [
 
 { #category : #accessing }
 CrRTree >> itemCount [
+	"Inefficient"
 
-	^ itemCount
+	| result |
+	result := 0.
+	root childrenDepthFirstDo: [ :each |
+		each childrenCount = 0 ifTrue: [ result := result + 1 ] ].
+	^ result
 ]
 
 { #category : #accessing }
