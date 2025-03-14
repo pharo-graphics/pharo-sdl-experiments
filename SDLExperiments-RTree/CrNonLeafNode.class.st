@@ -5,15 +5,40 @@ Class {
 	#name : #CrNonLeafNode,
 	#superclass : #CrNode,
 	#type : #variable,
-	#category : #'SDLExperiments-RTree-Classic'
+	#category : #'SDLExperiments-RTree'
 }
 
 { #category : #'instance creation' }
-CrNonLeafNode class >> newFrom: sourceNodes startAt: startIndex size: aSize [
+CrNonLeafNode class >> newBulkLoadingFrom: aBuilder startAt: startIndex size: aSize [
 
 	^ (self basicNew: aSize)
-		initializeFrom: sourceNodes startAt: startIndex;
+		bulkLoadFrom: aBuilder startAt: startIndex;
 		yourself
+]
+
+{ #category : #initialization }
+CrNonLeafNode >> bulkLoadFrom: sourceNodes startAt: startIndex [
+		
+	"First node"
+	| firstNode |
+	firstNode := sourceNodes nodeAt: startIndex.
+	self at: 1 put: firstNode.
+
+	left   := firstNode left.
+	right  := firstNode right.
+	top    := firstNode top.
+	bottom := firstNode bottom.
+
+	"Remaining nodes"
+	2 to: self size do: [ :index |
+		| aNode |
+		aNode := sourceNodes nodeAt: startIndex + index - 1.
+		self at: index put: aNode.
+
+		aNode left < left     ifTrue: [ left := aNode left ].
+		aNode right > right   ifTrue: [ right := aNode right ].
+		aNode top < top       ifTrue: [ top := aNode top ].
+		aNode bottom > bottom ifTrue: [ bottom := aNode bottom ] ]
 ]
 
 { #category : #accessing }
@@ -41,31 +66,6 @@ CrNonLeafNode >> height [
 	maxChildrenHeight := 0.
 	self childrenDo: [ :each | maxChildrenHeight := maxChildrenHeight max: each height ].
 	^ 1 + maxChildrenHeight
-]
-
-{ #category : #initialization }
-CrNonLeafNode >> initializeFrom: sourceNodes startAt: startIndex [
-		
-	"First node"
-	| firstNode |
-	firstNode := sourceNodes at: startIndex.
-	self at: 1 put: firstNode.
-
-	left   := firstNode left.
-	right  := firstNode right.
-	top    := firstNode top.
-	bottom := firstNode bottom.
-
-	"Remaining nodes"
-	2 to: self size do: [ :index |
-		| aNode |
-		aNode := sourceNodes at: startIndex + index - 1.
-		self at: index put: aNode.
-
-		aNode left < left     ifTrue: [ left := aNode left ].
-		aNode right > right   ifTrue: [ right := aNode right ].
-		aNode top < top       ifTrue: [ top := aNode top ].
-		aNode bottom > bottom ifTrue: [ bottom := aNode bottom ] ]
 ]
 
 { #category : #printing }

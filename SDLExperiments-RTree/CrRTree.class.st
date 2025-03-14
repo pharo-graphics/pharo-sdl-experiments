@@ -1,65 +1,20 @@
 "
-I'm an RTree that is not mutable.
-
-Inspired on Chrome's C++ implementation in rtree.h:
-```
-// The following description and most of the implementation is borrowed from
-// Skia's SkRTree implementation.
-//
-// An R-Tree implementation. In short, it is a balanced n-ary tree containing a
-// hierarchy of bounding rectangles.
-//
-// It only supports bulk-loading, i.e. creation from a batch of bounding
-// rectangles. This performs a bottom-up bulk load using the STR
-// (sort-tile-recursive) algorithm.
-//
-// Things to do: Experiment with other bulk-load algorithms (in particular the
-// Hilbert pack variant, which groups rects by position on the Hilbert curve, is
-// probably worth a look). There also exist top-down bulk load variants
-// (VAMSplit, TopDownGreedy, etc).
-//
-// For more details see:
-//
-//  Beckmann, N.; Kriegel, H. P.; Schneider, R.; Seeger, B. (1990).
-//  ""The R*-tree: an efficient and robust access method for points and
-//  rectangles""
-```
-
+I'm a collection where each item is composed of an Object (the value) associated with a Rectangle (the key).
 "
 Class {
 	#name : #CrRTree,
-	#superclass : #RectangleKeyDictionary,
+	#superclass : #Object,
 	#instVars : [
-		'root',
-		'minChildren',
-		'maxChildren',
-		'itemCount'
+		'root'
 	],
-	#category : #'SDLExperiments-RTree-Classic'
+	#category : #'SDLExperiments-RTree'
 }
 
-{ #category : #'instance creation' }
-CrRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBlock [
-	"Answer a new instance with the default min and max children sizes for nodes. 
-	These values were empirically determined to produce reasonable performance in most cases."
+{ #category : #accessing }
+CrRTree class >> root: aNode [
 
-	^ self
-		new: itemCount
-		boundsBlock: boundsBlock
-		valueBlock: valueBlock
-		minChildren: 6
-		maxChildren: 11
-]
-
-{ #category : #'instance creation' }
-CrRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBlock minChildren: aMin maxChildren: aMax [
-	
 	^ self basicNew
-		initializeWith: itemCount
-			boundsBlock: boundsBlock
-			valueBlock: valueBlock
-			minChildren: aMin
-			maxChildren: aMax;
+		initializeWith: aNode;
 		yourself
 ]
 
@@ -126,6 +81,14 @@ CrRTree >> bulkLoad: leaves until: lastIndex [
 CrRTree >> height [
 	
 	^ root height
+]
+
+{ #category : #initialization }
+CrRTree >> initializeWith: aRootNode [
+
+	self initialize.
+	
+	root := aRootNode
 ]
 
 { #category : #initialization }
