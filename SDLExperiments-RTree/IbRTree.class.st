@@ -5,7 +5,7 @@ I don't implement add/remove after creation, since that would require a mechanis
 "
 Class {
 	#name : #IbRTree,
-	#superclass : #Object,
+	#superclass : #RectangleKeyDictionary,
 	#instVars : [
 		'root',
 		'minChildren',
@@ -41,15 +41,6 @@ IbRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBlock 
 			minChildren: aMin
 			maxChildren: aMax;
 		yourself
-]
-
-{ #category : #'instance creation' }
-IbRTree class >> withAll: aCollection [
-
-	^ self
-		new: aCollection size 
-		boundsBlock: [ :index | aCollection at: index ]
-		valueBlock: [ :index | index ]
 ]
 
 { #category : #accessing }
@@ -163,34 +154,10 @@ IbRTree >> printOn: aStream [
 		nextPutAll: ' items)'
 ]
 
-{ #category : #accessing }
-IbRTree >> reset [
-
-  root := nil
-]
-
-{ #category : #enumerating }
-IbRTree >> valuesAtPoint: aPoint [
-	
-	^ Array streamContents: [ :stream |
-		self
-			valuesAtPoint: aPoint
-			do: [ :each | stream nextPut: each ] ]
-]
-
 { #category : #enumerating }
 IbRTree >> valuesAtPoint: aPoint do: aBlock [
 
 	^ root valuesAtPoint: aPoint do: aBlock
-]
-
-{ #category : #enumerating }
-IbRTree >> valuesAtRectangle: aRectangle [ 
-	
-	^ Array streamContents: [ :stream |
-		self
-			valuesAtRectangle: aRectangle
-			do: [ :eachValue | stream nextPut: eachValue ] ]
 ]
 
 { #category : #enumerating }

@@ -1,11 +1,11 @@
 Class {
-	#name : #IbCrRTreeBenchmark,
+	#name : #RectangleKeyDictionaryBenchmark,
 	#superclass : #Object,
 	#category : #'SDLExperiments-RTree-Benchmark'
 }
 
 { #category : #running }
-IbCrRTreeBenchmark class >> run [
+RectangleKeyDictionaryBenchmark class >> run [
 	<script>
 
 	Stdio stdout << 'n;rectangles;IbRTree avg us;CrRTree avg us;'; lf.
@@ -27,5 +27,5 @@ IbCrRTreeBenchmark class >> run [
 ]
 
 { #category : #'see class side' }
-IbCrRTreeBenchmark >> seeClassSide [ 
+RectangleKeyDictionaryBenchmark >> seeClassSide [ 
 ]

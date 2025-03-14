@@ -28,11 +28,12 @@ Inspired on Chrome's C++ implementation in rtree.h:
 "
 Class {
 	#name : #CrRTree,
-	#superclass : #Object,
+	#superclass : #RectangleKeyDictionary,
 	#instVars : [
 		'root',
 		'minChildren',
-		'maxChildren'
+		'maxChildren',
+		'itemCount'
 	],
 	#category : #'SDLExperiments-RTree-Classic'
 }
@@ -60,15 +61,6 @@ CrRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBlock 
 			minChildren: aMin
 			maxChildren: aMax;
 		yourself
-]
-
-{ #category : #'instance creation' }
-CrRTree class >> withAll: aCollection [
-
-	^ self
-		new: aCollection size 
-		boundsBlock: [ :index | aCollection at: index ]
-		valueBlock: [ :index | index ]
 ]
 
 { #category : #accessing }
@@ -137,13 +129,14 @@ CrRTree >> height [
 ]
 
 { #category : #initialization }
-CrRTree >> initializeWith: itemCount boundsBlock: boundsBlock valueBlock: valueBlock minChildren: aMin maxChildren: aMax [
+CrRTree >> initializeWith: anItemCount boundsBlock: boundsBlock valueBlock: valueBlock minChildren: aMin maxChildren: aMax [
 	"Create the structure from the leaves. Override the input
 	collection with new non-leaf nodes."
 
 	| leaves lastIndex |
 	minChildren := aMin.
 	maxChildren := aMax.
+	itemCount := anItemCount.
 
 	leaves := Array new: itemCount.
 	1 to: itemCount do: [ :index |
@@ -177,6 +170,12 @@ CrRTree >> inspectionTree: aBuilder [
 ]
 
 { #category : #accessing }
+CrRTree >> itemCount [
+
+	^ itemCount
+]
+
+{ #category : #accessing }
 CrRTree >> nodeCount [
 
 	| count |
@@ -197,34 +196,10 @@ CrRTree >> printOn: aStream [
 		nextPutAll: ' height)'
 ]
 
-{ #category : #accessing }
-CrRTree >> reset [
-
-  root := nil
-]
-
-{ #category : #searching }
-CrRTree >> valuesAtPoint: aPoint [
-	
-	^ Array streamContents: [ :stream |
-		self
-			valuesAtPoint: aPoint
-			do: [ :each | stream nextPut: each ] ]
-]
-
 { #category : #searching }
 CrRTree >> valuesAtPoint: aPoint do: aBlock [
 
 	^ root valuesAtX: aPoint x y: aPoint y do: aBlock
-]
-
-{ #category : #searching }
-CrRTree >> valuesAtRectangle: aRectangle [ 
-	
-	^ Array streamContents: [ :stream |
-		self
-			valuesAtRectangle: aRectangle
-			do: [ :each | stream nextPut: each ] ]
 ]
 
 { #category : #searching }
