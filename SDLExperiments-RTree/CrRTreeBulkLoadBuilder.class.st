@@ -148,6 +148,8 @@ CrRTreeBulkLoadBuilder >> nodeAt: index [
 	| node |
 	^ (index > nodesBuffer size or: [ (node := nodesBuffer at: index) isNil ])
 		ifTrue: [ 
+			"You can change by the alternative"
+			self flag: #CrLightLeafNode.
 			CrLeafNode
 				bounds: (boundsBlock value: index)
 				value: (valueBlock value: index) ]
