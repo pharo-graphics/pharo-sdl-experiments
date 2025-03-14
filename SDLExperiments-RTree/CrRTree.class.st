@@ -19,7 +19,7 @@ CrRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBlock 
 		   valueBlock: valueBlock) rtree
 ]
 
-{ #category : #accessing }
+{ #category : #'instance creation' }
 CrRTree class >> root: aNode [
 
 	^ self basicNew

@@ -39,6 +39,7 @@ RectangleKeyDictionary >> bounds [
 
 { #category : #accessing }
 RectangleKeyDictionary >> itemCount [
+	"Answer the number of rectangle-value items defined in this collection."
 
 	^ self subclassResponsibility
 ]
