@@ -156,7 +156,7 @@ IbNode >> valuesAtPoint: aPoint do: aBlock [
 ]
 
 { #category : #enumerating }
-IbNode >> valuesIntersecting: aRectangle do: aBlock [
+IbNode >> valuesAtRectangle: aRectangle do: aBlock [
 
 	self subclassResponsibility
 ]

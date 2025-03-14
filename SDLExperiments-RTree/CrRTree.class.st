@@ -176,23 +176,6 @@ CrRTree >> inspectionTree: aBuilder [
 
 ]
 
-{ #category : #searching }
-CrRTree >> intersectionAt: aRectangle [ 
-	
-	^ Array streamContents: [ :stream |
-		self
-			intersectionAt: aRectangle
-			do: [ :each | stream nextPut: each ] ]
-]
-
-{ #category : #searching }
-CrRTree >> intersectionAt: aRectangle do: aBlockClosure [
-
-	^ root
-		intersectionAt: aRectangle
-		do: aBlockClosure
-]
-
 { #category : #accessing }
 CrRTree >> nodeCount [
 
@@ -233,4 +216,21 @@ CrRTree >> valuesAtPoint: aPoint [
 CrRTree >> valuesAtPoint: aPoint do: aBlock [
 
 	^ root valuesAtX: aPoint x y: aPoint y do: aBlock
+]
+
+{ #category : #searching }
+CrRTree >> valuesAtRectangle: aRectangle [ 
+	
+	^ Array streamContents: [ :stream |
+		self
+			valuesAtRectangle: aRectangle
+			do: [ :each | stream nextPut: each ] ]
+]
+
+{ #category : #searching }
+CrRTree >> valuesAtRectangle: aRectangle do: aBlockClosure [
+
+	^ root
+		valuesAtRectangle: aRectangle
+		do: aBlockClosure
 ]

@@ -84,12 +84,6 @@ CrNode >> height [
 	^ self subclassResponsibility
 ]
 
-{ #category : #enumerating }
-CrNode >> intersectionAt: aRectangle do: aBlock [
-
-	self subclassResponsibility
-]
-
 { #category : #testing }
 CrNode >> intersects: aRectangle [
 	"Answer whether aRectangle intersects the receiver anywhere."
@@ -136,4 +130,10 @@ CrNode >> right [
 CrNode >> top [
 
 	^ top
+]
+
+{ #category : #enumerating }
+CrNode >> valuesAtRectangle: aRectangle do: aBlock [
+
+	self subclassResponsibility
 ]

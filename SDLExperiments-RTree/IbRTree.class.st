@@ -185,18 +185,18 @@ IbRTree >> valuesAtPoint: aPoint do: aBlock [
 ]
 
 { #category : #enumerating }
-IbRTree >> valuesIntersecting: aRectangle [ 
+IbRTree >> valuesAtRectangle: aRectangle [ 
 	
 	^ Array streamContents: [ :stream |
 		self
-			valuesIntersecting: aRectangle
+			valuesAtRectangle: aRectangle
 			do: [ :eachValue | stream nextPut: eachValue ] ]
 ]
 
 { #category : #enumerating }
-IbRTree >> valuesIntersecting: aRectangle do: aBlockClosure [
+IbRTree >> valuesAtRectangle: aRectangle do: aBlockClosure [
 
 	^ root
-		valuesIntersecting: aRectangle
+		valuesAtRectangle: aRectangle
 		do: aBlockClosure
 ]

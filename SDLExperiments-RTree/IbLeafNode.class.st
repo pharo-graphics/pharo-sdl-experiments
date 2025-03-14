@@ -43,7 +43,7 @@ IbLeafNode >> valuesAtPoint: aPoint do: aBlock [
 ]
 
 { #category : #enumerating }
-IbLeafNode >> valuesIntersecting: aRectangle do: aBlock [
+IbLeafNode >> valuesAtRectangle: aRectangle do: aBlock [
 
 	"Return early if my bounds don't intersect the rectangle"
 	(self intersects: aRectangle) ifFalse: [ ^ self ].

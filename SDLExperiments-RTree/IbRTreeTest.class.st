@@ -14,10 +14,10 @@ IbRTreeTest >> test01SingleNode [
 	
 	self assert: rtree bounds equals: aRectangle.
 	self
-		assert: (rtree valuesIntersecting: (5@4 extent: 1@1))
+		assert: (rtree valuesAtRectangle: (5@4 extent: 1@1))
 		equals: #().
 	self
-		assert: (rtree valuesIntersecting: (1@2 extent: 1@1))
+		assert: (rtree valuesAtRectangle: (1@2 extent: 1@1))
 		equals: #(1).
 
 	self
@@ -43,10 +43,10 @@ IbRTreeTest >> test02SomeNodes [
 	
 	self assert: rtree bounds equals: (1@1 extent: 4@4).
 	self
-		assert: (rtree valuesIntersecting: (1@1 extent: 2@1))
+		assert: (rtree valuesAtRectangle: (1@1 extent: 2@1))
 		equals: #(1 2).
 	self
-		assert: (rtree valuesIntersecting: (3@3 extent: 2@2))
+		assert: (rtree valuesAtRectangle: (3@3 extent: 2@2))
 		equals: #(11 12 15 16).
 
 	self
@@ -71,15 +71,15 @@ IbRTreeTest >> test03NonOverlappingNodes [
 	rtree := IbRTree withAll: rectangles.
 
 	"Note: The results have to be sorted"
-	results := rtree valuesIntersecting: (Rectangle origin: 0@0 corner: 50@50).
+	results := rtree valuesAtRectangle: (Rectangle origin: 0@0 corner: 50@50).
 	self assert: results size equals: 2500.
 	self assert: results equals: (1 to: results size).
 
-	results := rtree valuesIntersecting: (Rectangle origin: 0@0 corner: 50@49).
+	results := rtree valuesAtRectangle: (Rectangle origin: 0@0 corner: 50@49).
 	self assert: results size equals: 2450.
 	self assert: results equals: (1 to: results size).
 
-	results := rtree valuesIntersecting: (Rectangle origin: 5@6 extent: 1@1).
+	results := rtree valuesAtRectangle: (Rectangle origin: 5@6 extent: 1@1).
 	self assert: results size equals: 1.
 	self assert: results first equals: 1 + (6*50) + 5.
 
@@ -105,10 +105,10 @@ IbRTreeTest >> test04OverlappingNodes [
 	rtree := IbRTree withAll: rectangles.
 
 	"Both the checks for the elements assume elements are sorted."
-	results := rtree valuesIntersecting: (0@0 extent: 1@1).
+	results := rtree valuesAtRectangle: (0@0 extent: 1@1).
 	self assert: results equals: (1 to: results size).
 
-	results := rtree valuesIntersecting: (0@49 extent: 1@1).
+	results := rtree valuesAtRectangle: (0@49 extent: 1@1).
 	self assert: results equals: (2451 to: 2500).
 
 	results := rtree valuesAtPoint: 0@0.

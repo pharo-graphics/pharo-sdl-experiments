@@ -18,7 +18,7 @@ IbNonLeafNode >> childrenDo: aBlock [
 IbNonLeafNode >> rectanglesDo: aBlock [
 
 	"NOTE: we cuold take advantage nodes are currently polymorphic with bounds"
-	self childrenDo: [ :each | aBlock value: each bounds ]
+	self childrenDo: [ :each | aBlock value: each "bounds" ]
 ]
 
 { #category : #enumerating }
@@ -33,12 +33,12 @@ IbNonLeafNode >> valuesAtPoint: aPoint do: aBlock [
 ]
 
 { #category : #enumerating }
-IbNonLeafNode >> valuesIntersecting: aRectangle do: aBlock [
+IbNonLeafNode >> valuesAtRectangle: aRectangle do: aBlock [
 
 	"Return early if my bounds don't intersect the rectangle"
 	(self intersects: aRectangle) ifFalse: [ ^ self ].
 
 	"Send recursively on each child"
 	self childrenDo: [ :each |
-		each valuesIntersecting: aRectangle do: aBlock ]
+		each valuesAtRectangle: aRectangle do: aBlock ]
 ]
