@@ -17,28 +17,6 @@ Class {
 	#category : #'SDLExperiments-FFI'
 }
 
-{ #category : #'instance creation' }
-SDL_FRect class >> autoReleasingNewOrigin: origin extent: extent [
-
-	^ self
-		  autoReleasingNewX: origin x
-		  y: origin y
-		  w: extent x
-		  h: extent y
-]
-
-{ #category : #'instance creation' }
-SDL_FRect class >> autoReleasingNewX: x y: y w: w h: h [
-
-	^ self new
-		  x: x;
-		  y: y;
-		  w: w;
-		  h: h;
-		  autoRelease;
-		  yourself
-]
-
 { #category : #'field definition' }
 SDL_FRect class >> fieldsDesc [
 	"
@@ -50,6 +28,27 @@ SDL_FRect class >> fieldsDesc [
     float w;
     float h;
  	)
+]
+
+{ #category : #'instance creation' }
+SDL_FRect class >> newOrigin: origin extent: extent [
+
+	^ self
+		  newX: origin x
+		  y: origin y
+		  w: extent x
+		  h: extent y
+]
+
+{ #category : #'instance creation' }
+SDL_FRect class >> newX: x y: y w: w h: h [
+
+	^ self new
+		  x: x;
+		  y: y;
+		  w: w;
+		  h: h;
+		  yourself
 ]
 
 { #category : #converting }

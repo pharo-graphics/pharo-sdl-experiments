@@ -51,7 +51,7 @@ AtlasTile >> pixelBounds: aPixelRectangle [
 	bounds := aPixelRectangle.
 	boundsAsSdlRect :=
 		SDL_Rect
-			autoReleasingNewOrigin: aPixelRectangle origin
+			newOrigin: aPixelRectangle origin
 			extent: aPixelRectangle extent
 
 ]

@@ -15,22 +15,6 @@ Class {
 	#category : #'SDLExperiments-FFI'
 }
 
-{ #category : #'instance creation' }
-SDL_FPoint class >> autoReleasingNewFrom: aPoint [
-
-	^ (self unownedNewX: aPoint x y: aPoint y)
-		autoRelease;
-		yourself
-]
-
-{ #category : #'instance creation' }
-SDL_FPoint class >> autoReleasingNewX: x y: y [
-
-	^ (self unownedNewX: x y: y)
-		  autoRelease;
-		  yourself
-]
-
 { #category : #'field definition' }
 SDL_FPoint class >> fieldsDesc [
 	"
@@ -44,18 +28,11 @@ SDL_FPoint class >> fieldsDesc [
 ]
 
 { #category : #'instance creation' }
-SDL_FPoint class >> unownedNewFrom: aPoint [
-
-	^ self unownedNewX: aPoint x y: aPoint y
-
-]
-
-{ #category : #'instance creation' }
-SDL_FPoint class >> unownedNewX: x y: y [
+SDL_FPoint class >> newFrom: aPoint [
 
 	^ self new
-		  x: x;
-		  y: y;
+		  x: aPoint x;
+		  y: aPoint y;
 		  yourself
 ]
 

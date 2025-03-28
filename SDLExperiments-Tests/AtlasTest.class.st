@@ -126,7 +126,7 @@ AtlasTest >> testRender [
 	(0 to: windowExtent x - 1 by: tileExtent x) do: [ :each |
 		aTile
 			renderTo: (SDL_FRect
-				autoReleasingNewOrigin: each @ 0
+				newOrigin: each @ 0
 				extent: tileExtent)
 			opacity: 255 ].
 

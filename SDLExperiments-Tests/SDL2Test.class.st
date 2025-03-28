@@ -72,6 +72,24 @@ SDL2Test >> testExtent [
 ]
 
 { #category : #tests }
+SDL2Test >> testFRect [
+
+	| sdlRect aRectangle |
+	sdlRect :=
+		SDL_FRect
+			newX: 1.5
+			y: 2.5
+			w: 3.5
+			h: 4.5.
+	self assert: sdlRect origin equals: 1.5 @ 2.5.
+	self assert: sdlRect extent equals: 3.5 @ 4.5.
+
+	aRectangle := sdlRect asRectangle.
+	self assert: aRectangle origin equals: 1.5 @ 2.5.
+	self assert: aRectangle extent equals: 3.5 @ 4.5
+]
+
+{ #category : #tests }
 SDL2Test >> testFromByteToFloat [
 
 	self assert: (SDL2 fromByteToFloat: 1) closeTo: 1/255.0.
@@ -91,6 +109,13 @@ SDL2Test >> testFromFloatToByte [
 ]
 
 { #category : #tests }
+SDL2Test >> testHint [
+
+	self assert: (SDL2 setHint: 'ABC' value: 'DEF') equals: 1.
+	self assert: (SDL2 getHint: 'ABC') equals: 'DEF'
+]
+
+{ #category : #tests }
 SDL2Test >> testPosition [
 
 	sdlWindow position: 200@300.
@@ -107,7 +132,9 @@ SDL2Test >> testRect [
 			y: 2
 			w: 3
 			h: 4.
-	
+	self assert: sdlRect origin equals: 1@2.
+	self assert: sdlRect extent equals: 3@4.
+
 	aRectangle := sdlRect asRectangle.
 	self assert: aRectangle origin equals: 1@2.
 	self assert: aRectangle extent equals: 3@4

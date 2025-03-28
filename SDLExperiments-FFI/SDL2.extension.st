@@ -113,13 +113,12 @@ SDL2 class >> getHint: aName [
 ]
 
 { #category : #'*SDLExperiments-FFI' }
-SDL2 class >> getNumDisplayModes: displayIndex [
-	"See: https://wiki.libsdl.org/SDL2/SDL_GetNumDisplayModes"
+SDL2 class >> getRenderDriverInfoInto: info at: index [
 
-	^ self ffiCall: #(
-		int
-		SDL_GetNumDisplayModes(
-			int displayIndex) )
+	^ self ffiCall: #( 
+		int SDL_GetRenderDriverInfo(
+			int index,
+			SDL_RendererInfo * info) )
 ]
 
 { #category : #'*SDLExperiments-FFI' }
@@ -132,6 +131,23 @@ SDL2 class >> memCopy: src to: dest size: n [
 			const void * src,
 			size_t n
 			) )
+]
+
+{ #category : #'*SDLExperiments-FFI' }
+SDL2 class >> numberOfDisplayModesAt: displayIndex [
+	"See: https://wiki.libsdl.org/SDL2/SDL_GetNumDisplayModes"
+
+	^ self ffiCall: #(
+		int
+		SDL_GetNumDisplayModes(
+			int displayIndex) )
+]
+
+{ #category : #'*SDLExperiments-FFI' }
+SDL2 class >> numberOfRenderDrivers [
+
+	^ self ffiCall: #(
+		int SDL_GetNumRenderDrivers ( void ) )
 ]
 
 { #category : #'*SDLExperiments-FFI' }
@@ -168,22 +184,6 @@ SDL2 class >> premultipliedAlphaBlendMode [
 ]
 
 { #category : #'*SDLExperiments-FFI' }
-SDL2 class >> primGetNumRenderDrivers [
-
-	^ self ffiCall: #(
-		int SDL_GetNumRenderDrivers ( void ) )
-]
-
-{ #category : #'*SDLExperiments-FFI' }
-SDL2 class >> primGetRenderDriverInfo: info at: index [
-
-	^ self ffiCall: #( 
-		int SDL_GetRenderDriverInfo(
-			int index,
-			SDL_RendererInfo * info) )
-]
-
-{ #category : #'*SDLExperiments-FFI' }
 SDL2 class >> renderDriverInfos [
 	"Get a collection of `SDL_RendererInfo` objects for the number of 2D rendering drivers available for the current display.
 
@@ -191,12 +191,10 @@ SDL2 class >> renderDriverInfos [
 		SDL2 renderDriverInfos
 	"
 
-	^ (1 to: self primGetNumRenderDrivers) collect: [:index |
+	^ (1 to: self numberOfRenderDrivers) collect: [:index |
 		| info |
-		info := SDL_RendererInfo externalNew
-			autoRelease;
-			yourself.
-		self primGetRenderDriverInfo: info at: index-1.
+		info := SDL_RendererInfo new.
+		self getRenderDriverInfoInto: info at: index - 1.
 		info ]
 ]
 
