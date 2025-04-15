@@ -15,6 +15,8 @@ RectangleKeyDictionary class >> new: itemCount boundsBlock: boundsBlock valueBlo
 
 { #category : #'instance creation' }
 RectangleKeyDictionary class >> withAll: aCollection [
+	"Create an instance with the specified collection of rectangles, with the index as value.
+	Important: For optimal performance, the rectangles must be sorted horizontally by their center."
 
 	^ self
 		new: aCollection size 
@@ -29,6 +31,13 @@ RectangleKeyDictionary class >> withAllAssociations: aCollection [
 		new: aCollection size 
 		boundsBlock: [ :index | (aCollection at: index) key ]
 		valueBlock: [ :index | (aCollection at: index) value ]
+]
+
+{ #category : #'instance creation' }
+RectangleKeyDictionary class >> withAllUnsorted: aCollection [
+
+	^ self withAll: (aCollection sorted: [ :a :b | (a left + a right) < (b left + b right) ])
+
 ]
 
 { #category : #accessing }

@@ -66,14 +66,6 @@ CrRTreeBulkLoadBuilder class >> new: itemCount boundsBlock: boundsBlock valueBlo
 		yourself
 ]
 
-{ #category : #'instance creation' }
-CrRTreeBulkLoadBuilder class >> root: aNode [
-
-	self basicNew
-		initializeWith: aNode;
-		yourself
-]
-
 { #category : #initialization }
 CrRTreeBulkLoadBuilder >> bulkLoadUntil: lastIndex [
 

@@ -22,6 +22,13 @@ FakeRTree class >> new: itemCount boundsBlock: boundsBlock valueBlock: valueBloc
 		yourself
 ]
 
+{ #category : #'instance creation' }
+FakeRTree class >> withAllUnsorted: aCollection [
+	"No need to sort rectangles in this implementation."
+
+	^ self withAll: aCollection
+]
+
 { #category : #accessing }
 FakeRTree >> bounds [
 
