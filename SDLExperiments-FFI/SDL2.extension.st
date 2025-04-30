@@ -59,6 +59,13 @@ SDL2 class >> createThread: fnCallback name: threadName data: data [
 ]
 
 { #category : #'*SDLExperiments-FFI' }
+SDL2 class >> currentVideoDriver [
+	"See: https://wiki.libsdl.org/SDL2/SDL_GetCurrentVideoDriver"
+
+	^ self ffiCall: #( String SDL_GetCurrentVideoDriver() )
+]
+
+{ #category : #'*SDLExperiments-FFI' }
 SDL2 class >> ensureSuccessCode: aReturnCode description: aString [
 	"SDL2 API tipically specify: 'Returns 0 on success or a negative error code on failure; call SDL_GetError() for more information.'"
 	
