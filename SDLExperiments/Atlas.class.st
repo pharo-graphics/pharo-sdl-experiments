@@ -59,9 +59,9 @@ Atlas >> cairoContextToOverride: srcRect do: aBlock [
 
 	"Obtain a RAM buffer to draw on it (write-only)"
 	sdlTexture
-		lockRect: srcRect
-		  pixels: pixelsAddress
-		   pitch: pitchAddress.
+		lock: srcRect
+		pixels: pixelsAddress
+		pitch: pitchAddress.
 
 	"Draw on the buffer"
 	aCairoSurface := AeCairoImageSurface

@@ -1,7 +1,7 @@
 Extension { #name : #'SDL_Texture' }
 
 { #category : #'*SDLExperiments-FFI' }
-SDL_Texture >> lockRect: rect pixels: pixelsAddress pitch: pitchAddress [
+SDL_Texture >> lock: rect pixels: pixelsAddress pitch: pitchAddress [
 	"See: https://wiki.libsdl.org/SDL2/SDL_LockTexture"
 
 	^ self ffiCall: #(

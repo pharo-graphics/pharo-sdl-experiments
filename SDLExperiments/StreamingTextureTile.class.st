@@ -22,10 +22,7 @@ StreamingTextureTile >> cairoContextToOverrideDo: aBlock [
 
 	"Obtain a RAM buffer to draw on it, that is
 	write-only and needs to be cleaned."
-	sdlTexture
-		lockRect: SDL_Rect null
-		  pixels: pixelsAddress
-		   pitch: pitchAddress.
+	sdlTexture lockPixels: pixelsAddress pitch: pitchAddress.
 
 	"Draw on the buffer"
 	aCairoSurface :=
