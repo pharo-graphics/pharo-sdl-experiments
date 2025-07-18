@@ -5,7 +5,46 @@ Class {
 }
 
 { #category : #tests }
-ElementTest >> testAddAndRemoveChildren [
+ElementTest >> testCreateFromShotAndMutateBackground [
+
+	| initialShot root firstChild grandChild |
+	initialShot :=
+		ElementShot children: {
+			ElementShot
+				children: { ElementShot new }
+				background: Color cyan
+				opacity: 0.5.
+	      ElementShot new }.
+	root := Element shot: initialShot parent: nil.
+	firstChild := root children first.
+	grandChild := firstChild children first.
+
+	"Set a color in first child"
+	firstChild background: Color blue.
+	self assert: firstChild background equals: Color blue.
+	"The first child and the root elements have new shots"
+	self
+		deny: firstChild shot
+		identicalTo: initialShot children first.
+
+	"Both the sibling and the grand-child elements keep same shot"
+	self
+		assert: root children second shot
+		identicalTo: initialShot children second.
+	self
+		assert: grandChild shot
+		identicalTo: initialShot children first children first.
+
+
+	"Now mutate the grand-child"
+	grandChild background: Color purple.
+	"The colors are set"
+	self assert: grandChild background equals: Color purple.
+	self assert: firstChild background equals: Color blue
+]
+
+{ #category : #tests }
+ElementTest >> testMutateChildren [
 
 	| a b c |
 	a := Element new.
@@ -23,43 +62,4 @@ ElementTest >> testAddAndRemoveChildren [
 
 	c addChild: b.
 	self assert: c children equals: { b }
-]
-
-{ #category : #tests }
-ElementTest >> testCreateFromStateAndSetBackground [
-
-	| state0 root firstChild grandChild |
-	state0 :=
-		ElementState children: {
-			ElementState
-				children: { ElementState new }
-				background: Color cyan
-				opacity: 0.5.
-	      ElementState new }.
-	root := Element state: state0 parent: nil.
-	firstChild := root children first.
-	grandChild := firstChild children first.
-
-	"Set a color in first child"
-	firstChild background: Color blue.
-	self assert: firstChild background equals: Color blue.
-	"The first child and the root elements have new states"
-	self
-		deny: firstChild state
-		identicalTo: state0 children first.
-
-	"Both the sibling and the grand-child elements keep same state"
-	self
-		assert: root children second state
-		identicalTo: state0 children second.
-	self
-		assert: grandChild state
-		identicalTo: state0 children first children first.
-
-
-	"Now mutate the grand-child"
-	grandChild background: Color purple.
-	"The colors are set"
-	self assert: grandChild background equals: Color purple.
-	self assert: firstChild background equals: Color blue
 ]

@@ -1,10 +1,15 @@
+"
+I am a mutable representation a scene graph element.
+
+We can consider my state as distributed between my instance variables (mutable) and my shot (immutable). Each time state in a shot needs to change, a new shot with the updated value is created and replaces the old shot. A change in a shot needs to be propagated until root element, and that's done by notifying my parent chain.
+"
 Class {
 	#name : #Element,
 	#superclass : #Object,
 	#instVars : [
-		'state',
 		'children',
-		'parent'
+		'parent',
+		'shot'
 	],
 	#category : #'SDL-Experiments-ElementTree'
 }
@@ -12,14 +17,14 @@ Class {
 { #category : #'instance creation' }
 Element class >> new [
 
-	^ self state: ElementState new parent: nil
+	^ self shot: ElementShot new parent: nil
 ]
 
 { #category : #'instance creation' }
-Element class >> state: aState parent: aParent [
+Element class >> shot: aShot parent: aParent [
 
 	^ self basicNew
-		  initializeState: aState parent: aParent;
+		  initializeShot: aShot parent: aParent;
 		  yourself
 ]
 
@@ -28,9 +33,9 @@ Element >> addChild: anotherElement [
 
 	anotherElement basicParent: self.
 	children := children copyWith: anotherElement.
-	self state:
-		(state withChildren:
-			(state children copyWith: anotherElement state))
+	self shot:
+		(shot withChildren:
+			(shot children copyWith: anotherElement shot))
 ]
 
 { #category : #adding }
@@ -49,13 +54,13 @@ Element >> anyLeaf [
 { #category : #accessing }
 Element >> background [
 
-	^ state background
+	^ shot background
 ]
 
 { #category : #accessing }
 Element >> background: aColor [
 
-	self state: (state withBackground: aColor)
+	self shot: (shot withBackground: aColor)
 ]
 
 { #category : #'private - synchronization' }
@@ -83,12 +88,12 @@ Element >> debugId [
 ]
 
 { #category : #initialization }
-Element >> initializeState: aState parent: aParent [
+Element >> initializeShot: aShot parent: anotherElement [
 
-	state := aState.
-	parent := aParent.
-	children := aState children collect: [ :childState |
-		self class state: childState parent: self ]
+	shot := aShot.
+	parent := anotherElement.
+	children := aShot children collect: [ :childState |
+		self class shot: childState parent: self ]
 ]
 
 { #category : #debugging }
@@ -103,7 +108,7 @@ Element >> inspectionPresenterOn: aBuilder [
 			evaluated: [ :each | each debugId ]);
 		addColumn: (SpStringTableColumn 
 			title: 'State debugId'
-			evaluated: [ :each | each state debugId ]);
+			evaluated: [ :each | each shot debugId ]);
 		addColumn: (SpStringTableColumn 
 			title: 'background'
 			evaluated: [ :each | each background ]);
@@ -123,13 +128,13 @@ Element >> level [
 { #category : #accessing }
 Element >> opacity [
 
-	^ state opacity
+	^ shot opacity
 ]
 
 { #category : #accessing }
 Element >> opacity: aOpacity [
 
-	self state: (state withOpacity: aOpacity)
+	self shot: (shot withOpacity: aOpacity)
 ]
 
 { #category : #accessing }
@@ -148,7 +153,7 @@ Element >> printOn: aStream [
 		print: self identityHash hex.
 	aStream
 		nextPutAll: ' state: ';
-		print: state.
+		print: shot.
 	aStream
 		nextPutAll: ' #children: ';
 		print: children size.
@@ -162,10 +167,10 @@ Element >> propagateChangedChild: aChildElement [
 
 	| newChildrenStates childIndex |
 	childIndex := children indexOf: aChildElement.
-	newChildrenStates := state children copy.
-	newChildrenStates at: childIndex put: aChildElement state.
+	newChildrenStates := shot children copy.
+	newChildrenStates at: childIndex put: aChildElement shot.
 
-	self state: (state withChildren: newChildrenStates)
+	self shot: (shot withChildren: newChildrenStates)
 ]
 
 { #category : #adding }
@@ -173,21 +178,21 @@ Element >> removeChild: anotherElement [
 
 	anotherElement basicParent: nil.
 	children := children copyWithout: anotherElement.
-	self state:
-		(state withChildren:
-			(state children copyWithout: anotherElement state))
+	self shot:
+		(shot withChildren:
+			(shot children copyWithout: anotherElement shot))
 ]
 
 { #category : #accessing }
-Element >> state [
+Element >> shot [
 
-	^ state
+	^ shot
 ]
 
 { #category : #accessing }
-Element >> state: aElementState [
+Element >> shot: aElementState [
 
-	state := aElementState.
+	shot := aElementState.
 	parent ifNil: [ ^ self ].
 
 	parent propagateChangedChild: self

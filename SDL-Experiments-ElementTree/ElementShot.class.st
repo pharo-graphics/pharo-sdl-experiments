@@ -1,5 +1,8 @@
+"
+I am an immutable representation a scene graph element.
+"
 Class {
-	#name : #ElementState,
+	#name : #ElementShot,
 	#superclass : #Object,
 	#instVars : [
 		'children',
@@ -10,13 +13,13 @@ Class {
 }
 
 { #category : #'instance creation' }
-ElementState class >> children: aCollection [
+ElementShot class >> children: aCollection [
 
 	^ self children: aCollection background: nil opacity: nil
 ]
 
 { #category : #'instance creation' }
-ElementState class >> children: aCollection background: aColor opacity: aOpacity [
+ElementShot class >> children: aCollection background: aColor opacity: aOpacity [
 
 	^ self basicNew
 		  initializeChildren: aCollection
@@ -26,31 +29,31 @@ ElementState class >> children: aCollection background: aColor opacity: aOpacity
 ]
 
 { #category : #'instance creation' }
-ElementState class >> new [
+ElementShot class >> new [
 
 	^ self children: #()
 ]
 
 { #category : #accessing }
-ElementState >> background [
+ElementShot >> background [
 
 	^ background ifNil: [ Color white ]
 ]
 
 { #category : #accessing }
-ElementState >> children [
+ElementShot >> children [
 
 	^ children ifNil: [ #() ]
 ]
 
 { #category : #debugging }
-ElementState >> debugId [
+ElementShot >> debugId [
 
 	^ (self identityHash printStringHex allButLast: 2) asLowercase
 ]
 
 { #category : #initialization }
-ElementState >> initializeChildren: aCollection background: aColor opacity: aOpacity [
+ElementShot >> initializeChildren: aCollection background: aColor opacity: aOpacity [
 
 	children := aCollection.
 	background := aColor.
@@ -58,7 +61,7 @@ ElementState >> initializeChildren: aCollection background: aColor opacity: aOpa
 ]
 
 { #category : #debugging }
-ElementState >> inspectionPresenterOn: aBuilder [
+ElementShot >> inspectionPresenterOn: aBuilder [
 	<inspectorPresentationOrder: 1 title: 'Tree'>
 
 	^ aBuilder newTreeTable 
@@ -78,13 +81,13 @@ ElementState >> inspectionPresenterOn: aBuilder [
 ]
 
 { #category : #accessing }
-ElementState >> opacity [
+ElementShot >> opacity [
 
 	^ opacity ifNil: [ 1.0 ]
 ]
 
 { #category : #printing }
-ElementState >> printOn: aStream [
+ElementShot >> printOn: aStream [
 	"Generate a string representation of the receiver based on its instance variables."
 
 	super printOn: aStream.
@@ -104,19 +107,19 @@ ElementState >> printOn: aStream [
 ]
 
 { #category : #copying }
-ElementState >> withBackground: aColor [
+ElementShot >> withBackground: aColor [
 
 	^ self class children: children background: aColor opacity: opacity
 ]
 
 { #category : #copying }
-ElementState >> withChildren: aCollection [
+ElementShot >> withChildren: aCollection [
 
 	^ self class children: aCollection background: background opacity: opacity
 ]
 
 { #category : #copying }
-ElementState >> withOpacity: aOpacity [
+ElementShot >> withOpacity: aOpacity [
 
 	^ self class children: children background: background opacity: aOpacity
 ]

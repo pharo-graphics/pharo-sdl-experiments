@@ -1,3 +1,6 @@
+"
+I define benchmarks for the scene graph elements.
+"
 Class {
 	#name : #ElementBenchmarks,
 	#superclass : #Object,
