@@ -1,7 +1,9 @@
 "
 I am a mutable representation a scene graph element.
 
-We can consider my state as distributed between my instance variables (mutable) and my shot (immutable). Each time state in a shot needs to change, a new shot with the updated value is created and replaces the old shot. A change in a shot needs to be propagated until root element, and that's done by notifying my parent chain.
+My children are mutable elements, too. However, I point to a shot which is an immutable object, that points to immutable element children. Both mutable and immutable children are in sync, I am responsible of keeping that invariant.
+
+Most of my accessors redirect to my shot (immutable object). When a mutator has to change a value the shot is replaced with a copy with the new value. This breaks my invariant temporarilly, while the chain of parents is updated until the root.
 "
 Class {
 	#name : #Element,
@@ -9,7 +11,8 @@ Class {
 	#instVars : [
 		'children',
 		'parent',
-		'shot'
+		'shot',
+		'childIndex'
 	],
 	#category : #'SDL-Experiments-ElementTree'
 }
@@ -17,34 +20,39 @@ Class {
 { #category : #'instance creation' }
 Element class >> new [
 
-	^ self shot: ElementShot new parent: nil
+	^ self shot: ElementShot new
 ]
 
 { #category : #'instance creation' }
-Element class >> shot: aShot parent: aParent [
+Element class >> shot: aShot [
+
+	^ self shot: aShot parent: nil childIndex: nil
+]
+
+{ #category : #'instance creation' }
+Element class >> shot: aShot parent: aParent childIndex: anIndex [
 
 	^ self basicNew
-		  initializeShot: aShot parent: aParent;
+		  initializeShot: aShot parent: aParent childIndex: anIndex;
 		  yourself
 ]
 
-{ #category : #adding }
+{ #category : #'accessing - tree' }
 Element >> addChild: anotherElement [
 
-	anotherElement basicParent: self.
-	children := children copyWith: anotherElement.
-	self shot:
-		(shot withChildren:
-			(shot children copyWith: anotherElement shot))
+	self privateShot: (shot copyWithChildLastt: anotherElement shot).
+
+	children addLast: anotherElement.
+	anotherElement privateBeChildOf: self at: children size
 ]
 
-{ #category : #adding }
+{ #category : #'accessing - tree' }
 Element >> addChildren: aCollection [
 
 	aCollection do: [ :each | self addChild: each ]
 ]
 
-{ #category : #accessing }
+{ #category : #enumerating }
 Element >> anyLeaf [
 
 	self withAllChildrenDo: [ :each |
@@ -60,25 +68,33 @@ Element >> background [
 { #category : #accessing }
 Element >> background: aColor [
 
-	self shot: (shot withBackground: aColor)
+	self privateShot: (shot copyWithBackground: aColor)
 ]
 
-{ #category : #'private - synchronization' }
-Element >> basicParent: anotherElement [
+{ #category : #'accessing - tree' }
+Element >> childIndex [
 
-	parent := anotherElement
+	^ childIndex
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - tree' }
 Element >> children [
 
 	^ children
 ]
 
-{ #category : #accessing }
+{ #category : #enumerating }
 Element >> childrenDo: aBlock [
 
 	children do: aBlock
+]
+
+{ #category : #private }
+Element >> consolidateAfterNewChildShot: newChildShot at: aChildIndex [
+	"Establish a new child shot at the specified index.
+	The objective is restoring the invariant after the child element changed its shot."
+
+	self privateShot: (shot copyWithChild: newChildShot at: aChildIndex)
 ]
 
 { #category : #debugging }
@@ -88,12 +104,22 @@ Element >> debugId [
 ]
 
 { #category : #initialization }
-Element >> initializeShot: aShot parent: anotherElement [
+Element >> initializeShot: aShot parent: anElement childIndex: aIndex [
 
 	shot := aShot.
-	parent := anotherElement.
-	children := aShot children collect: [ :childState |
-		self class shot: childState parent: self ]
+	parent := anElement.
+	childIndex := aIndex.
+
+	"IMPORTANT: this is the only place where we propagate our shot
+	down to the leaves. After initialization we only propagate shot
+	up to the root."
+	children := OrderedCollection new: aShot childrenCount.
+	aShot childrenWithIndexDo: [ :childShot :index |
+		children addLast:
+			(self class
+				shot: childShot
+				parent: self
+				childIndex: index) ]
 ]
 
 { #category : #debugging }
@@ -119,7 +145,7 @@ Element >> inspectionPresenterOn: aBuilder [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - tree' }
 Element >> level [
 
 	^ parent ifNil: [ 1 ] ifNotNil: [ 1 + parent level ]
@@ -134,10 +160,10 @@ Element >> opacity [
 { #category : #accessing }
 Element >> opacity: aOpacity [
 
-	self shot: (shot withOpacity: aOpacity)
+	self privateShot: (shot copyWithOpacity: aOpacity)
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - tree' }
 Element >> parent [
 
 	^ parent
@@ -149,53 +175,68 @@ Element >> printOn: aStream [
 
 	super printOn: aStream.
 	aStream
-		nextPutAll: '#';
-		print: self identityHash hex.
-	aStream
-		nextPutAll: ' state: ';
-		print: shot.
-	aStream
-		nextPutAll: ' #children: ';
+		nextPutAll: '(';
+		nextPutAll: self debugId;
+		nextPutAll: ' shot: ';
+		nextPutAll: shot debugId;
+		nextPutAll: ' size: ';
 		print: children size.
+
 	parent ifNil: [
-		aStream
-			nextPutAll: ' ROOT ' ]
+		aStream nextPutAll: ' ROOT' ].
+
+	shot printDetailsOn: aStream.
+
+	aStream nextPutAll: ')'
 ]
 
-{ #category : #'private - synchronization' }
-Element >> propagateChangedChild: aChildElement [
+{ #category : #private }
+Element >> privateAdjustChildIndexBy: anInteger [
 
-	| newChildrenStates childIndex |
-	childIndex := children indexOf: aChildElement.
-	newChildrenStates := shot children copy.
-	newChildrenStates at: childIndex put: aChildElement shot.
-
-	self shot: (shot withChildren: newChildrenStates)
+	childIndex := childIndex + anInteger
 ]
 
-{ #category : #adding }
+{ #category : #private }
+Element >> privateBeChildOf: anElement at: anIndex [
+
+	parent := anElement.
+	childIndex := anIndex
+]
+
+{ #category : #private }
+Element >> privateBeRoot [
+
+	parent := nil.
+	childIndex := nil
+]
+
+{ #category : #private }
+Element >> privateShot: newShot [
+
+	shot := newShot.
+	parent ifNil: [ ^ self ].
+
+	parent consolidateAfterNewChildShot: shot at: childIndex
+]
+
+{ #category : #'accessing - tree' }
 Element >> removeChild: anotherElement [
 
-	anotherElement basicParent: nil.
-	children := children copyWithout: anotherElement.
-	self shot:
-		(shot withChildren:
-			(shot children copyWithout: anotherElement shot))
+	self privateShot: (shot copyWithoutChildAt: anotherElement childIndex).
+
+	"Mutate the collection; then, we may need to adjust children indices"
+	children removeAt: anotherElement childIndex.
+	children
+		from: anotherElement childIndex
+		to: children size
+		do: [ :each | each privateAdjustChildIndexBy: -1 ].
+	anotherElement privateBeRoot
 ]
 
-{ #category : #accessing }
+{ #category : #private }
 Element >> shot [
 
 	^ shot
-]
-
-{ #category : #accessing }
-Element >> shot: aElementState [
-
-	shot := aElementState.
-	parent ifNil: [ ^ self ].
-
-	parent propagateChangedChild: self
 ]
 
 { #category : #enumerating }
@@ -207,7 +248,7 @@ Element >> withAllChildrenCount [
 	^ count
 ]
 
-{ #category : #accessing }
+{ #category : #enumerating }
 Element >> withAllChildrenDo: aBlock [
 
 	aBlock value: self.

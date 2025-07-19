@@ -4,27 +4,64 @@ Class {
 	#category : #'SDL-Experiments-ElementTree'
 }
 
-{ #category : #tests }
-ElementTest >> testCreateFromShotAndMutateBackground [
+{ #category : #resources }
+ElementTest >> newSampleTreeShot [
 
-	| initialShot root firstChild grandChild |
-	initialShot :=
-		ElementShot children: {
-			ElementShot
-				children: { ElementShot new }
-				background: Color cyan
-				opacity: 0.5.
-	      ElementShot new }.
-	root := Element shot: initialShot parent: nil.
-	firstChild := root children first.
-	grandChild := firstChild children first.
+	^ ElementShot
+			children: {
+				ElementShot
+					children: { ElementShot new }
+					background: Color green
+					opacity: 0.2.
+		      ElementShot
+					children: { }
+					background: Color blue
+					opacity: 0.3 }
+			background: Color red
+			opacity: 0.1
+]
+
+{ #category : #tests }
+ElementTest >> testCreateRootFromShot [
+
+	| initialShot root child1 child2 grandChild |
+	initialShot := self newSampleTreeShot.
+	root := Element shot: initialShot.
+	child1 := root children first.
+	child2 := root children second.
+	grandChild := child1 children first.
+
+	self assert: root opacity equals: 0.1.
+	self assert: child1 opacity equals: 0.2.
+	self assert: child2 opacity equals: 0.3.
+	self assert: grandChild opacity equals: 1.0. "default value"
+
+	self assert: root background equals: Color red.
+	self assert: child1 background equals: Color green.
+	self assert: child2 background equals: Color blue.
+	self assert: grandChild background equals: Color white. "default value"
+
+	self assertCollection: root children hasSameElements: { child1. child2 }.
+	self assertCollection: child1 children hasSameElements: { grandChild }.
+	self assertCollection: child2 children hasSameElements: #().
+	self assertCollection: grandChild children hasSameElements: #()
+]
+
+{ #category : #tests }
+ElementTest >> testMutateBackground [
+
+	| initialShot root child1 grandChild |
+	initialShot := self newSampleTreeShot.
+	root := Element shot: initialShot.
+	child1 := root children first.
+	grandChild := child1 children first.
 
 	"Set a color in first child"
-	firstChild background: Color blue.
-	self assert: firstChild background equals: Color blue.
+	child1 background: Color blue.
+	self assert: child1 background equals: Color blue.
 	"The first child and the root elements have new shots"
 	self
-		deny: firstChild shot
+		deny: child1 shot
 		identicalTo: initialShot children first.
 
 	"Both the sibling and the grand-child elements keep same shot"
@@ -40,26 +77,66 @@ ElementTest >> testCreateFromShotAndMutateBackground [
 	grandChild background: Color purple.
 	"The colors are set"
 	self assert: grandChild background equals: Color purple.
-	self assert: firstChild background equals: Color blue
+	self assert: child1 background equals: Color blue
 ]
 
 { #category : #tests }
 ElementTest >> testMutateChildren [
 
 	| a b c |
-	a := Element new.
-	b := Element new.
-	c := Element new.
+	a := Element new opacity: 0.1; background: Color red; yourself.
+	b := Element new opacity: 0.2; background: Color green; yourself.
+	c := Element new opacity: 0.3; background: Color blue; yourself.
+
 	a addChild: b.
-	self assert: a children equals: { b }.
-	self assert: b parent equals: a.
+	self assertCollection: a children hasSameElements: { b }.
+	self assert: b parent identicalTo: a.
 
 	a addChild: c.
-	self assert: a children equals: { b. c }.
+	self assertCollection: a children hasSameElements: { b. c }.
+	self assert: c parent identicalTo: a.
 
 	a removeChild: b.
-	self assert: a children equals: { c }.
+	self assertCollection: a children hasSameElements: { c }.
+	self assert: b parent isNil.
 
 	c addChild: b.
-	self assert: c children equals: { b }
+	self assertCollection: c children hasSameElements: { b }.
+	self assert: b parent identicalTo: c.
+
+	"Ensure values are right afterwards"
+	self assert: a opacity equals: 0.1.
+	self assert: b opacity equals: 0.2.
+	self assert: c opacity equals: 0.3.
+	
+	self assert: a background equals: Color red.
+	self assert: b background equals: Color green.
+	self assert: c background equals: Color blue
+]
+
+{ #category : #tests }
+ElementTest >> testRemoveChild [
+
+	| children root |
+	children :=
+		(0 to: 10) collect: [ :i |
+			Element new opacity: i/10.0; yourself ].
+	root := Element new addChildren: children; yourself.
+	self assert: root children size equals: 11.
+	self assert: root children first opacity equals: 0.0.
+
+	root removeChild: root children first.
+	self assert: root children size equals: 10.
+	self assert: root children first opacity equals: 0.1.
+
+	root removeChild: (root children at: 5).
+	self assert: root children size equals: 9.
+	self
+		assertCollection: (root children collect: #opacity)
+		hasSameElements: #(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0).
+
+	root removeChild: root children last.
+	self assert: root children size equals: 8.
+	self assert: root children last opacity equals: 0.9.
+
 ]

@@ -10,36 +10,38 @@ Class {
 { #category : #benchmarks }
 ElementBenchmarks >> benchFractal: depth n: n [
 
-	| rootElement leafElement colors i |
-	rootElement := (self fractalBranchDepth: depth n: n) first.
+	| rootElement leafElement colors i bytes |
+	'---' traceCr.
+	{#depth. depth. #n. n} traceCr.
+
+	'frequency to create tree: ' trace.
+	[ rootElement := (self fractalBranchDepth: depth n: n) first ] bench shortPrintString traceCr.
+
+	'element count: ' trace.
+	rootElement withAllChildrenCount traceCr.
+
+	'leaf level: ' trace.
 	leafElement := rootElement anyLeaf.
+	leafElement level traceCr.
 
 	colors := Color wheel: 100.
 	i := 1.
-
-	'element count: ' trace.
-	rootElement withAllChildrenCount trace.
-	'; leaf level: ' trace.
-	leafElement level trace.
-	'; frequency: ' trace.
+	'frequency to set background: ' trace.
 	[	leafElement background: (colors atWrap: (i := i+1)) ]
 		bench shortPrintString traceCr.
 
-	[ | bytes |
-	'ms to serialize: ' trace.
-	[ bytes := rootElement serializeToByteArray ] timeToRun trace.
-	' ms to materialize: ' trace.
-	[ FLMaterializer materializeFromByteArray: bytes ] timeToRun trace.
-	' byte count: ' trace. bytes size traceCr.
-	] value
+	'ms to serialize: ' trace. [ bytes := rootElement serializeToByteArray ] timeToRun asMilliSeconds traceCr.
+
+	'ms to materialize: ' trace. [ FLMaterializer materializeFromByteArray: bytes ] timeToRun asMilliSeconds traceCr.
+
+	'byte count: ' trace. bytes size traceCr
 ]
 
 { #category : #benchmarks }
 ElementBenchmarks >> benchMultipleN [
 	<script: 'self new benchMultipleN'>
 
-	1 to: 8 do: [ :n |
-		self benchFractal: 2 n: n ]
+	1 to: 6 do: [ :n | self benchFractal: 1 n: n ]
 ]
 
 { #category : #'sample creation' }
