@@ -32,12 +32,12 @@ TreeNode class >> shot: aShot parent: aParent childIndex: anIndex [
 ]
 
 { #category : #accessing }
-TreeNode >> addChild: anotherElement [
+TreeNode >> addChild: aTreeNode [
 
-	self privateShot: (shot copyWithChildLastt: anotherElement shot).
+	self privateShot: (shot copyWithChildLastt: aTreeNode shot).
 
-	children addLast: anotherElement.
-	anotherElement privateBeChildOf: self at: children size
+	children addLast: aTreeNode.
+	aTreeNode privateBeChildOf: self at: children size
 ]
 
 { #category : #accessing }
@@ -168,17 +168,23 @@ TreeNode >> privateShot: newShot [
 ]
 
 { #category : #accessing }
-TreeNode >> removeChild: anotherElement [
+TreeNode >> removeChild: aTreeNode [
 
-	self privateShot: (shot copyWithoutChildAt: anotherElement childIndex).
+	self privateShot: (shot copyWithoutChildAt: aTreeNode childIndex).
 
 	"Mutate the collection; then, we may need to adjust children indices"
-	children removeAt: anotherElement childIndex.
+	children removeAt: aTreeNode childIndex.
 	children
-		from: anotherElement childIndex
+		from: aTreeNode childIndex
 		to: children size
 		do: [ :each | each privateAdjustChildIndexBy: -1 ].
-	anotherElement privateBeRoot
+	aTreeNode privateBeRoot
+]
+
+{ #category : #removing }
+TreeNode >> removeChildren: aCollection [ 
+
+	aCollection do: [ :each | self removeChild: each ]
 ]
 
 { #category : #private }

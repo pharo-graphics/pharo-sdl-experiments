@@ -5,7 +5,7 @@ Class {
 }
 
 { #category : #resources }
-ElementTest >> newSampleTreeShot [
+ElementTest >> newSampleShot [
 
 	^ ElementShot
 			children: {
@@ -22,10 +22,82 @@ ElementTest >> newSampleTreeShot [
 ]
 
 { #category : #tests }
+ElementTest >> testAddChild [
+
+	| a b c |
+	a := Element new opacity: 0.1; background: Color red; yourself.
+	b := Element new opacity: 0.2; background: Color green; yourself.
+	c := Element new opacity: 0.3; background: Color blue; yourself.
+
+	a addChild: b.
+	self assertCollection: a children hasSameElements: { b }.
+	self assert: b parent identicalTo: a.
+
+	a addChild: c.
+	self assertCollection: a children hasSameElements: { b. c }.
+	self assert: c parent identicalTo: a.
+
+	a removeChild: b.
+	self assertCollection: a children hasSameElements: { c }.
+	self assert: b parent isNil.
+
+	"Add b to another parent"
+	c addChild: b.
+	self assertCollection: c children hasSameElements: { b }.
+	self assert: b parent identicalTo: c.
+
+	"Ensure values are right afterwards"
+	self assert: a opacity equals: 0.1.
+	self assert: b opacity equals: 0.2.
+	self assert: c opacity equals: 0.3.
+	
+	self assert: a background equals: Color red.
+	self assert: b background equals: Color green.
+	self assert: c background equals: Color blue
+]
+
+{ #category : #tests }
+ElementTest >> testAddChildren [
+
+	| a b c |
+	a := Element new opacity: 0.1; background: Color red; yourself.
+	b := Element new opacity: 0.2; background: Color green; yourself.
+	c := Element new opacity: 0.3; background: Color blue; yourself.
+
+	a addChildren: { b. c }.
+	self assertCollection: a children hasSameElements: { b. c }.
+	self assert: a parent isNil.
+	self assert: b parent identicalTo: a.
+	self assert: c parent identicalTo: a.
+
+	a removeChildren: { b. c }.
+	self assertCollection: a children hasSameElements: {}.
+	self assert: a parent isNil.
+	self assert: b parent isNil.
+	self assert: c parent isNil.
+
+	"Compose them in another way"
+	c addChildren: { b. a }.
+	self assertCollection: c children hasSameElements: { b. a }.
+	self assert: a parent identicalTo: c.
+	self assert: b parent identicalTo: c.
+	self assert: c parent isNil.
+
+	"Ensure values are right afterwards"
+	self assert: a opacity equals: 0.1.
+	self assert: b opacity equals: 0.2.
+	self assert: c opacity equals: 0.3.
+	
+	self assert: a background equals: Color red.
+	self assert: b background equals: Color green.
+	self assert: c background equals: Color blue
+]
+
+{ #category : #tests }
 ElementTest >> testCreateRootFromShot [
 
 	| initialShot root child1 child2 grandChild |
-	initialShot := self newSampleTreeShot.
+	initialShot := self newSampleShot.
 	root := Element shot: initialShot.
 	child1 := root children first.
 	child2 := root children second.
@@ -51,7 +123,7 @@ ElementTest >> testCreateRootFromShot [
 ElementTest >> testMutateBackground [
 
 	| initialShot root child1 grandChild |
-	initialShot := self newSampleTreeShot.
+	initialShot := self newSampleShot.
 	root := Element shot: initialShot.
 	child1 := root children first.
 	grandChild := child1 children first.
@@ -78,40 +150,6 @@ ElementTest >> testMutateBackground [
 	"The colors are set"
 	self assert: grandChild background equals: Color purple.
 	self assert: child1 background equals: Color blue
-]
-
-{ #category : #tests }
-ElementTest >> testMutateChildren [
-
-	| a b c |
-	a := Element new opacity: 0.1; background: Color red; yourself.
-	b := Element new opacity: 0.2; background: Color green; yourself.
-	c := Element new opacity: 0.3; background: Color blue; yourself.
-
-	a addChild: b.
-	self assertCollection: a children hasSameElements: { b }.
-	self assert: b parent identicalTo: a.
-
-	a addChild: c.
-	self assertCollection: a children hasSameElements: { b. c }.
-	self assert: c parent identicalTo: a.
-
-	a removeChild: b.
-	self assertCollection: a children hasSameElements: { c }.
-	self assert: b parent isNil.
-
-	c addChild: b.
-	self assertCollection: c children hasSameElements: { b }.
-	self assert: b parent identicalTo: c.
-
-	"Ensure values are right afterwards"
-	self assert: a opacity equals: 0.1.
-	self assert: b opacity equals: 0.2.
-	self assert: c opacity equals: 0.3.
-	
-	self assert: a background equals: Color red.
-	self assert: b background equals: Color green.
-	self assert: c background equals: Color blue
 ]
 
 { #category : #tests }
