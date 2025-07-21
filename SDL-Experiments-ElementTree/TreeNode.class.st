@@ -18,20 +18,6 @@ Class {
 	#category : #'SDL-Experiments-ElementTree'
 }
 
-{ #category : #'instance creation' }
-TreeNode class >> shot: aShot [
-
-	^ self shot: aShot parent: nil childIndex: nil
-]
-
-{ #category : #'instance creation' }
-TreeNode class >> shot: aShot parent: aParent childIndex: anIndex [
-
-	^ self basicNew
-		  initializeShot: aShot parent: aParent childIndex: anIndex;
-		  yourself
-]
-
 { #category : #accessing }
 TreeNode >> addChild: aTreeNode [
 
@@ -137,23 +123,23 @@ TreeNode >> hasDraftShot [
 ]
 
 { #category : #initialization }
-TreeNode >> initializeShot: aShot parent: aTreeNode childIndex: aIndex [
+TreeNode >> initialize [
+
+	super initialize.
+	self initializeShot
+]
+
+{ #category : #initialization }
+TreeNode >> initializeShot [
+
+	self initializeWithShot: self newDefaultShot
+]
+
+{ #category : #initialization }
+TreeNode >> initializeWithShot: aShot [
 
 	freshShot := commitShot := aShot.
-
-	parent := aTreeNode.
-	childIndex := aIndex.
-
-	"IMPORTANT: this is the only place where we propagate our shot
-	down to the leaves. After initialization we only propagate shot
-	up to the root."
-	children := OrderedCollection new: aShot childrenCount.
-	aShot childrenWithIndexDo: [ :childShot :index |
-		children addLast:
-			(self class
-				shot: childShot
-				parent: self
-				childIndex: index) ]
+	children := OrderedCollection new
 ]
 
 { #category : #debugging }
@@ -197,6 +183,12 @@ TreeNode >> level [
 	"Answer the number of edges between self and the root."
 
 	^ parent ifNil: [ 0 ] ifNotNil: [ 1 + parent level ]
+]
+
+{ #category : #'instance creation' }
+TreeNode >> newDefaultShot [
+
+	^ self subclassResponsibility
 ]
 
 { #category : #accessing }

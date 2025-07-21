@@ -5,20 +5,48 @@ Class {
 }
 
 { #category : #resources }
-ElementTest >> newSampleShot [
+ElementTest >> newRootWithTwoChildrenAndGrandChild [
 
-	^ ElementShot
-			children: {
-				ElementShot
-					children: { ElementShot new }
-					background: Color green
-					opacity: 0.2.
-		      ElementShot
-					children: { }
-					background: Color blue
-					opacity: 0.3 }
-			background: Color red
-			opacity: 0.1
+	^ Element new
+			background: Color red;
+			opacity: 0.1;
+			addChildren: {
+				Element new
+					background: Color green;
+					opacity: 0.2;
+					addChildren: { Element new };
+					yourself.
+		      Element new
+					background: Color blue;
+					opacity: 0.3;
+					yourself };
+			commitWithAllChildren;
+			yourself
+]
+
+{ #category : #tests }
+ElementTest >> testAccessors [
+
+	| root child1 child2 grandChild |
+	root := self newRootWithTwoChildrenAndGrandChild.
+	child1 := root children first.
+	child2 := root children second.
+	grandChild := child1 children first.
+
+	self assert: root opacity equals: 0.1.
+	self assert: child1 opacity equals: 0.2.
+	self assert: child2 opacity equals: 0.3.
+	self assert: grandChild opacity equals: 1.0. "default value"
+
+	self assert: root background equals: Color red.
+	self assert: child1 background equals: Color green.
+	self assert: child2 background equals: Color blue.
+	self assert: grandChild background equals: Color white. "default value"
+
+	self assertCollection: root children hasSameElements: { child1. child2 }.
+	self assertCollection: child1 children hasSameElements: { grandChild }.
+	self assertCollection: child2 children hasSameElements: #().
+	self assertCollection: grandChild children hasSameElements: #()
 ]
 
 { #category : #tests }
@@ -94,41 +122,16 @@ ElementTest >> testAddChildren [
 ]
 
 { #category : #tests }
-ElementTest >> testCreateRootFromShot [
-
-	| initialShot root child1 child2 grandChild |
-	initialShot := self newSampleShot.
-	root := Element shot: initialShot.
-	child1 := root children first.
-	child2 := root children second.
-	grandChild := child1 children first.
-
-	self assert: root opacity equals: 0.1.
-	self assert: child1 opacity equals: 0.2.
-	self assert: child2 opacity equals: 0.3.
-	self assert: grandChild opacity equals: 1.0. "default value"
-
-	self assert: root background equals: Color red.
-	self assert: child1 background equals: Color green.
-	self assert: child2 background equals: Color blue.
-	self assert: grandChild background equals: Color white. "default value"
-
-	self assertCollection: root children hasSameElements: { child1. child2 }.
-	self assertCollection: child1 children hasSameElements: { grandChild }.
-	self assertCollection: child2 children hasSameElements: #().
-	self assertCollection: grandChild children hasSameElements: #()
-]
-
-{ #category : #tests }
-ElementTest >> testMutateBackground [
+ElementTest >> testMutators [
 
 	| initialShot root child1 grandChild |
-	initialShot := self newSampleShot.
-	root := Element shot: initialShot.
+	root := self newRootWithTwoChildrenAndGrandChild.
+	initialShot := root commitShot.
 	child1 := root children first.
 	grandChild := child1 children first.
 
 	root withAllChildrenDo: [ :each | self deny: each hasDraftShot ].
+
 
 	"Set a color in first child"
 	child1 background: Color blue.

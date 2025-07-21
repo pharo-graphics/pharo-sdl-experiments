@@ -14,33 +14,6 @@ Class {
 	#category : #'SDL-Experiments-ElementTree'
 }
 
-{ #category : #'instance creation' }
-ElementShot class >> children: aCollection [
-
-	^ self children: aCollection background: nil opacity: nil
-]
-
-{ #category : #'instance creation' }
-ElementShot class >> children: aCollection background: aColor opacity: aOpacity [
-
-	| new |
-	new := self basicNew: aCollection size.
-
-	new
-		privateBackground: aColor;
-		privateOpacity: aOpacity.
-
-	aCollection withIndexDo: [ :each :index | new at: index put: each ].
-
-	^ new
-]
-
-{ #category : #'instance creation' }
-ElementShot class >> new [
-
-	^ self children: #()
-]
-
 { #category : #accessing }
 ElementShot >> background [
 

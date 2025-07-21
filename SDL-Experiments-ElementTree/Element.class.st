@@ -9,12 +9,6 @@ Class {
 	#category : #'SDL-Experiments-ElementTree'
 }
 
-{ #category : #'instance creation' }
-Element class >> new [
-
-	^ self shot: ElementShot new
-]
-
 { #category : #accessing }
 Element >> background [
 
@@ -25,6 +19,12 @@ Element >> background [
 Element >> background: aColor [
 
 	self writeShot: [ :shot | shot privateBackground: aColor ]
+]
+
+{ #category : #'instance creation' }
+Element >> newDefaultShot [
+
+	^ ElementShot new
 ]
 
 { #category : #accessing }
