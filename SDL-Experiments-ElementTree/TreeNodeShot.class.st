@@ -57,33 +57,6 @@ TreeNodeShot >> copyResized: newSize with: aChildrenInitializationBlock [
 	^ copy
 ]
 
-{ #category : #copying }
-TreeNodeShot >> copyWithChild: aShot at: index [
-
-	^ self shallowCopy
-		  basicAt: index put: aShot;
-		  yourself
-]
-
-{ #category : #copying }
-TreeNodeShot >> copyWithoutChildAt: index [
-	"We assume the child has exactly one occurrence."
-
-	| newSize |
-	newSize := self size - 1.
-
-	^ (self privateCopyFor: newSize)
-			replaceFrom: 1
-				to: index - 1 
-				with: self
-				startingAt: 1;
-			replaceFrom: index
-				to: newSize
-				with: self
-				startingAt: index + 1;
-			yourself
-]
-
 { #category : #debugging }
 TreeNodeShot >> debugId [
 
