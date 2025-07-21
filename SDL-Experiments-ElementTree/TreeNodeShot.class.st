@@ -17,6 +17,12 @@ TreeNodeShot class >> accessingSelectorsDo: aUnaryBlock [
 			do: [ :each | aUnaryBlock value: each name ]
 ]
 
+{ #category : #testing }
+TreeNodeShot class >> isAbstract [
+
+	^ self == TreeNodeShot
+]
+
 { #category : #accessing }
 TreeNodeShot >> children [
 

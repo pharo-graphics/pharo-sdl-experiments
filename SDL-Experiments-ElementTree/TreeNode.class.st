@@ -18,6 +18,12 @@ Class {
 	#category : #'SDL-Experiments-ElementTree'
 }
 
+{ #category : #testing }
+TreeNode class >> isAbstract [
+
+	^ self == TreeNode
+]
+
 { #category : #accessing }
 TreeNode >> addChild: aTreeNode [
 
