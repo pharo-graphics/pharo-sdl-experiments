@@ -157,6 +157,20 @@ TreeNode >> initializeShot: aShot parent: aTreeNode childIndex: aIndex [
 ]
 
 { #category : #debugging }
+TreeNode >> inspectionPresenterForCommitTreeOn: aBuilder [
+	<inspectorPresentationOrder: 3 title: 'Commit Tree'>
+
+	^ commitShot inspectionPresenterOn: aBuilder
+]
+
+{ #category : #debugging }
+TreeNode >> inspectionPresenterForFreshTreeOn: aBuilder [
+	<inspectorPresentationOrder: 2 title: 'Fresh Tree'>
+
+	^ freshShot inspectionPresenterOn: aBuilder
+]
+
+{ #category : #debugging }
 TreeNode >> inspectionPresenterOn: aBuilder [
 	<inspectorPresentationOrder: 1 title: 'Tree'>
 
@@ -170,12 +184,6 @@ TreeNode >> inspectionPresenterOn: aBuilder [
 		addColumn: (SpStringTableColumn 
 			title: 'draft?'
 			evaluated: [ :each | each hasDraftShot ]).
-
-	self freshShot class accessingSelectorsDo: [ :eachSelector |
-		treeTable addColumn:
-			(SpStringTableColumn 
-				title: eachSelector
-				evaluated: [ :each | each freshShot perform: eachSelector ]) ].
 
 	^ treeTable
 		roots: { self };
