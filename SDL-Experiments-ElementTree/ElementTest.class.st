@@ -128,20 +128,34 @@ ElementTest >> testMutateBackground [
 	child1 := root children first.
 	grandChild := child1 children first.
 
+	root withAllChildrenDo: [ :each | self deny: each hasDraftShot ].
+
 	"Set a color in first child"
 	child1 background: Color blue.
 	self assert: child1 background equals: Color blue.
-	"The first child and the root elements have new shots"
+
+	"After mutation, the commit shots are the same, but fresh shot did change."
 	self
-		deny: child1 shot
+		assert: child1 commitShot
+		identicalTo: initialShot children first.
+	self
+		deny: child1 freshShot
+		identicalTo: initialShot children first.
+	
+	self assert: root hasDraftShot.
+	self assert: child1 hasDraftShot.
+	child1 commitWithAllParents.
+	root withAllChildrenDo: [ :each | self deny: each hasDraftShot ].
+	self
+		deny: child1 commitShot
 		identicalTo: initialShot children first.
 
 	"Both the sibling and the grand-child elements keep same shot"
 	self
-		assert: root children second shot
+		assert: root children second freshShot
 		identicalTo: initialShot children second.
 	self
-		assert: grandChild shot
+		assert: grandChild freshShot
 		identicalTo: initialShot children first children first.
 
 

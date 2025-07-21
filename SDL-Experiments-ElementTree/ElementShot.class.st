@@ -47,60 +47,10 @@ ElementShot >> background [
 	^ background ifNil: [ Color white ]
 ]
 
-{ #category : #copying }
-ElementShot >> copyWithBackground: aColor [
-
-	^ self shallowCopy
-		  privateBackground: aColor;
-		  yourself
-]
-
-{ #category : #copying }
-ElementShot >> copyWithOpacity: aColor [
-
-	^ self shallowCopy
-		  privateOpacity: aColor;
-		  yourself
-]
-
-{ #category : #debugging }
-ElementShot >> inspectionPresenterOn: aBuilder [
-	<inspectorPresentationOrder: 1 title: 'Tree'>
-
-	^ aBuilder newTreeTable 
-		roots: { self };
-		children: [ :aNode | aNode children ];
-		addColumn: (SpStringTableColumn 
-			title: 'debugId'
-			evaluated: [ :each | each debugId ]);
-		addColumn: (SpStringTableColumn 
-			title: 'background'
-			evaluated: [ :each | each background ]);
-		addColumn: (SpStringTableColumn 
-			title: 'opacity'
-			evaluated: [ :each | each opacity ]);
-		expandAll;
-		yourself
-]
-
 { #category : #accessing }
 ElementShot >> opacity [
 
 	^ opacity ifNil: [ 1.0 ]
-]
-
-{ #category : #printing }
-ElementShot >> printDetailsOn: aStream [
-
-	background ifNotNil: [
-		aStream
-			nextPutAll: ' background: ';
-			print: background ].
-
-	opacity ifNotNil: [
-		aStream
-			nextPutAll: ' opacity: ';
-			print: opacity ]
 ]
 
 { #category : #private }

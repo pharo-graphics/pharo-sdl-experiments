@@ -15,7 +15,7 @@ ElementBenchmarks >> benchFractal: depth n: n [
 	{#depth. depth. #n. n} traceCr.
 
 	'frequency to create tree: ' trace.
-	[ rootElement := (self fractalBranchDepth: depth n: n) first ] bench shortPrintString traceCr.
+	[ rootElement := (self fractalBranchDepth: depth n: n) first. rootElement commitWithAllChildren ] bench shortPrintString traceCr.
 
 	'element count: ' trace.
 	rootElement withAllChildrenCount traceCr.

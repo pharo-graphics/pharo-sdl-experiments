@@ -11,6 +11,13 @@ Class {
 }
 
 { #category : #accessing }
+TreeNodeShot class >> accessingSelectorsDo: aUnaryBlock [
+
+	^ (self slots sort: [ :a :b | a name <= b name ])
+			do: [ :each | aUnaryBlock value: each name ]
+]
+
+{ #category : #accessing }
 TreeNodeShot >> children [
 
 	^ Array
@@ -39,28 +46,23 @@ TreeNodeShot >> childrenWithIndexDo: aBlock [
 ]
 
 { #category : #copying }
+TreeNodeShot >> copyResized: newSize with: aChildrenInitializationBlock [
+	"Answer a copy of self with the specified size. The children must be copied in the block."
+
+	| copy |
+	copy := self privateCopyFor: newSize.
+
+	aChildrenInitializationBlock value: self value: copy.
+
+	^ copy
+]
+
+{ #category : #copying }
 TreeNodeShot >> copyWithChild: aShot at: index [
 
 	^ self shallowCopy
 		  basicAt: index put: aShot;
 		  yourself
-]
-
-{ #category : #copying }
-TreeNodeShot >> copyWithChildLastt: aShot [ 
-	"Answer a copy of the receiver that is 1 bigger than the receiver and has
-	newElement at the last element."
-
-	| newSize |
-	newSize := self size + 1.
-
-	^ (self privateCopyFor: newSize)
-			replaceFrom: 1
-				to: self size
-				with: self
-				startingAt: 1;
-			basicAt: newSize put: aShot;
-			yourself
 ]
 
 { #category : #copying }
@@ -88,8 +90,41 @@ TreeNodeShot >> debugId [
 	^ (self identityHash printStringHex allButLast: 2) asLowercase
 ]
 
+{ #category : #debugging }
+TreeNodeShot >> inspectionPresenterOn: aBuilder [
+	<inspectorPresentationOrder: 1 title: 'Tree'>
+
+	| treeTable |
+	treeTable := aBuilder newTreeTable.
+
+	treeTable
+		addColumn: (SpStringTableColumn 
+			title: 'debugId'
+			evaluated: [ :each | each debugId ]).
+
+	self class accessingSelectorsDo: [ :eachSelector |
+		treeTable addColumn:
+			(SpStringTableColumn 
+				title: eachSelector
+				evaluated: [ :each | each perform: eachSelector ]) ].
+
+	^ treeTable
+		roots: { self };
+		children: [ :aNode | aNode children ];
+		expandAll;
+		yourself
+]
+
 { #category : #printing }
 TreeNodeShot >> printDetailsOn: aStream [
+
+	self class accessingSelectorsDo: [ :each |
+		(self perform: each) ifNotNil: [ :v |
+			aStream
+				nextPut: Character space;
+				nextPutAll: each;
+				nextPutAll: ': ';
+				print: v ] ]
 ]
 
 { #category : #printing }
