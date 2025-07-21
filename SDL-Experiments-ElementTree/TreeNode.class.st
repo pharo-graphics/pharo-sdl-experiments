@@ -41,7 +41,7 @@ TreeNode >> addChild: aTreeNode [
 			new
 				replaceFrom: 1
 				to: old size
-				with: new
+				with: old
 				startingAt: 1.
 			new at: new size put: aTreeNode freshShot ].
 
