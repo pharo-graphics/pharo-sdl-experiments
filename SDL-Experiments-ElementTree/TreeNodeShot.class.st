@@ -7,6 +7,9 @@ Class {
 	#name : #TreeNodeShot,
 	#superclass : #Object,
 	#type : #variable,
+	#instVars : [
+		'draft'
+	],
 	#category : #'SDL-Experiments-ElementTree'
 }
 
@@ -125,15 +128,6 @@ TreeNodeShot >> printOn: aStream [
 	self printDetailsOn: aStream.
 
 	aStream nextPutAll: ')'
-]
-
-{ #category : #copying }
-TreeNodeShot >> privateCopyFor: newSize [
-	"Answer a copy of self with the specified size. The children are not copied at all, this is a responsibility of sender."
-
-	^ self class
-		  basicNew: newSize;
-		  yourself
 ]
 
 { #category : #private }
