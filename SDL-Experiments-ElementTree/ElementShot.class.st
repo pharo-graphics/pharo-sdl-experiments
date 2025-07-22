@@ -26,6 +26,13 @@ ElementShot >> background: aColor [
 	background := aColor
 ]
 
+{ #category : #initialization }
+ElementShot >> initializeInstanceVariablesFrom: sourceObject [
+
+	background := sourceObject background.
+	opacity := sourceObject opacity
+]
+
 { #category : #accessing }
 ElementShot >> opacity [
 
@@ -36,14 +43,4 @@ ElementShot >> opacity [
 ElementShot >> opacity: aFloat [
 
 	opacity := aFloat
-]
-
-{ #category : #copying }
-ElementShot >> privateCopyFor: newSize [
-	"Answer a copy of self with the specified size. The children are not copied at all, this is a responsibility of sender."
-
-	^ (super privateCopyFor: newSize)
-			background: background;
-			opacity: opacity;
-			yourself
 ]

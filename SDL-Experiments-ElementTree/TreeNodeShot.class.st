@@ -56,8 +56,9 @@ TreeNodeShot >> copyResized: newSize with: aChildrenInitializationBlock [
 	"Answer a copy of self with the specified size. The children must be copied in the block."
 
 	| copy |
-	copy := self privateCopyFor: newSize.
+	copy := self class new: newSize.
 
+	copy initializeInstanceVariablesFrom: self.
 	aChildrenInitializationBlock value: self value: copy.
 
 	^ copy
@@ -67,6 +68,10 @@ TreeNodeShot >> copyResized: newSize with: aChildrenInitializationBlock [
 TreeNodeShot >> debugId [
 
 	^ (self identityHash printStringHex allButLast: 2) asLowercase
+]
+
+{ #category : #initialization }
+TreeNodeShot >> initializeInstanceVariablesFrom: sourceObject [
 ]
 
 { #category : #debugging }
@@ -126,7 +131,9 @@ TreeNodeShot >> printOn: aStream [
 TreeNodeShot >> privateCopyFor: newSize [
 	"Answer a copy of self with the specified size. The children are not copied at all, this is a responsibility of sender."
 
-	^ self class basicNew: newSize
+	^ self class
+		  basicNew: newSize;
+		  yourself
 ]
 
 { #category : #private }
