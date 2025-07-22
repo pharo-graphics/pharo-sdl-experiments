@@ -7,7 +7,8 @@ Class {
 	#name : #Element,
 	#superclass : #TreeNode,
 	#instVars : [
-		'#background => FreshShotSlot'
+		'#background => FreshShotSlot',
+		'#opacity => FreshShotSlot'
 	],
 	#category : #'SDL-Experiments-ElementTree'
 }
@@ -33,11 +34,11 @@ Element >> newDefaultShot [
 { #category : #accessing }
 Element >> opacity [
 
-	^ self readShot opacity
+	^ opacity
 ]
 
 { #category : #accessing }
 Element >> opacity: aOpacity [
 
-	self writeShot: [ :shot | shot opacity: aOpacity ]
+	opacity := aOpacity
 ]

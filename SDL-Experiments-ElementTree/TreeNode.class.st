@@ -279,12 +279,6 @@ TreeNode >> privateSetDraftChildShot: newChildShot at: aChildIndex [
 	freshShot at: aChildIndex put: newChildShot
 ]
 
-{ #category : #private }
-TreeNode >> readShot [
-
-	^ freshShot
-]
-
 { #category : #accessing }
 TreeNode >> removeChild: aTreeNode [
 
@@ -333,11 +327,4 @@ TreeNode >> withAllChildrenDo: aBlock [
 
 	aBlock value: self.
 	children do: [ :child | child withAllChildrenDo: aBlock ]
-]
-
-{ #category : #private }
-TreeNode >> writeShot: aBlock [
-
-	self ensureDraftShot.
-	aBlock value: freshShot
 ]
