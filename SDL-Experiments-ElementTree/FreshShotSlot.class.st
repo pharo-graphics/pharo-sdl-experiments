@@ -100,7 +100,8 @@ FreshShotSlot >> read: anObject [
 FreshShotSlot >> write: aValue to: anObject [
 	<reflection: 'Object Modification - State modification'>
 
-	^ (self freshShotFrom: anObject)
-		  ensureDraftShot;
-		  perform: self mutatorSelector with: aValue
+	anObject ensureDraftShot.
+	(self freshShotFrom: anObject)
+		perform: self mutatorSelector
+		with: aValue
 ]
