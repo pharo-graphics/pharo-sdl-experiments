@@ -6,19 +6,22 @@ See comment in my superclass.
 Class {
 	#name : #Element,
 	#superclass : #TreeNode,
+	#instVars : [
+		'#background => FreshShotSlot'
+	],
 	#category : #'SDL-Experiments-ElementTree'
 }
 
 { #category : #accessing }
 Element >> background [
 
-	^ self readShot background
+	^ background
 ]
 
 { #category : #accessing }
 Element >> background: aColor [
 
-	self writeShot: [ :shot | shot privateBackground: aColor ]
+	background := aColor
 ]
 
 { #category : #'instance creation' }
@@ -36,5 +39,5 @@ Element >> opacity [
 { #category : #accessing }
 Element >> opacity: aOpacity [
 
-	self writeShot: [ :shot | shot privateOpacity: aOpacity ]
+	self writeShot: [ :shot | shot opacity: aOpacity ]
 ]

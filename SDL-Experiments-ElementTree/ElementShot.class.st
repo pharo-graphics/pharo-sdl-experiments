@@ -20,6 +20,12 @@ ElementShot >> background [
 	^ background ifNil: [ Color white ]
 ]
 
+{ #category : #private }
+ElementShot >> background: aColor [
+
+	background := aColor
+]
+
 { #category : #accessing }
 ElementShot >> opacity [
 
@@ -27,9 +33,9 @@ ElementShot >> opacity [
 ]
 
 { #category : #private }
-ElementShot >> privateBackground: aColor [
+ElementShot >> opacity: aFloat [
 
-	background := aColor	
+	opacity := aFloat
 ]
 
 { #category : #copying }
@@ -37,13 +43,7 @@ ElementShot >> privateCopyFor: newSize [
 	"Answer a copy of self with the specified size. The children are not copied at all, this is a responsibility of sender."
 
 	^ (super privateCopyFor: newSize)
-			privateBackground: background;
-			privateOpacity: opacity;
+			background: background;
+			opacity: opacity;
 			yourself
-]
-
-{ #category : #private }
-ElementShot >> privateOpacity: aFloat [
-
-	opacity := aFloat	
 ]
