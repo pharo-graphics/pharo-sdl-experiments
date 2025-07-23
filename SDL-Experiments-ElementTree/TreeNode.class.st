@@ -81,20 +81,24 @@ TreeNode >> commitShot [
 { #category : #accessing }
 TreeNode >> commitWithAllChildren [
 
-	"We know if any child hasLiveShot then its parent too"
-	self hasDraftShot ifFalse: [ ^ self ].
+	"If ours is not draft then no children can be draft"
+	freshShot isDraft ifFalse: [ ^ self ].
 	
 	commitShot := freshShot.
+	commitShot complete.
 
-	children do: [ :each | each commitWithAllChildren ] 
+	"This is possible tobe done after complete because it doesn't
+	perform a recusrive completion."
+	children do: [ :each | each commitWithAllChildren ]
 ]
 
 { #category : #accessing }
 TreeNode >> commitWithAllParents [
 
-	self hasDraftShot ifFalse: [ ^ self ].
+	freshShot isDraft ifFalse: [ ^ self ].
 	
 	commitShot := freshShot.
+	commitShot complete.
 
 	parent ifNotNil: [ :p | p commitWithAllParents ]
 ]
@@ -108,7 +112,7 @@ TreeNode >> debugId [
 { #category : #accessing }
 TreeNode >> ensureDraftShot [
 
-	self hasDraftShot ifTrue: [ ^self ].
+	freshShot isDraft ifTrue: [ ^ self ].
 
 	freshShot := freshShot copy.
 
@@ -120,12 +124,6 @@ TreeNode >> ensureDraftShot [
 TreeNode >> freshShot [
 
 	^ freshShot
-]
-
-{ #category : #testing }
-TreeNode >> hasDraftShot [
-
-	^ commitShot ~~ freshShot
 ]
 
 { #category : #initialization }
@@ -145,6 +143,8 @@ TreeNode >> initializeShot [
 TreeNode >> initializeWithShot: aShot [
 
 	freshShot := commitShot := aShot.
+	commitShot complete.
+
 	children := OrderedCollection new
 ]
 
@@ -175,7 +175,7 @@ TreeNode >> inspectionPresenterOn: aBuilder [
 			evaluated: [ :each | each debugId ]);
 		addColumn: (SpStringTableColumn 
 			title: 'draft?'
-			evaluated: [ :each | each hasDraftShot ]).
+			evaluated: [ :each | each freshShot isDraft ]).
 
 	^ treeTable
 		roots: { self };
@@ -219,7 +219,7 @@ TreeNode >> printOn: aStream [
 		nextPutAll: ' commit: ';
 		nextPutAll: commitShot debugId.
 
-	self hasDraftShot ifTrue: [
+	freshShot isDraft ifTrue: [
 		aStream
 			nextPutAll: ' draft: ';
 			nextPutAll: freshShot debugId ].
@@ -272,7 +272,7 @@ TreeNode >> privateSetDraftChildShot: newChildShot at: aChildIndex [
 	The objective is to restore the invariant after the child node changed its shot."
 
 	"Stop early if I already knew it"
-	(self hasDraftShot and: [ (freshShot at: aChildIndex) == newChildShot ])
+	(freshShot isDraft and: [ (freshShot at: aChildIndex) == newChildShot ])
 		ifTrue: [ ^ self ].
 
 	self ensureDraftShot.

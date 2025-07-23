@@ -8,8 +8,8 @@ Class {
 	#superclass : #TreeNodeShot,
 	#type : #variable,
 	#instVars : [
-		'opacity',
-		'background'
+		'#opacity => ShotSlot',
+		'#background => ShotSlot'
 	],
 	#category : #'SDL-Experiments-ElementTree'
 }

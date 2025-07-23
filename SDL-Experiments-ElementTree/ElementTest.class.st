@@ -122,6 +122,35 @@ ElementTest >> testAddChildren [
 ]
 
 { #category : #tests }
+ElementTest >> testIsDraft [
+
+	| root child1 child2 grandChild |
+	root := self newRootWithTwoChildrenAndGrandChild.
+	child1 := root children first.
+	child2 := root children second.
+	grandChild := child1 children first.
+
+	self deny: root freshShot isDraft.
+	self deny: child1 freshShot isDraft.
+	self deny: child2 freshShot isDraft.
+	self deny: grandChild freshShot isDraft.
+
+	child1 opacity: 0.1.
+	
+	self assert: root freshShot isDraft.
+	self assert: child1 freshShot isDraft.
+	self deny: child2 freshShot isDraft.
+	self deny: grandChild freshShot isDraft.
+
+	root commitWithAllChildren.
+
+	self deny: root freshShot isDraft.
+	self deny: child1 freshShot isDraft.
+	self deny: child2 freshShot isDraft.
+	self deny: grandChild freshShot isDraft
+]
+
+{ #category : #tests }
 ElementTest >> testMutators [
 
 	| initialShot root child1 grandChild |
@@ -130,7 +159,7 @@ ElementTest >> testMutators [
 	child1 := root children first.
 	grandChild := child1 children first.
 
-	root withAllChildrenDo: [ :each | self deny: each hasDraftShot ].
+	root withAllChildrenDo: [ :each | self deny: each freshShot isDraft ].
 
 
 	"Set a color in first child"
@@ -145,10 +174,10 @@ ElementTest >> testMutators [
 		deny: child1 freshShot
 		identicalTo: initialShot children first.
 	
-	self assert: root hasDraftShot.
-	self assert: child1 hasDraftShot.
+	self assert: root freshShot isDraft.
+	self assert: child1 freshShot isDraft.
 	child1 commitWithAllParents.
-	root withAllChildrenDo: [ :each | self deny: each hasDraftShot ].
+	root withAllChildrenDo: [ :each | self deny: each freshShot isDraft ].
 	self
 		deny: child1 commitShot
 		identicalTo: initialShot children first.

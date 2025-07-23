@@ -1,5 +1,5 @@
 "
-I am an immutable representation a tree node.
+I am a tree node that's initially draft: My mutator API can be used to set values until `#complete`.
 
 I am a variable-layer object, to point to my children without need of a separate collection.
 "
@@ -24,6 +24,20 @@ TreeNodeShot class >> accessingSelectorsDo: aUnaryBlock [
 TreeNodeShot class >> isAbstract [
 
 	^ self == TreeNodeShot
+]
+
+{ #category : #asserting }
+TreeNodeShot >> assertDraft [
+
+	draft ifNil: [ ^ self ].
+	CannotWriteShot signal
+]
+
+{ #category : #accessing }
+TreeNodeShot >> at: index put: value [
+
+	self assertDraft.
+	^ super at: index put: value
 ]
 
 { #category : #accessing }
@@ -52,6 +66,14 @@ TreeNodeShot >> childrenWithIndexDo: aBlock [
 
 	1 to: self size do: [ :index |
 		aBlock value: (self at: index) value: index ]
+]
+
+{ #category : #accessing }
+TreeNodeShot >> complete [
+	"From now on, my mutator API signal `CannotWriteShot`.
+	IMPORTANT: this is NOT recursive, so a child can be still draft."
+
+	draft := false
 ]
 
 { #category : #copying }
@@ -102,6 +124,19 @@ TreeNodeShot >> inspectionPresenterOn: aBuilder [
 		yourself
 ]
 
+{ #category : #testing }
+TreeNodeShot >> isDraft [
+
+	^ draft isNil
+]
+
+{ #category : #copying }
+TreeNodeShot >> postCopy [
+	"Copies are draft"
+
+	draft := nil
+]
+
 { #category : #printing }
 TreeNodeShot >> printDetailsOn: aStream [
 
@@ -121,7 +156,12 @@ TreeNodeShot >> printOn: aStream [
 	super printOn: aStream.
 	aStream
 		nextPutAll: '(';
-		nextPutAll: self debugId;
+		nextPutAll: self debugId.
+
+	self isDraft ifTrue: [ 
+		aStream nextPutAll: ' DRAFT' ].
+
+	aStream
 		nextPutAll: ' size: ';
 		print: self childrenCount.
 
