@@ -8,7 +8,59 @@ Class {
 }
 
 { #category : #benchmarks }
-ElementBenchmarks >> benchFractal: depth n: n [
+ElementBenchmarks >> benchAddRemoveChildBulk [
+	<script: 'self new benchAddRemoveChildBulk'>
+
+	| rootElement elements |
+	rootElement := (self fractalBranchDepth: 2 n: 9) first.
+	rootElement commitWithAllChildren.
+
+	elements := OrderedCollection new.
+	rootElement withAllChildrenDo: [ :each | elements add: each ].
+
+	'element count: ' trace.
+	elements size traceCr.
+
+	'frequency to add a child to each element & commit once: ' trace.
+	[	elements do: [ :each | each addChild: Element new ].
+		rootElement commitWithAllChildren ] bench shortPrintString traceCr.
+
+	'frequency to remove each added element & commit once: ' trace.
+	[	elements do: [ :each |
+			each children size >= 1 ifTrue: [
+				each removeChild: each children last ] ].
+		rootElement commitWithAllChildren ] bench shortPrintString traceCr
+]
+
+{ #category : #benchmarks }
+ElementBenchmarks >> benchAddRemoveChildIIndividual [
+	<script: 'self new benchAddRemoveChildIIndividual'>
+
+	| rootElement elements |
+	rootElement := (self fractalBranchDepth: 2 n: 9) first.
+	rootElement commitWithAllChildren.
+
+	elements := OrderedCollection new.
+	rootElement withAllChildrenDo: [ :each | elements add: each ].
+
+	'element count: ' trace.
+	elements size traceCr.
+
+	'frequency to add a child to each element & commit each time: ' trace.
+	[	elements do: [ :each |
+			each addChild: Element new.
+			rootElement commitWithAllChildren ] ] bench shortPrintString traceCr.
+
+	'frequency to remove each added element & commit each time: ' trace.
+	[	elements do: [ :each |
+			each children size >= 1 ifTrue: [
+				each removeChild: each children last.
+				rootElement commitWithAllChildren ] ] ] bench shortPrintString traceCr
+]
+
+{ #category : #benchmarks }
+ElementBenchmarks >> benchCreateAndUpdateDepth: depth n: n [
+	<script: '1 to: 6 do: [ :n | self new benchCreateAndUpdateDepth: 1 n: n ]'>
 
 	| rootElement leafElement bytes |
 	'---' traceCr.
@@ -37,13 +89,6 @@ ElementBenchmarks >> benchFractal: depth n: n [
 
 	'byte count: ' trace.
 	bytes size traceCr
-]
-
-{ #category : #benchmarks }
-ElementBenchmarks >> benchMultipleN [
-	<script: 'self new benchMultipleN'>
-
-	#(1 5 10 11 12) do: [ :n | self benchFractal: 1 n: n ]
 ]
 
 { #category : #'sample creation' }
