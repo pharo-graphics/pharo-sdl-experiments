@@ -75,18 +75,19 @@ FreshShotSlot >> freshShotFrom: anObject [
 	^ baseSlot read: anObject
 ]
 
-{ #category : #private }
-FreshShotSlot >> installingIn: aClass [
-
-	super installingIn: aClass.
-
-	baseSlot := aClass allSlots detect: [ :slot | slot name = #freshShot ]
-]
-
 { #category : #accessing }
 FreshShotSlot >> mutatorSelector [
 
 	^ (self name copyWith: $:) asSymbol
+]
+
+{ #category : #accessing }
+FreshShotSlot >> owningClass: aClass [
+	
+	baseSlot := owningClass allSlots
+		detect: [ :slot | slot name = #freshShot ].
+
+	^ super owningClass: aClass
 ]
 
 { #category : #'meta-object-protocol' }
