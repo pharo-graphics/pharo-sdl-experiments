@@ -38,6 +38,14 @@ FreshShotSlot >> accessingSelector [
 	^ self name asSymbol
 ]
 
+{ #category : #accessing }
+FreshShotSlot >> baseSlot [
+
+	^ baseSlot ifNil: [
+		baseSlot := owningClass allSlots
+			detect: [ :slot | slot name = #freshShot ] ]
+]
+
 { #category : #'code generation' }
 FreshShotSlot >> emitStore: aMethodBuilder [
 	"Generate bytecode to ensure the shot is draft and then send the new value via mutator selector."
@@ -55,7 +63,7 @@ FreshShotSlot >> emitStore: aMethodBuilder [
 		send: #ensureDraftShot.
 
 	aMethodBuilder
-		pushInstVar: baseSlot index;
+		pushInstVar: self baseSlot index;
 		pushTemp: tempName;
 		send: self mutatorSelector
 ]
@@ -65,29 +73,20 @@ FreshShotSlot >> emitValue: methodBuilder [
 	"Generate bytecode for 'freshSlot <name>' message send to the instvar."
 
 	methodBuilder
-		pushInstVar: baseSlot index;
+		pushInstVar: self baseSlot index;
 		send: self accessingSelector
 ]
 
 { #category : #'meta-object-protocol' }
 FreshShotSlot >> freshShotFrom: anObject [
 
-	^ baseSlot read: anObject
+	^ self baseSlot read: anObject
 ]
 
 { #category : #accessing }
 FreshShotSlot >> mutatorSelector [
 
 	^ (self name copyWith: $:) asSymbol
-]
-
-{ #category : #accessing }
-FreshShotSlot >> owningClass: aClass [
-	
-	baseSlot := owningClass allSlots
-		detect: [ :slot | slot name = #freshShot ].
-
-	^ super owningClass: aClass
 ]
 
 { #category : #'meta-object-protocol' }
