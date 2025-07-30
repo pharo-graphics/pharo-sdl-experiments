@@ -92,7 +92,13 @@ SceneDragAndDropDemo >> open [
 	| initialWindowSide gap |
 	initialWindowSide := 500.
 	gap := 70.
+	isDragging := false.
+	windows := { sceneWindow. sceneWindowB }.
 
+	sdlMainLoop fork.
+	self initializeCursors.
+	
+	
 	"Window and Element A"
 	sceneWindow
 		useCappedSteppingLoop;
@@ -113,16 +119,13 @@ SceneDragAndDropDemo >> open [
 	sceneWindowB steppingLoop start.
 	sceneWindowB addElement: self newSquareElement.
 
-	isDragging := false.
 
 	"Place element at origin of second window"
-	windows := { sceneWindow. sceneWindowB }.
 	self
 		positionElementAt: 0@0
 		relativeToWindowId: sceneWindowB sdlWindow windowID.
 	
-	sdlMainLoop fork.
-	self initializeCursors
+
 ]
 
 { #category : #private }
