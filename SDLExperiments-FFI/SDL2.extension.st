@@ -1,6 +1,17 @@
 Extension { #name : #SDL2 }
 
 { #category : #'*SDLExperiments-FFI' }
+SDL2 class >> addEventWatch: filter userdata: userdata [
+	"See: https://wiki.libsdl.org/SDL2/SDL_AddEventWatch"
+
+	^ self ffiCall: #(
+		void
+		SDL_AddEventWatch(
+			SDL_EventFilter filter,
+			void *userdata) )
+]
+
+{ #category : #'*SDLExperiments-FFI' }
 SDL2 class >> convertSurface: src format: aSDLPixelFormat [
 	"See: https://wiki.libsdl.org/SDL2/SDL_ConvertSurfaceFormat"
 
