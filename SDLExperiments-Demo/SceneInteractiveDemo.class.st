@@ -1,3 +1,6 @@
+"
+I'm the base for SDL2 interactive demos.
+"
 Class {
 	#name : #SceneInteractiveDemo,
 	#superclass : #Object,

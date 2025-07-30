@@ -81,7 +81,7 @@ TSDL2MappedEventHandler >> visitTextInputEvent: aSDL_TextInputEvent [
 ]
 
 { #category : #visiting }
-TSDL2MappedEventHandler >> visitWindowEvent: aSDL2MappedEvent [
+TSDL2MappedEventHandler >> visitWindowEvent: aSDL_WindowEvent [
 
-	^ self visitEvent: aSDL2MappedEvent
+	^ self visitEvent: aSDL_WindowEvent
 ]

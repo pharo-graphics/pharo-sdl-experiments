@@ -110,6 +110,13 @@ SDL_Window >> position: aPoint [
 ]
 
 { #category : #'*SDLExperiments-FFI' }
+SDL_Window >> resizable: resizable [
+	"See: https://wiki.libsdl.org/SDL2/SDL_SetWindowResizable"
+
+	self ffiCall: #( void SDL_SetWindowResizable(self, bool resizable) )
+]
+
+{ #category : #'*SDLExperiments-FFI' }
 SDL_Window >> setInputFocus [
 	"Explicitly set input focus to the window.
 	
