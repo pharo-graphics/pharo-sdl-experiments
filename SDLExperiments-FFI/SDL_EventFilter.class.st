@@ -22,13 +22,19 @@ Class {
 	#category : #'SDLExperiments-FFI'
 }
 
-{ #category : #'as yet unclassified' }
-SDL_EventFilter class >> exampleCountAll [
+{ #category : #examples }
+SDL_EventFilter class >> exampleTraceAll [
 
-	| count filter |
-	count := 0.
-
-	filter := SDL_EventFilter on: [ :data :event | count := count + 1 ].
+	| filter |
+	filter :=
+		SDL_EventFilter on: [ :data :eventAddress |
+			| event mappedEvent |
+			event := SDL_Event fromHandle: eventAddress.
+			mappedEvent := event mapped.
+			"Common events can be too frequent"
+			mappedEvent class = SDL_CommonEvent ifFalse: [
+				Stdio stdout nextPutAll: mappedEvent asString; lf].
+			1 ].
 
 	SDL2 addEventWatch: filter userdata: nil
 ]
