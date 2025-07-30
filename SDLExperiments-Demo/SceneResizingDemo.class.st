@@ -38,7 +38,7 @@ SceneResizingDemo >> newSquaredElementWithAnimatedDashes [
 
 	theElement := SceneElement new.
 	theElement
-		position: 100.0 asPoint;
+		position: 50.0 asPoint;
 		extent: (squareSide*2 + lineWidth) asPoint;
 		isAnimated: true;
 		stepBlock: [ :deltaMS :totalMS |
@@ -79,5 +79,6 @@ SceneResizingDemo >> open [
 { #category : #initialization }
 SceneResizingDemo >> prepareSceneWindow [
 
+	sceneWindow logicalExtent: 300 @ 300.
 	sceneWindow addElement: self newSquaredElementWithAnimatedDashes
 ]
