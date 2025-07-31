@@ -8,8 +8,20 @@ See: https://github.com/libsdl-org/SDL/commit/509c70c6982b6927f5a8d4fb32f9319cba
 Class {
 	#name : #SceneResizingDemo,
 	#superclass : #SceneInteractiveDemo,
+	#instVars : [
+		'eventFilter'
+	],
 	#category : #'SDLExperiments-Demo-Interactive'
 }
+
+{ #category : #running }
+SceneResizingDemo >> close [
+
+	"Delete the event filter (added in #open)"
+	SDL2 deleteEventWatch: eventFilter userdata: nil.
+
+	super close
+]
 
 { #category : #private }
 SceneResizingDemo >> filterAndRedrawIfExposedEvent: eventAddress [

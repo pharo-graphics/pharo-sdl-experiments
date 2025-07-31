@@ -77,6 +77,17 @@ SDL2 class >> currentVideoDriver [
 ]
 
 { #category : #'*SDLExperiments-FFI' }
+SDL2 class >> deleteEventWatch: filter userdata: userdata [
+	"See: https://wiki.libsdl.org/SDL2/SDL_DelEventWatch"
+
+	self ffiCall: #(
+		void
+		SDL_DelEventWatch(
+			SDL_EventFilter filter,
+			void *userdata) )
+]
+
+{ #category : #'*SDLExperiments-FFI' }
 SDL2 class >> ensureSuccessCode: aReturnCode description: aString [
 	"SDL2 API tipically specify: 'Returns 0 on success or a negative error code on failure; call SDL_GetError() for more information.'"
 	
