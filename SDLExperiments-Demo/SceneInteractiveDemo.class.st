@@ -22,7 +22,6 @@ SceneInteractiveDemo >> close [
 
 	sceneWindow steppingLoop stop.
 	sceneWindow close
-
 ]
 
 { #category : #initialization }
@@ -90,6 +89,7 @@ SceneInteractiveDemo >> visitKeyDownEvent: aSDL_KeyDownEvent [
 { #category : #visiting }
 SceneInteractiveDemo >> visitQuitEvent: aSDL2MappedEvent [
 
+	self close.
 	self quitNow
 ]
 
