@@ -70,6 +70,7 @@ SceneElement >> extent [
 SceneElement >> extent: aLogicalPoint [
 
 	logicalExtent := aLogicalPoint.
+	tile := nil.
 	self resetDeviceScaledProperties.
 
 ]
@@ -87,7 +88,7 @@ SceneElement >> initialize [
 	stepBlock := [ :deltaMS :totalMS | ].
 	renderBlock := [ :cairoContext | ].
 
-	self opacity: 1.0.
+	self opacityAsByte: 255.
 
 	dstFRect := SDL_FRect new autoRelease; yourself.
 	self resetDeviceScaledProperties.
@@ -137,6 +138,7 @@ SceneElement >> position: aPoint [
 
 { #category : #public }
 SceneElement >> render [
+	"Assumes #ensureReadyToRender was sent recently."
 
 	tile renderTo: dstFRect opacity: opacityAsByte
 
