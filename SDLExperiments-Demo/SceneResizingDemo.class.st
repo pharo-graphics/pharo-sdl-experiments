@@ -120,7 +120,6 @@ SceneResizingDemo >> open [
 	in this OS process."	
 	eventFilter :=
 		SDL_EventFilter on: [ :data :eventAddress |
-			Stdio stdout print: eventAddress; lf.
 			self filterAndRedrawIfExposedEvent: eventAddress ].
 	SDL2 addEventWatch: eventFilter userdata: nil
 ]
