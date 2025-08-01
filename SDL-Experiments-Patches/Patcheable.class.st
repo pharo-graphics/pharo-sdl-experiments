@@ -15,7 +15,7 @@ Patcheable >> addPatchForAt: anInteger put: aValue [
 		^ self errorSubscriptBounds: anInteger ].
 
 	nextPatch :=
-		AtPutPatch pool nextPatch
+		AtPutPatch new
 			index: anInteger;
 			value: aValue;
 			nextPatch: nextPatch;
@@ -27,7 +27,7 @@ Patcheable >> addPatchForInstVarAt: anInteger put: aValue [
 	"This is evaluated when there wasn't a patch for this index, so create one."
 
 	nextPatch :=
-		InstVarAtPutPatch pool nextPatch
+		InstVarAtPutPatch new
 			index: anInteger;
 			value: aValue;
 			nextPatch: nextPatch;
@@ -37,48 +37,46 @@ Patcheable >> addPatchForInstVarAt: anInteger put: aValue [
 { #category : #'as yet unclassified' }
 Patcheable >> applyPatches [
 
-	| current |
-	nextPatch ifNil: [ ^ self ].
+	nextPatch isNullPatch ifTrue: [ ^ self ].
 
-	current := nextPatch.
-	[ current isNil ] whileFalse: [
-		current applyPatchTo: self.
-		current := current nextPatch ].
+	self patchesDo: [ :each |
+		self flag: #todo. "Return each to its pool"
+		each applyPatchTo: self ].
 
-	self flag: #todo. "patches can have different classes! 
-	InstVarAtPutPatch pool returnPatch: nextPatch."
-	nextPatch := nil
+	nextPatch := NullPatch instance
 ]
 
 { #category : #accessing }
 Patcheable >> at: index [
 
-	^ nextPatch
-		ifNil: [ super at: index ]
-		ifNotNil: [ :p | p read: self at: index ]
+	^ nextPatch read: self at: index
 ]
 
 { #category : #accessing }
 Patcheable >> at: index put: aValue [
 
-	nextPatch
-		ifNil: [ self addPatchForAt: index put: aValue ]
-		ifNotNil: [ :p | p write: self at: index put: aValue ]
+	nextPatch write: self at: index put: aValue
 ]
 
 { #category : #'as yet unclassified' }
 Patcheable >> discardPatches [
 
-	nextPatch ifNil: [ ^ self ].
+	nextPatch isNullPatch ifTrue: [ ^ self ].
 
-	self flag: #todo. "IndexedSlotPatch pool returnPatch: nextPatch."
-	nextPatch := nil
+	self flag: #todo. "Return each patch to its pool"
+	nextPatch := NullPatch instance
 ]
 
 { #category : #accessing }
 Patcheable >> hasPatches [
 
-	^ nextPatch isNotNil
+	^ nextPatch isNullPatch not
+]
+
+{ #category : #initialization }
+Patcheable >> initialize [
+
+	nextPatch := NullPatch instance
 ]
 
 { #category : #debugging }
@@ -100,22 +98,28 @@ Patcheable >> nextPatch [
 { #category : #'as yet unclassified' }
 Patcheable >> patchCount [
 
-	^ nextPatch
-		ifNil: [ 0 ]
-		ifNotNil: [ nextPatch count ]
+	^ nextPatch count
 ]
 
 { #category : #debugging }
 Patcheable >> patches [
 	"Answer an array with all my patches."
 
-	| stream current |
+	| stream |
 	stream := WriteStream on: #().
 
-	current := nextPatch.
-	[ current isNil ] whileFalse: [
-		stream nextPut: current.
-		current := current nextPatch ].
+	self patchesDo: [ :each | stream nextPut: each ].
 
 	^ stream contents
+]
+
+{ #category : #debugging }
+Patcheable >> patchesDo: aUnaryBlock [
+	"Evaluate a block on each of my (not null) patches."
+
+	| current |
+	current := nextPatch.
+	[ current isNullPatch ] whileFalse: [
+		aUnaryBlock value: current.
+		current := current nextPatch ]
 ]

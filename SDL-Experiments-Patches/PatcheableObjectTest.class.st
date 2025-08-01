@@ -152,6 +152,22 @@ PatcheableObjectTest >> testInterleavedWrites [
 ]
 
 { #category : #tests }
+PatcheableObjectTest >> testLastPatch [
+
+	| e |
+	e := PatcheableElement new.
+
+	self should: [ e nextPatch last ] raise: SubscriptOutOfBounds.
+
+	e opacity: 0.9.
+	self assert: e nextPatch last value equals: 0.9.
+	
+	e background: Color blue.
+	self assert: e nextPatch value equals: Color blue.
+	self assert: e nextPatch last value equals: 0.9
+]
+
+{ #category : #tests }
 PatcheableObjectTest >> testMultipleAtPutReusesPatch [
 
 	| e |
@@ -206,6 +222,23 @@ PatcheableObjectTest >> testMultipleInstVarNamedPutReusesPatch [
 	e applyPatches.
 	self assert: e patchCount equals: 0.
 	self assert: (e instVarNamed: #opacity) equals: 0.1
+]
+
+{ #category : #tests }
+PatcheableObjectTest >> testMultipleMutatorsReusesPatch [
+
+	| e |
+	e := PatcheableElement new.
+	self assert: e opacity isNil.
+	self assert: e patchCount equals: 0.
+
+	1 to: 10 do: [ :i | e opacity: 1.0/i ].
+
+	self assert: e patchCount equals: 1.
+	self assert: e opacity equals: 0.1.
+	e applyPatches.
+	self assert: e patchCount equals: 0.
+	self assert: e opacity equals: 0.1
 ]
 
 { #category : #tests }

@@ -9,16 +9,25 @@ Class {
 }
 
 { #category : #'instance creation' }
+PatchPool >> initialize [
+
+	self reset
+]
+
+{ #category : #'instance creation' }
 PatchPool >> nextPatch [
 
 	| result |
-	"Answer a new instance if there aren't available patches"
-	first ifNil: [ ^ patchClass new ].
+	first isNullPatch
+		"Answer a new instance if there aren't available patches"
+		ifTrue: [ result := patchClass new ]
+		"Unplug the first available patch"
+		ifFalse: [
+			result := first.
+			first := result nextPatch.
+			first ifNil: [ self error ]. ].
 
-	"Unplug the first available patch"
-	result := first.
-	first := result nextPatch.
-	result nextPatch: nil.
+	result nextPatch: NullPatch instance.
 
 	^ result
 ]
@@ -38,18 +47,20 @@ PatchPool >> patchClass: aClass [
 { #category : #'instance creation' }
 PatchPool >> reset [
 
-	first := nil
+	first := NullPatch instance
 ]
 
 { #category : #'instance creation' }
-PatchPool >> returnPatch: unusedPatch [
+PatchPool >> returnPatch: aPatch [
 
-	unusedPatch last nextPatch: first.
-	first := unusedPatch
+	aPatch class = patchClass ifFalse: [ self error ].
+
+	aPatch nextPatch: first.
+	first := aPatch
 ]
 
 { #category : #'instance creation' }
 PatchPool >> size [
 
-	^ first ifNil: [ 0 ] ifNotNil: [ first count ]
+	^ first count
 ]

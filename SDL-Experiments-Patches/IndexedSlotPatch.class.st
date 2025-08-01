@@ -23,17 +23,13 @@ IndexedSlotPatch >> index: anInteger [
 { #category : #reading }
 IndexedSlotPatch >> read: aPatcheable at: anInteger [
 
-	^ nextPatch
-		ifNotNil: [ :p | p read: aPatcheable at: anInteger ]
-		ifNil: [ aPatcheable basicAt: anInteger ]
+	^ nextPatch read: aPatcheable at: anInteger
 ]
 
 { #category : #reading }
 IndexedSlotPatch >> read: aPatcheable instVarAt: anInteger [
 
-	^ nextPatch
-		ifNotNil: [ :p | p read: aPatcheable instVarAt: anInteger ]
-		ifNil: [ aPatcheable instVarAt: anInteger ]
+	^ nextPatch read: aPatcheable instVarAt: anInteger
 ]
 
 { #category : #accessing }
@@ -51,15 +47,11 @@ IndexedSlotPatch >> value: anObject [
 { #category : #writing }
 IndexedSlotPatch >> write: aPatcheable at: anInteger put: aValue [
 
-	nextPatch
-		ifNotNil: [ :p | p write: aPatcheable at: anInteger put: aValue ]
-		ifNil: [ aPatcheable addPatchForAt: anInteger put: aValue ]
+	nextPatch write: aPatcheable at: anInteger put: aValue
 ]
 
 { #category : #writing }
 IndexedSlotPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
 
-	nextPatch
-		ifNotNil: [ :p | p write: aPatcheable instVarAt: anInteger put: aValue ]
-		ifNil: [ aPatcheable addPatchForInstVarAt: anInteger put: aValue ]
+	nextPatch write: aPatcheable instVarAt: anInteger put: aValue
 ]

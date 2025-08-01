@@ -31,9 +31,7 @@ Patch >> applyPatchTo: aPatcheable [
 { #category : #accessing }
 Patch >> count [
 
-	^ nextPatch
-		ifNil: [ 1 ]
-		ifNotNil: [ :p | 1 + p count ]
+	^ 1 + nextPatch count
 ]
 
 { #category : #printing }
@@ -42,12 +40,22 @@ Patch >> descriptionFor: aPatcheable [
 	^ self subclassResponsibility
 ]
 
+{ #category : #testing }
+Patch >> hasNextPatch [
+
+	^ nextPatch isNullPatch not
+]
+
+{ #category : #testing }
+Patch >> isNullPatch [
+
+	^ false
+]
+
 { #category : #accessing }
 Patch >> last [
 
-	^ nextPatch
-		ifNil: [ self ]
-		ifNotNil: [ :p | p last ]
+	self hasNextPatch ifTrue: [ ^ nextPatch last ]
 ]
 
 { #category : #accessing }
