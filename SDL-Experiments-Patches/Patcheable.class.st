@@ -2,7 +2,7 @@ Class {
 	#name : #Patcheable,
 	#superclass : #Object,
 	#instVars : [
-		'nextPatch'
+		'patch'
 	],
 	#category : #'SDL-Experiments-Patches'
 }
@@ -14,11 +14,11 @@ Patcheable >> addPatchForAt: anInteger put: aValue [
 	(anInteger between: 1 and: self size) ifFalse: [
 		^ self errorSubscriptBounds: anInteger ].
 
-	nextPatch :=
+	patch :=
 		AtPutPatch new
 			index: anInteger;
 			value: aValue;
-			nextPatch: nextPatch;
+			nextPatch: patch;
 			yourself
 ]
 
@@ -26,57 +26,63 @@ Patcheable >> addPatchForAt: anInteger put: aValue [
 Patcheable >> addPatchForInstVarAt: anInteger put: aValue [
 	"This is evaluated when there wasn't a patch for this index, so create one."
 
-	nextPatch :=
+	patch :=
 		InstVarAtPutPatch new
 			index: anInteger;
 			value: aValue;
-			nextPatch: nextPatch;
+			nextPatch: patch;
 			yourself
 ]
 
 { #category : #'as yet unclassified' }
 Patcheable >> applyPatches [
 
-	nextPatch isNullPatch ifTrue: [ ^ self ].
+	patch isNullPatch ifTrue: [ ^ self ].
 
 	self patchesDo: [ :each |
 		self flag: #todo. "Return each to its pool"
 		each applyPatchTo: self ].
 
-	nextPatch := NullPatch instance
+	patch := NullPatch instance
 ]
 
 { #category : #accessing }
 Patcheable >> at: index [
 
-	^ nextPatch read: self at: index
+	^ patch read: self at: index
 ]
 
 { #category : #accessing }
 Patcheable >> at: index put: aValue [
 
-	nextPatch write: self at: index put: aValue
+	patch write: self at: index put: aValue
 ]
 
 { #category : #'as yet unclassified' }
 Patcheable >> discardPatches [
 
-	nextPatch isNullPatch ifTrue: [ ^ self ].
+	patch isNullPatch ifTrue: [ ^ self ].
 
 	self flag: #todo. "Return each patch to its pool"
-	nextPatch := NullPatch instance
+	patch := NullPatch instance
+]
+
+{ #category : #accessing }
+Patcheable >> firstPatch [
+
+	^ patch
 ]
 
 { #category : #accessing }
 Patcheable >> hasPatches [
 
-	^ nextPatch isNullPatch not
+	^ patch isNullPatch not
 ]
 
 { #category : #initialization }
 Patcheable >> initialize [
 
-	nextPatch := NullPatch instance
+	patch := NullPatch instance
 ]
 
 { #category : #debugging }
@@ -89,16 +95,10 @@ Patcheable >> inspectionOfPatches: aBuilder [
 		yourself
 ]
 
-{ #category : #accessing }
-Patcheable >> nextPatch [
-
-	^ nextPatch
-]
-
 { #category : #'as yet unclassified' }
 Patcheable >> patchCount [
 
-	^ nextPatch count
+	^ patch count
 ]
 
 { #category : #debugging }
@@ -118,7 +118,7 @@ Patcheable >> patchesDo: aUnaryBlock [
 	"Evaluate a block on each of my (not null) patches."
 
 	| current |
-	current := nextPatch.
+	current := patch.
 	[ current isNullPatch ] whileFalse: [
 		aUnaryBlock value: current.
 		current := current nextPatch ]

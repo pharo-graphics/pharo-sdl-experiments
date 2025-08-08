@@ -157,14 +157,14 @@ PatcheableObjectTest >> testLastPatch [
 	| e |
 	e := PatcheableElement new.
 
-	self should: [ e nextPatch last ] raise: SubscriptOutOfBounds.
+	self should: [ e firstPatch last ] raise: SubscriptOutOfBounds.
 
 	e opacity: 0.9.
-	self assert: e nextPatch last value equals: 0.9.
+	self assert: e firstPatch last value equals: 0.9.
 	
 	e background: Color blue.
-	self assert: e nextPatch value equals: Color blue.
-	self assert: e nextPatch last value equals: 0.9
+	self assert: e firstPatch value equals: Color blue.
+	self assert: e firstPatch last value equals: 0.9
 ]
 
 { #category : #tests }
