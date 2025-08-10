@@ -9,18 +9,24 @@ Class {
 	#category : #'SDL-Experiments-App-Demo'
 }
 
+{ #category : #accessing }
+IPCDemoWindow >> commandService: aCommandService [
+
+	commandService := aCommandService
+]
+
 { #category : #private }
 IPCDemoWindow >> newCircleElementWithAnimatedDashes [
 
 	| radius lineWidth anElement t cycleMS |
-	radius := 50.
-	lineWidth := 7.
+	radius := 25.
+	lineWidth := 5.
 	cycleMS := 250.
 	t := 0.0.
 
 	anElement := SceneElement new.
 	anElement
-		position: 50.0 asPoint;
+		position: 100.0 asPoint;
 		extent: (radius*2 + lineWidth) asPoint;
 		isAnimated: true;
 		stepBlock: [ :deltaMS :totalMS |
@@ -58,14 +64,8 @@ IPCDemoWindow >> prepareSceneWindow [
 	playerElement := self newCircleElementWithAnimatedDashes.
 
 	sceneWindow
-		logicalExtent: 400 @ 400;
+		logicalExtent: 1024 @ 780;
 		addElement: playerElement
-]
-
-{ #category : #accessing }
-IPCDemoWindow >> sendKeystrokesTo: aCommandService [
-
-	commandService := aCommandService
 ]
 
 { #category : #visiting }
@@ -82,6 +82,22 @@ IPCDemoWindow >> visitKeyDownEvent: aSDL_KeyDownEvent [
 				onSuccess: [ :id | "ignore: do not expect return" ] ].
 	
 	super visitKeyDownEvent: aSDL_KeyDownEvent
+]
+
+{ #category : #visiting }
+IPCDemoWindow >> visitMouseMotionEvent: aSDL_MouseMotionEvent [
+
+	commandService
+		sendCommand: (IPCDemoMouseMotion new
+			windowId: self windowId;
+			position: aSDL_MouseMotionEvent position;
+			yourself)
+		onSuccess: [ :id | "ignore: do not expect return" ].
+
+
+
+
+	^ self visitEvent: aSDL_MouseMotionEvent
 ]
 
 { #category : #accessing }

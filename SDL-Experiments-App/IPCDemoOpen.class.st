@@ -1,6 +1,6 @@
 Class {
 	#name : #IPCDemoOpen,
-	#superclass : #IPCCommand,
+	#superclass : #IPCDemoWindowCommand,
 	#category : #'SDL-Experiments-App-Demo'
 }
 
@@ -9,7 +9,7 @@ IPCDemoOpen >> value: aCommandService [
 
 	| aDemo |
 	aDemo := IPCDemoWindow new.
-	aDemo sendKeystrokesTo: aCommandService.
+	aDemo commandService: aCommandService.
 
 	IPCWindowServer current openWindow: aDemo.
 

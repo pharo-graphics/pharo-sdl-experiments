@@ -1,12 +1,24 @@
 Class {
 	#name : #IPCDemoUpdatePosition,
-	#superclass : #IPCCommand,
+	#superclass : #IPCDemoWindowCommand,
 	#instVars : [
-		'windowId',
-		'delta'
+		'delta',
+		'centerPosition'
 	],
 	#category : #'SDL-Experiments-App-Demo'
 }
+
+{ #category : #accessing }
+IPCDemoUpdatePosition >> centerPosition [
+
+	^ centerPosition
+]
+
+{ #category : #accessing }
+IPCDemoUpdatePosition >> centerPosition: anObject [
+
+	centerPosition := anObject
+]
 
 { #category : #accessing }
 IPCDemoUpdatePosition >> delta [
@@ -23,21 +35,14 @@ IPCDemoUpdatePosition >> delta: anObject [
 { #category : #accessing }
 IPCDemoUpdatePosition >> value: aCommandService [
 
-	| aDemo |
+	| aDemo newPosition |
 	aDemo := IPCWindowServer current windowAt: windowId.
-	aDemo playerElement position: aDemo playerElement position + delta.
+
+	newPosition := centerPosition
+		ifNotNil: [ centerPosition - (aDemo playerElement extent // 2)  ]
+		ifNil: [ aDemo playerElement position + delta ].
+
+	aDemo playerElement position: newPosition.
 
 	^ nil 
-]
-
-{ #category : #accessing }
-IPCDemoUpdatePosition >> windowId [
-
-	^ windowId
-]
-
-{ #category : #accessing }
-IPCDemoUpdatePosition >> windowId: anObject [
-
-	windowId := anObject
 ]

@@ -1,8 +1,7 @@
 Class {
 	#name : #IPCDemoKeyPressed,
-	#superclass : #IPCCommand,
+	#superclass : #IPCDemoWindowCommand,
 	#instVars : [
-		'windowId',
 		'keyName'
 	],
 	#category : #'SDL-Experiments-App-Demo'
@@ -52,16 +51,4 @@ IPCDemoKeyPressed >> value: aCommandService [
 		onSuccess: [ :id | "to ignore" ].
 
 	^ nil
-]
-
-{ #category : #accessing }
-IPCDemoKeyPressed >> windowId [
-
-	^ windowId
-]
-
-{ #category : #accessing }
-IPCDemoKeyPressed >> windowId: anObject [
-
-	windowId := anObject
 ]
