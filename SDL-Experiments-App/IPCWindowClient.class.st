@@ -43,7 +43,7 @@ IPCWindowClient >> launch: isHeadless [
 						forkAt: Processor lowIOPriority
 						named: 'Wait connection from subprocess'.
 	
-	osSubprocess := OSSUnixSubprocess new.
+[	osSubprocess := OSSUnixSubprocess new.
 	osSubprocess command: Smalltalk vm binary fullPath pathString.
 	osSubprocess arguments: (Array streamContents: [ :aStream |
 		isHeadless ifTrue: [
@@ -52,7 +52,7 @@ IPCWindowClient >> launch: isHeadless [
 			nextPut: Smalltalk imageFile fullName;
 			nextPut: IPCWindowServerStartCommandLineHandler commandName;
 			nextPut: listenerSocket localPort printString ]).
-	osSubprocess run
+	osSubprocess runAndWaitOnExitDo: [ :process :outString  | self terminate ]] forkAt: Processor lowIOPriority
 ]
 
 { #category : #private }
