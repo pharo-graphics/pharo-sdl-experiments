@@ -67,8 +67,8 @@ IPCCommandService >> receive [
 
 	| mark id payload |
 	socketStream socket
-		waitForDataFor: 60
-		ifClosed: [ self stop ]
+		waitForDataFor: 1
+		ifClosed: [ ^ self stop ]
 		ifTimedOut: [ ^ self "Let's step again" ].
 
 	"The mark determines either we are receiving a new command to
@@ -120,7 +120,7 @@ IPCCommandService >> stepService [
 IPCCommandService >> tearDown [
 
 	socketStream ifNotNil: [
-		socketStream closeAndDestroy.
+		socketStream close.
 		socketStream := nil ]
 ]
 
