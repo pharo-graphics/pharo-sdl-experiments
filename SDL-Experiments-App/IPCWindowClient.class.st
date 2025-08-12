@@ -4,8 +4,7 @@ Class {
 	#instVars : [
 		'osSubprocess',
 		'listenerSocket',
-		'commandService',
-		'listeningProcess'
+		'commandService'
 	],
 	#category : #'SDL-Experiments-App-Core'
 }
@@ -16,9 +15,56 @@ IPCWindowClient >> commandService [
 	^ commandService
 ]
 
+{ #category : #private }
+IPCWindowClient >> forkOSSubprocessRun: isHeadless [
+
+	[	osSubprocess := OSSUnixSubprocess new.
+
+		osSubprocess command: Smalltalk vm binary fullPath pathString.
+
+		osSubprocess arguments: (Array streamContents: [ :aStream |
+			isHeadless ifTrue: [ aStream nextPut: '--headless' ].
+			aStream
+				nextPut: Smalltalk imageFile fullName;
+				nextPut: IPCWindowServerStartCommandLineHandler commandName;
+				nextPut: listenerSocket localPort printString ]).
+
+		osSubprocess runAndWaitOnExitDo: [ :process :outString  | self terminate ]]
+			forkAt: Processor lowIOPriority.
+
+]
+
+{ #category : #private }
+IPCWindowClient >> forkSocketListeningProcessThenSignal: launchDoneSemaphore [
+
+	"Listener socket determines the port to be used by the subprocess."
+	listenerSocket := Socket newTCP.
+	listenerSocket
+		bindToPort: Socket wildcardPort;
+		listenWithBacklog: 2.
+
+	[	[ 	| aSocket |
+			aSocket := listenerSocket waitForAcceptFor: self maxSecondsToLaunch.
+			aSocket
+				ifNil: [ self terminate ]
+				ifNotNil: [
+					| aSocketStream |
+					aSocketStream := ZdcSocketStream on: aSocket.
+					commandService := IPCCommandService on: aSocketStream.
+					commandService runningStartBlock: [ launchDoneSemaphore signal ].
+					commandService start ] 
+		] ensure: [
+			listenerSocket ifNotNil: [
+				listenerSocket destroy.
+				listenerSocket := nil ] ].
+
+	]	forkAt: Processor lowIOPriority
+		named: 'Wait connection from subprocess'
+]
+
 { #category : #'life cycle' }
 IPCWindowClient >> launch [
-	"Subprocess isn't headless by default"
+	"Subprocess isn't headless by default, to ease debugging."
 
 	self launch: false
 ]
@@ -26,48 +72,23 @@ IPCWindowClient >> launch [
 { #category : #'life cycle' }
 IPCWindowClient >> launch: isHeadless [
 
-	listenerSocket := Socket newTCP.
-	"Listen will determine the port to be used. We only want one connection."
-	listenerSocket
-		bindToPort: Socket wildcardPort;
-		listenWithBacklog: 4.
-	listeningProcess := [
-		[| aSocket |
-		aSocket := listenerSocket waitForAcceptFor: 20.
-		aSocket
-			ifNil: [ self terminate ]
-			ifNotNil: [ self startCommandServiceOn: aSocket ]]
-				ensure: [
-			 		listenerSocket destroy.
-					listenerSocket := nil ] ]
-						forkAt: Processor lowIOPriority
-						named: 'Wait connection from subprocess'.
+	| launchDoneSemaphore |
+	launchDoneSemaphore := Semaphore new.
+
+	self forkSocketListeningProcessThenSignal: launchDoneSemaphore.
+	self forkOSSubprocessRun: isHeadless.
 	
-[	osSubprocess := OSSUnixSubprocess new.
-	osSubprocess command: Smalltalk vm binary fullPath pathString.
-	osSubprocess arguments: (Array streamContents: [ :aStream |
-		isHeadless ifTrue: [
-			aStream nextPut: '--headless' ].
-		aStream
-			nextPut: Smalltalk imageFile fullName;
-			nextPut: IPCWindowServerStartCommandLineHandler commandName;
-			nextPut: listenerSocket localPort printString ]).
-	osSubprocess runAndWaitOnExitDo: [ :process :outString  | self terminate ]] forkAt: Processor lowIOPriority
+	launchDoneSemaphore waitTimeoutSeconds: self maxSecondsToLaunch
 ]
 
-{ #category : #private }
-IPCWindowClient >> startCommandServiceOn: aSocket [
+{ #category : #'life cycle' }
+IPCWindowClient >> maxSecondsToLaunch [
 
-	commandService := IPCCommandService on: (ZdcSocketStream on: aSocket).
-	commandService start
+	^ 5
 ]
 
 { #category : #'life cycle' }
 IPCWindowClient >> terminate [
-
-	listeningProcess ifNotNil: [
-		listeningProcess terminate.
-		listeningProcess := nil ].
 
 	listenerSocket ifNotNil: [
 		listenerSocket destroy.
