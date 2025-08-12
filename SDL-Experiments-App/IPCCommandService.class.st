@@ -58,14 +58,67 @@ IPCCommandService >> name [
 ]
 
 { #category : #API }
+IPCCommandService >> pingStatsTraceCr [
+
+	| n delay samples semaphore |
+	n := 100.
+	delay := Delay forMilliseconds: 100.
+	samples := OrderedCollection new.
+	semaphore := Semaphore new.
+
+	('Ping ', n asString, ' times:') traceCr.
+	
+	[ (1 to: n) do: [ :_ |
+		self
+			sendCommand: IPCPing new
+			onSuccess: [ :data |
+				| t1 t2 t3 |
+				t1 := data first.
+				t2 := data second.
+				t3 := Time microsecondClockValue.
+				samples add: { t3 - t1. t2 - t1. t3 - t2 } / 1000.0 ].
+		semaphore signal.
+		delay wait ] ]
+			forkAt: Processor userSchedulingPriority + 1.
+
+	n timesRepeat: [ semaphore wait ].
+	
+	(String streamContents: [ :stream |
+		stream << '* total:'; cr.
+		self pingStatsTraceCrSamples: (samples collect: #first) on: stream.
+
+		stream << '* command:'; cr.
+		self pingStatsTraceCrSamples: (samples collect: #second) on: stream.
+
+		stream << '* return:'; cr.
+		self pingStatsTraceCrSamples: (samples collect: #third) on: stream.
+		]) traceCr
+]
+
+{ #category : #private }
+IPCCommandService >> pingStatsTraceCrSamples: collectionOfMilliseconds on: stream [
+
+	stream tab; << '- mean: '.
+	MeanConfidenceIntervalPrinter new
+		unitString: 'ms';
+		print: collectionOfMilliseconds on: stream.
+	stream cr.
+	stream tab; << '- max: '; print: collectionOfMilliseconds max; << 'ms'; cr.
+	stream tab; << '- min: '; print: collectionOfMilliseconds min; << 'ms'; cr
+]
+
+{ #category : #API }
 IPCCommandService >> pingTraceCr [
 
 	self
 		sendCommand: IPCPing new
 		onSuccess: [ :data |
-			| t3 |
+			| t1 t2 t3 |
+			t1 := data first.
+			t2 := data second.
 			t3 := Time microsecondClockValue.
-			({ data second - data first. t3 - data second } / 1000.0) traceCr ]
+			('total: {1} ms;	command: {2} ms;	return: {3} ms'
+				format: { t3 - t1. t2 - t1. t3 - t2 } / 1000.0) traceCr ]
 ]
 
 { #category : #stepping }
