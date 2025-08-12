@@ -6,7 +6,8 @@ Class {
 		'pendingResults',
 		'mutexToRead',
 		'mutexToWrite',
-		'lastCommandId'
+		'lastCommandId',
+		'runningStartBlock'
 	],
 	#classVars : [
 		'CommandByte',
@@ -35,6 +36,11 @@ IPCCommandService >> initializeWith: aSocketStream [
 
 	self initialize.
 
+	self
+		setServerSocketOptions: aSocketStream socket;
+		setSocketStreamParameters: aSocketStream.
+	
+	runningStartBlock := [ :commandService | ].
 	socketStream := aSocketStream.
 	lastCommandId := -1.
 	pendingResults := Dictionary new.
@@ -85,6 +91,12 @@ IPCCommandService >> receive [
 			self valueSuccess: payload of: id ]
 ]
 
+{ #category : #accessing }
+IPCCommandService >> runningStartBlock: aUnaryBlock [
+
+	runningStartBlock := aUnaryBlock
+]
+
 { #category : #private }
 IPCCommandService >> sendCommand: aCommand onSuccess: successBlock [
 
@@ -97,7 +109,8 @@ IPCCommandService >> sendCommand: aCommand onSuccess: successBlock [
 
 	mutexToWrite critical: [
 		socketStream nextPut: CommandByte; nextPut: lastCommandId.
-		FLSerializer serialize: aCommand on: socketStream ]
+		FLSerializer serialize: aCommand on: socketStream ].
+	socketStream flush
 ]
 
 { #category : #private }
@@ -105,7 +118,48 @@ IPCCommandService >> sendResult: anObject of: id [
 
 	mutexToWrite critical: [
 		socketStream nextPut: ReturnByte; nextPut: id.
-		FLSerializer serialize: anObject on: socketStream ]
+		FLSerializer serialize: anObject on: socketStream ].
+	socketStream flush
+]
+
+{ #category : #initialization }
+IPCCommandService >> setServerSocketOptions: socket [
+
+	socket
+		setOption: 'TCP_NODELAY' value: 1;
+		setOption: 'SO_SNDBUF' value: self socketBufferSize;
+		setOption: 'SO_RCVBUF' value: self socketBufferSize
+]
+
+{ #category : #initialization }
+IPCCommandService >> setSocketStreamParameters: stream [
+
+	stream
+		binary;
+		shouldSignal: true;
+		autoFlush: false;
+		bufferSize: self socketBufferSize;
+		timeout: self socketTimeoutInSeconds
+]
+
+{ #category : #stepping }
+IPCCommandService >> setUp [
+
+	super setUp.
+	runningStartBlock cull: self
+]
+
+{ #category : #initialization }
+IPCCommandService >> socketBufferSize [
+	"Size in bytes for Sockets and SocketStream IO buffers"
+
+	^ 4096 * 4
+]
+
+{ #category : #initialization }
+IPCCommandService >> socketTimeoutInSeconds [
+
+	^ 2
 ]
 
 { #category : #stepping }
@@ -128,6 +182,6 @@ IPCCommandService >> tearDown [
 IPCCommandService >> valueSuccess: payload of: id [
 
 	| successValuable |
-	successValuable := pendingResults removeKey: id.
+	successValuable := pendingResults removeKey: id ifAbsent: [ ^ self ].
 	successValuable value: payload
 ]
