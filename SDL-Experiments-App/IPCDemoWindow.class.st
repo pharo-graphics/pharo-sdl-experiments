@@ -74,28 +74,23 @@ IPCDemoWindow >> visitKeyDownEvent: aSDL_KeyDownEvent [
 	keyMapping
 		at: aSDL_KeyDownEvent keysym sym
 		ifPresent: [ :keyName |
-			commandService
-				sendCommand: (IPCDemoKeyPressed new
+			commandService sendCommandIgnoringResult:
+				(IPCDemoKeyPressed new
 					windowId: self windowId;
 					keyName: keyName;
-					yourself)
-				onSuccess: [ :id | "ignore: do not expect return" ] ].
+					yourself) ].
 	
-	super visitKeyDownEvent: aSDL_KeyDownEvent
+	^ super visitKeyDownEvent: aSDL_KeyDownEvent
 ]
 
 { #category : #visiting }
 IPCDemoWindow >> visitMouseMotionEvent: aSDL_MouseMotionEvent [
 
-	commandService
-		sendCommand: (IPCDemoMouseMotion new
+	commandService sendCommandIgnoringResult:
+		(IPCDemoMouseMotion new
 			windowId: self windowId;
 			position: aSDL_MouseMotionEvent position;
-			yourself)
-		onSuccess: [ :id | "ignore: do not expect return" ].
-
-
-
+			yourself).
 
 	^ self visitEvent: aSDL_MouseMotionEvent
 ]

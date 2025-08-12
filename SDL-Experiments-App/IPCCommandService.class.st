@@ -11,6 +11,7 @@ Class {
 	],
 	#classVars : [
 		'CommandByte',
+		'CommandIgnoringResultByte',
 		'ReturnByte'
 	],
 	#category : #'SDL-Experiments-App-Core'
@@ -19,6 +20,7 @@ Class {
 { #category : #'class initialization' }
 IPCCommandService class >> initialize [
 
+	CommandIgnoringResultByte := 6.
 	CommandByte := 7.
 	ReturnByte := 8
 ]
@@ -135,13 +137,15 @@ IPCCommandService >> receive [
 	mutexToRead critical: [
 		mark := socketStream next.
 		id := socketStream next.
-		payload := FLMaterializer materializeFrom: socketStream ].
+		payload := FLMaterializer materializeFrom: socketStream  ].
 
-	mark = CommandByte
-		ifTrue: [
-			self sendResult: (payload value: self) of: id ]
-		ifFalse: [
-			self valueSuccess: payload of: id ]
+	mark = CommandIgnoringResultByte ifTrue: [
+		^ payload value: self ].
+	mark = CommandByte ifTrue: [
+		^ self sendResult: (payload value: self) of: id ].
+	mark = ReturnByte ifTrue: [
+		^ self valueSuccess: payload of: id ].
+	self error: 'Corrupt command header'
 ]
 
 { #category : #accessing }
@@ -153,16 +157,29 @@ IPCCommandService >> runningStartBlock: aUnaryBlock [
 { #category : #private }
 IPCCommandService >> sendCommand: aCommand onSuccess: successBlock [
 
-	lastCommandId := lastCommandId + 1.
-	lastCommandId >= 256 ifTrue: [
-		lastCommandId := 0 ].
+	mutexToWrite critical: [
+		lastCommandId := lastCommandId + 1.
+		lastCommandId >= 256 ifTrue: [ lastCommandId := 0 ].
 
-"	(pendingResults includesKey: lastCommandId) ifTrue: [ 1halt ]."
-	pendingResults at: lastCommandId put: successBlock.
+		(pendingResults includesKey: lastCommandId)
+			ifTrue: [ self error: 'Not yet implemented' ].
+		pendingResults at: lastCommandId put: successBlock.
+
+		socketStream nextPut: CommandByte.
+		socketStream nextPut: lastCommandId.
+		FLSerializer serialize: aCommand on: socketStream ].
+
+	socketStream flush
+]
+
+{ #category : #private }
+IPCCommandService >> sendCommandIgnoringResult: aCommand [
 
 	mutexToWrite critical: [
-		socketStream nextPut: CommandByte; nextPut: lastCommandId.
+		socketStream nextPut: CommandIgnoringResultByte.
+		socketStream nextPut: 0. "id is ignored in the other side"
 		FLSerializer serialize: aCommand on: socketStream ].
+
 	socketStream flush
 ]
 
@@ -170,8 +187,10 @@ IPCCommandService >> sendCommand: aCommand onSuccess: successBlock [
 IPCCommandService >> sendResult: anObject of: id [
 
 	mutexToWrite critical: [
-		socketStream nextPut: ReturnByte; nextPut: id.
+		socketStream nextPut: ReturnByte.
+		socketStream nextPut: id.
 		FLSerializer serialize: anObject on: socketStream ].
+
 	socketStream flush
 ]
 

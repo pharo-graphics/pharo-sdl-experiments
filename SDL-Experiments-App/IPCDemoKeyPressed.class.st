@@ -43,12 +43,11 @@ IPCDemoKeyPressed >> keyName: anObject [
 { #category : #accessing }
 IPCDemoKeyPressed >> value: aCommandService [
 
-	aCommandService
-		sendCommand: (IPCDemoUpdatePosition new
-				 windowId: windowId;
-				 delta: self delta;
-				 yourself)
-		onSuccess: [ :id | "to ignore" ].
+	aCommandService sendCommandIgnoringResult:
+		(IPCDemoUpdatePosition new
+			windowId: windowId;
+			delta: self delta;
+			yourself).
 
 	^ nil
 ]

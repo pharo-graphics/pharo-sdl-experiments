@@ -23,12 +23,11 @@ IPCDemoMouseMotion >> position: anObject [
 IPCDemoMouseMotion >> value: aCommandService [
 	"Execute and answer an object that will be sent as a result to the execution."
 
-	aCommandService
-		sendCommand: (IPCDemoUpdatePosition new
-				 windowId: windowId;
-				 centerPosition: position;
-				 yourself)
-		onSuccess: [ :id | "to ignore" ].
+	aCommandService sendCommandIgnoringResult:
+		(IPCDemoUpdatePosition new
+			windowId: windowId;
+			centerPosition: position;
+			yourself).
 
 	^ nil
 ]
