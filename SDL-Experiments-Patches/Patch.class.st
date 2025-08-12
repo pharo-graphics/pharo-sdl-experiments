@@ -7,7 +7,7 @@ Class {
 	#classInstVars : [
 		'pool'
 	],
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #accessing }
@@ -92,23 +92,35 @@ Patch >> printOn: aStream [
 { #category : #reading }
 Patch >> read: aPatcheable at: anInteger [
 
-	^  self subclassResponsibility
+	^ nextPatch read: aPatcheable at: anInteger
 ]
 
 { #category : #reading }
 Patch >> read: aPatcheable instVarAt: anInteger [
 
-	^  self subclassResponsibility
+	^ nextPatch read: aPatcheable instVarAt: anInteger
+]
+
+{ #category : #reading }
+Patch >> readPredecessor: aPatcheable [
+
+	^ nextPatch readPredecessor: aPatcheable
 ]
 
 { #category : #writing }
 Patch >> write: aPatcheable at: anInteger put: aValue [
 
-	self subclassResponsibility
+	nextPatch write: aPatcheable at: anInteger put: aValue
 ]
 
 { #category : #writing }
 Patch >> write: aPatcheable instVarAt: anInteger put: aValue [
 
-	self subclassResponsibility
+	nextPatch write: aPatcheable instVarAt: anInteger put: aValue
+]
+
+{ #category : #writing }
+Patch >> writePredecessor: aPatcheable put: aValue [
+
+	nextPatch writePredecessor: aPatcheable put: aValue
 ]

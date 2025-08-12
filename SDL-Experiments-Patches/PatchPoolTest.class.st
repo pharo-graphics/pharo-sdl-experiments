@@ -1,7 +1,7 @@
 Class {
 	#name : #PatchPoolTest,
 	#superclass : #TestCase,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Pool'
 }
 
 { #category : #tests }

@@ -1,21 +1,21 @@
 Class {
-	#name : #PatchSlot,
+	#name : #PredecessorPatchSlot,
 	#superclass : #IndexedSlot,
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #'meta-object-protocol' }
-PatchSlot >> read: aPatcheable [
+PredecessorPatchSlot >> read: aPatcheable [
 	"If there are no patches, then read as a simple instvar."
 	<reflection: 'Object Inspection - State inspection'>
 
-	^ aPatcheable firstPatch read: aPatcheable instVarAt: index
+	^ aPatcheable firstPatch readPredecessor: aPatcheable
 ]
 
 { #category : #'meta-object-protocol' }
-PatchSlot >> write: aValue to: aPatcheable [
+PredecessorPatchSlot >> write: aValue to: aPatcheable [
 	"Write the value in a patch. In the case there is already a patch for my index, override its value. Otherwise, a new patch will be used."
 	<reflection: 'Object Modification - State modification'>
 
-	aPatcheable firstPatch write: aPatcheable instVarAt: index put: aValue
+	aPatcheable firstPatch writePredecessor: aPatcheable put: aValue
 ]

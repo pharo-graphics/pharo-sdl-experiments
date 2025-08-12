@@ -6,7 +6,7 @@ Class {
 		'#opacity => PatchSlot',
 		'#background => PatchSlot'
 	],
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #accessing }
@@ -31,4 +31,17 @@ PatcheableElement >> opacity [
 PatcheableElement >> opacity: anObject [
 
 	opacity := anObject
+]
+
+{ #category : #printing }
+PatcheableElement >> printOn: aStream [
+	"Generate a string representation of the receiver based on its instance variables."
+
+	super printOn: aStream.
+	aStream
+		nextPutAll: ' opacity: ';
+		print: opacity.
+	aStream
+		nextPutAll: ' background: ';
+		print: background
 ]

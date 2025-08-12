@@ -5,7 +5,7 @@ Class {
 		'index',
 		'value'
 	],
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #accessing }
@@ -20,16 +20,12 @@ IndexedSlotPatch >> index: anInteger [
 	index := anInteger
 ]
 
-{ #category : #reading }
-IndexedSlotPatch >> read: aPatcheable at: anInteger [
+{ #category : #writing }
+IndexedSlotPatch >> switchPredecessorAt: aPatcheable from: oldValue to: newValue [
 
-	^ nextPatch read: aPatcheable at: anInteger
-]
-
-{ #category : #reading }
-IndexedSlotPatch >> read: aPatcheable instVarAt: anInteger [
-
-	^ nextPatch read: aPatcheable instVarAt: anInteger
+	oldValue == newValue ifTrue: [ ^ self ].
+	oldValue detachPredecessor: aPatcheable.
+	newValue attachPredecessor: aPatcheable
 ]
 
 { #category : #accessing }
@@ -42,16 +38,4 @@ IndexedSlotPatch >> value [
 IndexedSlotPatch >> value: anObject [
 
 	value := anObject
-]
-
-{ #category : #writing }
-IndexedSlotPatch >> write: aPatcheable at: anInteger put: aValue [
-
-	nextPatch write: aPatcheable at: anInteger put: aValue
-]
-
-{ #category : #writing }
-IndexedSlotPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
-
-	nextPatch write: aPatcheable instVarAt: anInteger put: aValue
 ]

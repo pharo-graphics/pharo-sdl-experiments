@@ -5,7 +5,7 @@ Class {
 		'patchClass',
 		'first'
 	],
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Pool'
 }
 
 { #category : #'instance creation' }

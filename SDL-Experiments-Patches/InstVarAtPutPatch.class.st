@@ -1,7 +1,7 @@
 Class {
 	#name : #InstVarAtPutPatch,
 	#superclass : #IndexedSlotPatch,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #applying }
@@ -32,6 +32,8 @@ InstVarAtPutPatch >> read: aPatcheable instVarAt: anInteger [
 InstVarAtPutPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
 
 	index = anInteger
-		ifTrue: [ value := aValue ]
+		ifTrue: [
+			self switchPredecessorAt: aPatcheable from: value to: aValue.
+			value := aValue ]
 		ifFalse: [ super write: aPatcheable instVarAt: anInteger put: aValue ]
 ]

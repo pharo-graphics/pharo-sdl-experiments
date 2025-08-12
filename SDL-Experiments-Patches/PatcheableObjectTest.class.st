@@ -1,7 +1,7 @@
 Class {
 	#name : #PatcheableObjectTest,
 	#superclass : #TestCase,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #tests }
@@ -62,6 +62,40 @@ PatcheableObjectTest >> testAccessors [
 	e applyPatches.
 	self assert: e opacity isNil.
 	self assert: e background isNil
+]
+
+{ #category : #tests }
+PatcheableObjectTest >> testDoesNotHavePatchAfterRedundantAtPut [
+
+	| e |
+	e := PatcheableElement new: 1.
+	e at: 1 put: nil.
+	self deny: e hasPatches.
+
+	e at: 1 put: 1.0.
+	e applyPatches.
+	self deny: e hasPatches.
+
+	e at: 1 put: 1.0.
+	e at: 1 put: 1.0.
+	self deny: e hasPatches
+]
+
+{ #category : #tests }
+PatcheableObjectTest >> testDoesNotHavePatchAfterRedundantMutators [
+
+	| e |
+	e := PatcheableElement new: 0.
+	e opacity: nil.
+	self deny: e hasPatches.
+
+	e opacity: 1.0.
+	e applyPatches.
+	self deny: e hasPatches.
+
+	e opacity: 1.0.
+	e opacity: 1.0.
+	self deny: e hasPatches
 ]
 
 { #category : #tests }
