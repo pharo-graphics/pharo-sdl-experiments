@@ -5,7 +5,8 @@ Class {
 		'title',
 		'compositor',
 		'window',
-		'renderer'
+		'renderer',
+		'attributes'
 	],
 	#category : #'SDL-Experiments-App2'
 }
@@ -18,14 +19,20 @@ IPC2Window >> compositor: aCompositor [
 
 { #category : #deleting }
 IPC2Window >> destroy [
-	
-	window destroy.
+
+	window destroy
 ]
 
 { #category : #'instance creation' }
 IPC2Window >> id [ 
 
 	^ self identityHash 
+]
+
+{ #category : #testing }
+IPC2Window >> isValid [
+
+	^ window isValid
 ]
 
 { #category : #'instance creation' }

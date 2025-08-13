@@ -3,7 +3,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'windows',
-		'whenEventDo',
 		'eventQueue',
 		'eventSignalSemaphore'
 	],
@@ -48,8 +47,11 @@ IPC2Compositor >> sendEvent: anEvent [
 
 { #category : #'debugging actions' }
 IPC2Compositor >> terminate [
-	
-	windows do: #destroy.
+
+	windows
+		select: [ :each | each isValid ]
+		thenDo: [ :each | each destroy ].
+	windows removeAll
 ]
 
 { #category : #'as yet unclassified' }
