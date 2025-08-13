@@ -30,10 +30,10 @@ IPC2CompositorListener >> commandService [
 ]
 
 { #category : #'window API' }
-IPC2CompositorListener >> openWindow: aTitle [
+IPC2CompositorListener >> newWindow: aTitle [
 
 	| w | 
-	w := compositor openWindow: aTitle.
+	w := compositor newWindow: aTitle.
 	^ w id
 ]
 
@@ -42,7 +42,6 @@ IPC2CompositorListener >> startOn: socketStream [
 
 	commandService := IPCCommandService on: socketStream.
 	commandService start.
-	compositor := IPC2Compositor new.	
 
-
+	compositor := IPC2Compositor new
 ]

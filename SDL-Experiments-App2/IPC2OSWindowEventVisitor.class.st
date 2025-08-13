@@ -1,5 +1,5 @@
 Class {
-	#name : #IPC2EventHandler,
+	#name : #IPC2OSWindowEventVisitor,
 	#superclass : #OSWindowEventVisitor,
 	#instVars : [
 		'window'
@@ -8,21 +8,21 @@ Class {
 }
 
 { #category : #visiting }
-IPC2EventHandler >> visitWindowCloseEvent: anEvent [
+IPC2OSWindowEventVisitor >> visitWindowCloseEvent: anEvent [
 
 	anEvent suppressDefaultAction.
-	window sendEvent: IPC2WindowCloseEvent new
+	window enqueueEvent: IPC2WindowCloseEvent new
 
 ]
 
 { #category : #accessing }
-IPC2EventHandler >> window [
+IPC2OSWindowEventVisitor >> window [
 
 	^ window
 ]
 
 { #category : #accessing }
-IPC2EventHandler >> window: anObject [
+IPC2OSWindowEventVisitor >> window: anObject [
 
 	window := anObject
 ]

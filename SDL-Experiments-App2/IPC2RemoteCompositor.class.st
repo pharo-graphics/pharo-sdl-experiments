@@ -26,7 +26,7 @@ IPC2RemoteCompositor >> forkOSSubprocessRun: isHeadless [
 			isHeadless ifTrue: [ aStream nextPut: '--headless' ].
 			aStream
 				nextPut: Smalltalk imageFile fullName;
-				nextPut: IPC2CompositorHandler commandName;
+				nextPut: IPC2CompositorCommandLineHandler commandName;
 				nextPut: listenerSocket localPort printString ]).
 
 		osSubprocess runAndWaitOnExitDo: [ :process :outString  | self terminate ]]
@@ -81,25 +81,18 @@ IPC2RemoteCompositor >> maxSecondsToLaunch [
 ]
 
 { #category : #'window API' }
-IPC2RemoteCompositor >> openWindow: aTitle [
+IPC2RemoteCompositor >> newWindow: osWindowAttributes [
 
-	| finishSem newId |
-	finishSem := Semaphore new.
-
-	commandService
-		sendCommand: (IPC2OpenWindow new
-				 title: aTitle;
-				 yourself)
-		onSuccess: [ :id |
-			newId := id.
-			finishSem signal.
-			 ].
-	
-	finishSem wait.
+	| windowId |
+	windowId := commandService sendCommandSync:
+		(IPC2OpenWindowCommand new
+			attributes: osWindowAttributes;
+			yourself).
 	
 	^ IPC2RemoteWindow new
-		remoteCompositor: self; 
-		id: newId; yourself 
+			remoteCompositor: self; 
+			id: windowId;
+			yourself 
 ]
 
 { #category : #private }

@@ -9,6 +9,13 @@ Class {
 	#category : #'SDL-Experiments-App2'
 }
 
+{ #category : #'as yet unclassified' }
+IPC2Compositor >> enqueueEvent: anEvent [
+
+	eventQueue nextPut: anEvent.
+	eventSignalSemaphore ifNotNil: [ eventSignalSemaphore signal ]
+]
+
 { #category : #initialization }
 IPC2Compositor >> initialize [
 
@@ -18,15 +25,15 @@ IPC2Compositor >> initialize [
 ]
 
 { #category : #'window API' }
-IPC2Compositor >> openWindow: aString [ 
-	
-	| w |
-	w := IPC2Window new.
-	w compositor: self.
-	windows add: w.
-	w title: aString.
-	w open.
-	^ w
+IPC2Compositor >> newWindow: aOSWindowAttributes [ 
+
+	| aWindow |
+	aWindow := IPC2Window new.
+	windows add: aWindow.
+	aWindow compositor: self.
+	aWindow attributes: aOSWindowAttributes.
+	aWindow create.
+	^ aWindow
 ]
 
 { #category : #'as yet unclassified' }
@@ -36,13 +43,6 @@ IPC2Compositor >> pendingEvents [
 	theEvents := OrderedCollection new.
 	eventQueue flush: [ :anEvent | theEvents add: anEvent ].
 	^ theEvents 
-]
-
-{ #category : #'as yet unclassified' }
-IPC2Compositor >> sendEvent: anEvent [
-
-	eventQueue nextPut: anEvent.
-	eventSignalSemaphore ifNotNil: [ eventSignalSemaphore signal ]
 ]
 
 { #category : #'debugging actions' }

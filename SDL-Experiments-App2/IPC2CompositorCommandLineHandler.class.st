@@ -1,22 +1,25 @@
 Class {
-	#name : #IPC2CompositorHandler,
+	#name : #IPC2CompositorCommandLineHandler,
 	#superclass : #CommandLineHandler,
 	#category : #'SDL-Experiments-App2'
 }
 
 { #category : #accessing }
-IPC2CompositorHandler class >> commandName [
+IPC2CompositorCommandLineHandler class >> commandName [
 
 	^ 'compositor'
 ]
 
 { #category : #activation }
-IPC2CompositorHandler >> activate [
+IPC2CompositorCommandLineHandler >> activate [
 
 	| socketStream portNumber |
-	World color: Color random. "to visually differenciate"
-	
-	OSWindowDriver current startUp: true.
+	Smalltalk isHeadless
+		ifTrue: [
+			OSWindowDriver current startUp: true ]
+		ifFalse: [
+			"to visually differenciate"
+			World color: Color random ].
 	
 	portNumber := self arguments first asInteger.
 	socketStream :=
