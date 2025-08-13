@@ -154,7 +154,7 @@ IPCCommandService >> runningStartBlock: aUnaryBlock [
 	runningStartBlock := aUnaryBlock
 ]
 
-{ #category : #private }
+{ #category : #API }
 IPCCommandService >> sendCommand: aCommand onSuccess: successBlock [
 
 	mutexToWrite critical: [
@@ -172,7 +172,7 @@ IPCCommandService >> sendCommand: aCommand onSuccess: successBlock [
 	socketStream flush
 ]
 
-{ #category : #private }
+{ #category : #API }
 IPCCommandService >> sendCommandIgnoringResult: aCommand [
 
 	mutexToWrite critical: [
@@ -181,6 +181,20 @@ IPCCommandService >> sendCommandIgnoringResult: aCommand [
 		FLSerializer serialize: aCommand on: socketStream ].
 
 	socketStream flush
+]
+
+{ #category : #API }
+IPCCommandService >> sendCommandSync: aCommand [
+
+	| semaphore result |
+	semaphore := Semaphore new.
+
+	self sendCommand: aCommand onSuccess: [ :anObject |
+		result := anObject.
+		semaphore signal ].
+
+	semaphore wait.
+	^ result
 ]
 
 { #category : #private }
