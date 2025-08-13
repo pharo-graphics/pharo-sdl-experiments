@@ -11,7 +11,7 @@ IPCDemoOpen >> value: aCommandService [
 	aDemo := IPCDemoWindow new.
 	aDemo commandService: aCommandService.
 
-	IPCWindowServer current openWindow: aDemo.
+	IPCCompositor current openWindow: aDemo.
 
 	^ aDemo windowId
 ]

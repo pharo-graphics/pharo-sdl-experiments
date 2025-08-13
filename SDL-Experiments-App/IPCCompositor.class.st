@@ -1,5 +1,5 @@
 Class {
-	#name : #IPCWindowServer,
+	#name : #IPCCompositor,
 	#superclass : #Object,
 	#instVars : [
 		'commandService',
@@ -12,25 +12,25 @@ Class {
 }
 
 { #category : #accessing }
-IPCWindowServer class >> current [
+IPCCompositor class >> current [
 
 	^ current ifNil: [ current := self new ]
 ]
 
 { #category : #'class initialization' }
-IPCWindowServer class >> reset [
+IPCCompositor class >> reset [
 	
 	current := nil
 ]
 
 { #category : #accessing }
-IPCWindowServer >> commandService [
+IPCCompositor >> commandService [
 
 	^ commandService
 ]
 
 { #category : #'window API' }
-IPCWindowServer >> openWindow: aDemo [
+IPCCompositor >> openWindow: aDemo [
 
 	aDemo open.
 
@@ -38,7 +38,7 @@ IPCWindowServer >> openWindow: aDemo [
 ]
 
 { #category : #'life cycle' }
-IPCWindowServer >> startOn: socketStream [
+IPCCompositor >> startOn: socketStream [
 
 	commandService := IPCCommandService on: socketStream.
 	commandService start.
@@ -49,7 +49,7 @@ IPCWindowServer >> startOn: socketStream [
 ]
 
 { #category : #'window API' }
-IPCWindowServer >> windowAt: aWindowId [
+IPCCompositor >> windowAt: aWindowId [
 
 	^ windows at: aWindowId
 ]

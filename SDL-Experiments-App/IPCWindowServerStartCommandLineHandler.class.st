@@ -22,5 +22,5 @@ IPCWindowServerStartCommandLineHandler >> activate [
 			openConnectionToHost: #[127 0 0 1]
 			port: portNumber.
 
-	IPCWindowServer current startOn: socketStream
+	IPCCompositor current startOn: socketStream
 ]

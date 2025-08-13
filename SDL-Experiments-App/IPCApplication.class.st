@@ -1,5 +1,5 @@
 Class {
-	#name : #IPCWindowClient,
+	#name : #IPCApplication,
 	#superclass : #Object,
 	#instVars : [
 		'osSubprocess',
@@ -10,13 +10,13 @@ Class {
 }
 
 { #category : #accessing }
-IPCWindowClient >> commandService [
+IPCApplication >> commandService [
 
 	^ commandService
 ]
 
 { #category : #private }
-IPCWindowClient >> forkOSSubprocessRun: isHeadless [
+IPCApplication >> forkOSSubprocessRun: isHeadless [
 
 	[	osSubprocess := OSSUnixSubprocess new.
 
@@ -35,7 +35,7 @@ IPCWindowClient >> forkOSSubprocessRun: isHeadless [
 ]
 
 { #category : #private }
-IPCWindowClient >> forkSocketListeningProcessThenSignal: launchDoneSemaphore [
+IPCApplication >> forkSocketListeningProcessThenSignal: launchDoneSemaphore [
 
 	"Listener socket determines the port to be used by the subprocess."
 	listenerSocket := Socket newTCP.
@@ -63,14 +63,14 @@ IPCWindowClient >> forkSocketListeningProcessThenSignal: launchDoneSemaphore [
 ]
 
 { #category : #'life cycle' }
-IPCWindowClient >> launch [
+IPCApplication >> launch [
 	"Subprocess isn't headless by default, to ease debugging."
 
 	self launch: false
 ]
 
 { #category : #'life cycle' }
-IPCWindowClient >> launch: isHeadless [
+IPCApplication >> launch: isHeadless [
 
 	| launchDoneSemaphore |
 	launchDoneSemaphore := Semaphore new.
@@ -82,13 +82,13 @@ IPCWindowClient >> launch: isHeadless [
 ]
 
 { #category : #'life cycle' }
-IPCWindowClient >> maxSecondsToLaunch [
+IPCApplication >> maxSecondsToLaunch [
 
 	^ 5
 ]
 
 { #category : #'life cycle' }
-IPCWindowClient >> terminate [
+IPCApplication >> terminate [
 
 	listenerSocket ifNotNil: [
 		listenerSocket destroy.

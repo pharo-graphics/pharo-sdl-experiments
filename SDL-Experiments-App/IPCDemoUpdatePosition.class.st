@@ -36,7 +36,7 @@ IPCDemoUpdatePosition >> delta: anObject [
 IPCDemoUpdatePosition >> value: aCommandService [
 
 	| aDemo newPosition |
-	aDemo := IPCWindowServer current windowAt: windowId.
+	aDemo := IPCCompositor current windowAt: windowId.
 
 	newPosition := centerPosition
 		ifNotNil: [ centerPosition - (aDemo playerElement extent // 2)  ]
