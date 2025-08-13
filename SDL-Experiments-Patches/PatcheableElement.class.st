@@ -32,3 +32,15 @@ PatcheableElement >> opacity: anObject [
 
 	opacity := anObject
 ]
+
+{ #category : #printing }
+PatcheableElement >> printOn: aStream [
+
+	super printOn: aStream.
+	aStream
+		nextPutAll: ' opacity: ';
+		print: opacity.
+	aStream
+		nextPutAll: ' background: ';
+		print: background
+]
