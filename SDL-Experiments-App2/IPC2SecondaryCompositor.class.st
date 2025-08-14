@@ -31,14 +31,14 @@ IPC2SecondaryCompositor >> destroyWindow: windowId [
 { #category : #'window API' }
 IPC2SecondaryCompositor >> enqueueEvent: anEvent windowId: aWindowId [
 
-	| copy |
-	copy := anEvent copy.
-	copy window: nil.
+	| eventCopy |
+	eventCopy := anEvent copy.
+	eventCopy window: nil.
 
 	commandService sendCommandIgnoringResult:
 		(IPC2EnqueueEventCommand new
 			 windowId: aWindowId;
-			 event: copy;
+			 event: eventCopy;
 			 yourself)
 ]
 

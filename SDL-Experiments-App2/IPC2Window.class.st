@@ -40,10 +40,7 @@ IPC2Window >> create [
 	osWindow :=
 		OSWindow
 			createWithAttributes: osWindowAttributes
-			eventHandler:
-				(IPC2OSWindowEventVisitor new
-					window: self;
-					yourself).
+			eventHandler: self. "See #handleEvent:"
 	
 	renderer := osWindow newAthensRenderer
 ]
@@ -52,6 +49,13 @@ IPC2Window >> create [
 IPC2Window >> destroy [
 	
 	compositor destroyWindow: self id
+]
+
+{ #category : #'api - event managing' }
+IPC2Window >> handleEvent: anEvent [
+	"We ignore the defaultAction and enqueue a copy of the event without the window (to avoid serializing it)"
+
+	compositor enqueueEvent: anEvent windowId: self id
 ]
 
 { #category : #'instance creation' }
