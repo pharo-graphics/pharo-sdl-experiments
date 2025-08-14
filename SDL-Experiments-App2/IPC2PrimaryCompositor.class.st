@@ -3,7 +3,6 @@ Class {
 	#superclass : #IPC2DualProcessCompositor,
 	#instVars : [
 		'osSubprocess',
-		'listenerSocket',
 		'windows',
 		'eventQueue',
 		'eventSignalSemaphore'
@@ -31,48 +30,33 @@ IPC2PrimaryCompositor >> enqueueEvent: anEvent windowId: aWindowId [
 ]
 
 { #category : #private }
-IPC2PrimaryCompositor >> forkOSSubprocessRun: isHeadless [
+IPC2PrimaryCompositor >> forkOSSubprocessRun: isHeadless port: port [
 
-	[	osSubprocess := OSSUnixSubprocess new.
 
-		osSubprocess command: Smalltalk vm binary fullPath pathString.
-
-		osSubprocess arguments: (Array streamContents: [ :aStream |
-			isHeadless ifTrue: [ aStream nextPut: '--headless' ].
-			aStream
-				nextPut: Smalltalk imageFile fullName;
-				nextPut: IPC2CompositorCommandLineHandler commandName;
-				nextPut: listenerSocket localPort printString ]).
-
-		osSubprocess runAndWaitOnExitDo: [ :process :outString  | self terminate ]]
-			forkAt: Processor lowIOPriority.
-
+	[	OSPlatform current isWindows
+			ifTrue: [ self runWindowsSubprocess: isHeadless port: port ]
+			ifFalse: [ self runUnixSubprocess: isHeadless port: port ].
+		self terminate
+		]
+			forkAt: Processor lowIOPriority
+			named: 'Wait subprocess to connect'
 ]
 
 { #category : #private }
-IPC2PrimaryCompositor >> forkSocketListeningProcessThenSignal: launchDoneSemaphore [
+IPC2PrimaryCompositor >> forkSocketListeningProcess: listenerSocket thenSignal: launchDoneSemaphore [
 
 	"Listener socket determines the port to be used by the subprocess."
-	listenerSocket := Socket newTCP.
-	listenerSocket
-		bindToPort: Socket wildcardPort;
-		listenWithBacklog: 2.
+	[	| aSocket |
+		aSocket := listenerSocket waitForAcceptFor: self maxSecondsToLaunch.
+		aSocket
+			ifNotNil: [
+				self
+					startCommandServiceOn: (ZdcSocketStream on: aSocket)
+					onSuccess: [ launchDoneSemaphore signal ] ] 
+			ifNil: [ self terminate ]
 
-	[	[ 	| aSocket |
-			aSocket := listenerSocket waitForAcceptFor: self maxSecondsToLaunch.
-			aSocket
-				ifNil: [ self terminate ]
-				ifNotNil: [
-					self
-						startCommandServiceOn: (ZdcSocketStream on: aSocket)
-						onSuccess: [ launchDoneSemaphore signal ] ] 
-		] ensure: [
-			listenerSocket ifNotNil: [
-				listenerSocket destroy.
-				listenerSocket := nil ] ].
-
-	]	forkAt: Processor lowIOPriority
-		named: 'Wait connection from subprocess'
+		]	forkAt: Processor lowIOPriority
+			named: 'Wait connection from subprocess'
 ]
 
 { #category : #initialization }
@@ -85,15 +69,26 @@ IPC2PrimaryCompositor >> initialize [
 ]
 
 { #category : #private }
-IPC2PrimaryCompositor >> launch: isHeadless [
+IPC2PrimaryCompositor >> launchHeadless: isHeadless [
 
-	| launchDoneSemaphore |
+	| launchDoneSemaphore listenerSocket |
 	launchDoneSemaphore := Semaphore new.
 
-	self forkSocketListeningProcessThenSignal: launchDoneSemaphore.
-	self forkOSSubprocessRun: isHeadless.
-	
-	launchDoneSemaphore waitTimeoutSeconds: self maxSecondsToLaunch
+	listenerSocket := Socket newTCP.
+	listenerSocket
+		bindToPort: Socket wildcardPort;
+		listenWithBacklog: 2.
+
+	self
+		forkSocketListeningProcess: listenerSocket
+		thenSignal: launchDoneSemaphore.
+	self forkOSSubprocessRun: isHeadless port: listenerSocket localPort.
+
+	launchDoneSemaphore waitTimeoutSeconds: self maxSecondsToLaunch.
+
+	listenerSocket ifNotNil: [
+			listenerSocket destroy.
+			listenerSocket := nil ]
 ]
 
 { #category : #private }
@@ -132,14 +127,44 @@ IPC2PrimaryCompositor >> pendingEvents [
 ]
 
 { #category : #private }
+IPC2PrimaryCompositor >> runUnixSubprocess: isHeadless port: port [
+
+	osSubprocess := OSSUnixSubprocess new.
+
+	osSubprocess command: Smalltalk vm binary fullPath pathString.
+
+	osSubprocess arguments: (Array streamContents: [ :aStream |
+		isHeadless ifTrue: [ aStream nextPut: '--headless' ].
+		aStream
+			nextPut: Smalltalk imageFile fullName;
+			nextPut: IPC2CompositorCommandLineHandler commandName;
+			nextPut: port printString ]).
+
+	osSubprocess runAndWait
+]
+
+{ #category : #private }
+IPC2PrimaryCompositor >> runWindowsSubprocess: isHeadless port: port [
+
+	osSubprocess := OSWSWinProcess new.
+
+	osSubprocess command: Smalltalk vm binary fullPath pathString.
+
+	osSubprocess arguments: (Array streamContents: [ :aStream |
+		isHeadless ifTrue: [ aStream nextPut: '--headless' ].
+		aStream
+			nextPut: Smalltalk imageFile fullName;
+			nextPut: IPC2CompositorCommandLineHandler commandName;
+			nextPut: port printString ]).
+
+	osSubprocess runAndWait
+]
+
+{ #category : #private }
 IPC2PrimaryCompositor >> terminate [
 
 	super terminate.
 	
-	listenerSocket ifNotNil: [
-		listenerSocket destroy.
-		listenerSocket := nil ].
-
 	osSubprocess ifNotNil: [
 		osSubprocess isRunning ifTrue: [ osSubprocess terminate ].
 		osSubprocess := nil ]
