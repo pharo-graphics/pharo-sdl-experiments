@@ -7,7 +7,8 @@ Class {
 		'mutexToRead',
 		'mutexToWrite',
 		'lastCommandId',
-		'runningStartBlock'
+		'runningStartBlock',
+		'owner'
 	],
 	#classVars : [
 		'CommandByte',
@@ -57,6 +58,18 @@ IPCCommandService >> initializeWith: aSocketStream [
 IPCCommandService >> name [
 
 	^ self className, self hash printString
+]
+
+{ #category : #accessing }
+IPCCommandService >> owner [
+
+	^ owner
+]
+
+{ #category : #accessing }
+IPCCommandService >> owner: anObject [
+
+	owner := anObject
 ]
 
 { #category : #API }
