@@ -14,12 +14,9 @@ IPC2CompositorCommandLineHandler class >> commandName [
 IPC2CompositorCommandLineHandler >> activate [
 
 	| socketStream portNumber |
-	Smalltalk isHeadless
-		ifTrue: [
-			OSWindowDriver current startUp: true ]
-		ifFalse: [
-			"to visually differenciate"
-			World color: Color random ].
+	OSWindowDriver current startUp: true.
+	"to visually differenciate"
+	World color: Color random.
 	
 	portNumber := self arguments first asInteger.
 	socketStream :=
@@ -27,5 +24,7 @@ IPC2CompositorCommandLineHandler >> activate [
 			openConnectionToHost: #[127 0 0 1]
 			port: portNumber.
 
-	IPC2CompositorListener current startOn: socketStream
+	IPC2SecondaryCompositor current
+		startCommandServiceOn: socketStream
+		onSuccess: []
 ]

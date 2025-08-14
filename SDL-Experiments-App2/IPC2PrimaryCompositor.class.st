@@ -1,22 +1,37 @@
 Class {
-	#name : #IPC2RemoteCompositor,
-	#superclass : #Object,
+	#name : #IPC2PrimaryCompositor,
+	#superclass : #IPC2DualProcessCompositor,
 	#instVars : [
 		'osSubprocess',
 		'listenerSocket',
-		'commandService'
+		'windows',
+		'eventQueue',
+		'eventSignalSemaphore'
 	],
 	#category : #'SDL-Experiments-App2'
 }
 
-{ #category : #private }
-IPC2RemoteCompositor >> commandService [
+{ #category : #'window API' }
+IPC2PrimaryCompositor >> destroyWindow: id [
 
-	^ commandService
+	commandService ifNil: [ ^ self ]. "Already destroyed"
+	commandService sendCommandIgnoringResult:
+		(IPC2DestroyWindowCommand new
+			 windowId: id;
+			 yourself)
+]
+
+{ #category : #'window API' }
+IPC2PrimaryCompositor >> enqueueEvent: anEvent windowId: aWindowId [
+
+	self flag: #todo. "Duplicated from SingleProcess"
+	self flag: #todo. "do not ignore aWindowId?"
+	eventQueue nextPut: anEvent.
+	eventSignalSemaphore ifNotNil: [ eventSignalSemaphore signal ]
 ]
 
 { #category : #private }
-IPC2RemoteCompositor >> forkOSSubprocessRun: isHeadless [
+IPC2PrimaryCompositor >> forkOSSubprocessRun: isHeadless [
 
 	[	osSubprocess := OSSUnixSubprocess new.
 
@@ -35,7 +50,7 @@ IPC2RemoteCompositor >> forkOSSubprocessRun: isHeadless [
 ]
 
 { #category : #private }
-IPC2RemoteCompositor >> forkSocketListeningProcessThenSignal: launchDoneSemaphore [
+IPC2PrimaryCompositor >> forkSocketListeningProcessThenSignal: launchDoneSemaphore [
 
 	"Listener socket determines the port to be used by the subprocess."
 	listenerSocket := Socket newTCP.
@@ -48,11 +63,9 @@ IPC2RemoteCompositor >> forkSocketListeningProcessThenSignal: launchDoneSemaphor
 			aSocket
 				ifNil: [ self terminate ]
 				ifNotNil: [
-					| aSocketStream |
-					aSocketStream := ZdcSocketStream on: aSocket.
-					commandService := IPCCommandService on: aSocketStream.
-					commandService runningStartBlock: [ launchDoneSemaphore signal ].
-					commandService start ] 
+					self
+						startCommandServiceOn: (ZdcSocketStream on: aSocket)
+						onSuccess: [ launchDoneSemaphore signal ] ] 
 		] ensure: [
 			listenerSocket ifNotNil: [
 				listenerSocket destroy.
@@ -62,8 +75,17 @@ IPC2RemoteCompositor >> forkSocketListeningProcessThenSignal: launchDoneSemaphor
 		named: 'Wait connection from subprocess'
 ]
 
+{ #category : #initialization }
+IPC2PrimaryCompositor >> initialize [
+
+	self flag: #todo. "Duplicated from SingleProcess"
+	super initialize.
+	windows := OrderedCollection new.
+	eventQueue := WaitfreeQueue new
+]
+
 { #category : #private }
-IPC2RemoteCompositor >> launch: isHeadless [
+IPC2PrimaryCompositor >> launch: isHeadless [
 
 	| launchDoneSemaphore |
 	launchDoneSemaphore := Semaphore new.
@@ -75,38 +97,57 @@ IPC2RemoteCompositor >> launch: isHeadless [
 ]
 
 { #category : #private }
-IPC2RemoteCompositor >> maxSecondsToLaunch [
+IPC2PrimaryCompositor >> maxSecondsToLaunch [
 
 	^ 5
 ]
 
 { #category : #'window API' }
-IPC2RemoteCompositor >> newWindow: osWindowAttributes [
+IPC2PrimaryCompositor >> newWindow: osWindowAttributes [
 
-	| windowId |
+	| windowId aWindow |
 	windowId := commandService sendCommandSync:
 		(IPC2OpenWindowCommand new
 			attributes: osWindowAttributes;
 			yourself).
 	
-	^ IPC2RemoteWindow new
+	aWindow :=
+		IPC2RemoteWindow new
 			remoteCompositor: self; 
 			id: windowId;
-			yourself 
+			yourself.
+			
+	windows add: aWindow.
+	^ aWindow
+]
+
+{ #category : #'as yet unclassified' }
+IPC2PrimaryCompositor >> pendingEvents [
+
+	| theEvents |
+	self flag: #todo. "Duplicated from SingleProcess"
+	theEvents := OrderedCollection new.
+	eventQueue flush: [ :anEvent | theEvents add: anEvent ].
+	^ theEvents 
 ]
 
 { #category : #private }
-IPC2RemoteCompositor >> terminate [
+IPC2PrimaryCompositor >> terminate [
 
+	super terminate.
+	
 	listenerSocket ifNotNil: [
 		listenerSocket destroy.
 		listenerSocket := nil ].
 
-	commandService ifNotNil: [
-		commandService stop.
-		commandService := nil ].
-
 	osSubprocess ifNotNil: [
 		osSubprocess isRunning ifTrue: [ osSubprocess terminate ].
 		osSubprocess := nil ]
+]
+
+{ #category : #initialization }
+IPC2PrimaryCompositor >> whenEventsSignal: aSemaphore [
+
+	self flag: #todo. "Duplicated from SingleProcess"
+	eventSignalSemaphore := aSemaphore
 ]

@@ -1,6 +1,6 @@
 Class {
 	#name : #IPC2OpenWindowCommand,
-	#superclass : #Object,
+	#superclass : #IPC2Command,
 	#instVars : [
 		'attributes'
 	],
@@ -20,7 +20,7 @@ IPC2OpenWindowCommand >> attributes: anObject [
 ]
 
 { #category : #accessing }
-IPC2OpenWindowCommand >> value: commandService [
+IPC2OpenWindowCommand >> value: _ [
 
-	^ IPC2CompositorListener current newWindow: attributes
+	^ (IPC2SecondaryCompositor current newWindow: attributes) id
 ]

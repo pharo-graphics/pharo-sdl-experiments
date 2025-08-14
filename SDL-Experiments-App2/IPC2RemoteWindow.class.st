@@ -8,6 +8,12 @@ Class {
 	#category : #'SDL-Experiments-App2'
 }
 
+{ #category : #deleting }
+IPC2RemoteWindow >> destroy [
+	
+	remoteCompositor destroyWindow: id
+]
+
 { #category : #accessing }
 IPC2RemoteWindow >> id [
 

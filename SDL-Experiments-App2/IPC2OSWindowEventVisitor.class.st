@@ -7,12 +7,11 @@ Class {
 	#category : #'SDL-Experiments-App2'
 }
 
-{ #category : #visiting }
-IPC2OSWindowEventVisitor >> visitWindowCloseEvent: anEvent [
+{ #category : #events }
+IPC2OSWindowEventVisitor >> handleEvent: anEvent [
+	"We ignore the defaultAction and enqueue a copy of the event without the window (to avoid serializing it)"
 
-	anEvent suppressDefaultAction.
-	window enqueueEvent: IPC2WindowCloseEvent new
-
+	window compositor enqueueEvent: anEvent windowId: window id
 ]
 
 { #category : #accessing }
