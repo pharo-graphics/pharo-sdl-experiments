@@ -1,11 +1,12 @@
 Class {
 	#name : #IPC2Window,
-	#superclass : #Object,
+	#superclass : #IPC2AbstractWindow,
 	#instVars : [
-		'compositor',
 		'renderer',
 		'osWindow',
-		'osWindowAttributes'
+		'osWindowAttributes',
+		'sceneTree',
+		'renderDeferrer'
 	],
 	#category : #'SDL-Experiments-App2'
 }
@@ -22,18 +23,6 @@ IPC2Window >> basicDestroy [
 	osWindow destroy
 ]
 
-{ #category : #'event firing' }
-IPC2Window >> compositor [
-
-	^ compositor
-]
-
-{ #category : #'event firing' }
-IPC2Window >> compositor: aCompositor [
-
-	compositor := aCompositor 
-]
-
 { #category : #'instance creation' }
 IPC2Window >> create [
 
@@ -42,7 +31,12 @@ IPC2Window >> create [
 			createWithAttributes: osWindowAttributes
 			eventHandler: self. "See #handleEvent:"
 	
-	renderer := osWindow newAthensRenderer
+	renderer := osWindow newAthensRenderer.
+	
+	renderDeferrer := MinMaxDeferrer
+		value: (MessageSend receiver: self selector: #render)
+		minMSDeferral: 5
+		maxMSDeferral: 25
 ]
 
 { #category : #deleting }
@@ -68,4 +62,28 @@ IPC2Window >> id [
 IPC2Window >> isValid [
 
 	^ osWindow isValid
+]
+
+{ #category : #drawing }
+IPC2Window >> render [
+
+	sceneTree ifNotNil: [
+		renderer drawDuring: [ :canvas |
+			sceneTree drawOnAthensCanvas: canvas ] ].
+
+	renderer
+		updateAll;
+		present
+]
+
+{ #category : #accessing }
+IPC2Window >> sceneTree [
+	^ sceneTree
+]
+
+{ #category : #rendering }
+IPC2Window >> sceneTree: anObject [
+
+	sceneTree := anObject.
+	renderDeferrer schedule
 ]

@@ -108,7 +108,7 @@ IPC2PrimaryCompositor >> newWindow: osWindowAttributes [
 	
 	aWindow :=
 		IPC2RemoteWindow new
-			remoteCompositor: self; 
+			compositor: self; 
 			id: windowId;
 			yourself.
 			
@@ -168,6 +168,16 @@ IPC2PrimaryCompositor >> terminate [
 	osSubprocess ifNotNil: [
 		osSubprocess isRunning ifTrue: [ osSubprocess terminate ].
 		osSubprocess := nil ]
+]
+
+{ #category : #'as yet unclassified' }
+IPC2PrimaryCompositor >> updateSceneGraph: anObject windowId: windowId [
+
+	commandService sendCommandIgnoringResult:
+		(IPC2UpdateSceneGraphCommand new
+			windowId: windowId;
+			content: anObject;
+			yourself)
 ]
 
 { #category : #initialization }

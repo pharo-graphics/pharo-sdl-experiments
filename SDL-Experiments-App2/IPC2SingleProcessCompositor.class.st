@@ -65,6 +65,15 @@ IPC2SingleProcessCompositor >> terminate [
 	windows removeAll
 ]
 
+{ #category : #'window API' }
+IPC2SingleProcessCompositor >> updateSceneGraph: update windowId: windowId [
+
+	| aWindow |
+	aWindow := windows detect: [ :each | each id = windowId ].
+
+	aWindow sceneTree: update
+]
+
 { #category : #'as yet unclassified' }
 IPC2SingleProcessCompositor >> whenEventsSignal: aSemaphore [
 

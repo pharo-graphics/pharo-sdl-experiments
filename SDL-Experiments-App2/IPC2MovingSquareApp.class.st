@@ -21,20 +21,34 @@ IPC2MovingSquareApp >> compositor: anIPC2Compositor [
 ]
 
 { #category : #'instance creation' }
+IPC2MovingSquareApp >> initialExtent [
+
+	^ 400 @ 300
+]
+
+{ #category : #'instance creation' }
 IPC2MovingSquareApp >> newOSWindowAttributes [
 
 	^ OSWindowAttributes new
-		extent: 400@300;
+		extent: self initialExtent;
 		resizable: false;
 		title: 'Hola ', self className;
-		position: 100@100;
+		position: 50 @ 100;
 		yourself
 ]
 
 { #category : #'instance creation' }
 IPC2MovingSquareApp >> open [
 
-	window := compositor newWindow: self newOSWindowAttributes
+	window := compositor newWindow: self newOSWindowAttributes.
+
+	window sceneTree:
+		(IPC2TreeNode new
+			shape: (0 @ 0 extent: self initialExtent);
+			strokeWidth: 5;
+			strokeColor: Color green;
+			fillColor: Color blue;
+			yourself)
 ]
 
 { #category : #accessing }
@@ -45,4 +59,9 @@ IPC2MovingSquareApp >> waitEvents [
 	compositor whenEventsSignal: semaphore.
 	semaphore wait.
 	^ compositor pendingEvents
+]
+
+{ #category : #accessing }
+IPC2MovingSquareApp >> window [
+	^ window
 ]

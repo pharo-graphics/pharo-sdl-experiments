@@ -33,3 +33,9 @@ IPC2Compositor >> terminate [
 
 	^ self subclassResponsibility
 ]
+
+{ #category : #'as yet unclassified' }
+IPC2Compositor >> updateSceneGraph: update windowId: windowId [
+
+	self subclassResponsibility
+]

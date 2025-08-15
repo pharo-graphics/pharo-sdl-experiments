@@ -57,3 +57,9 @@ IPC2SecondaryCompositor >> newWindow: attributes [
 		compositor: self;
 		yourself
 ]
+
+{ #category : #'window API' }
+IPC2SecondaryCompositor >> updateSceneGraph: update windowId: windowId [
+
+	^ singleProcessCompositor updateSceneGraph: update windowId: windowId
+]

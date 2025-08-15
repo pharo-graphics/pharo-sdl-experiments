@@ -1,9 +1,8 @@
 Class {
 	#name : #IPC2RemoteWindow,
-	#superclass : #Object,
+	#superclass : #IPC2AbstractWindow,
 	#instVars : [
-		'id',
-		'remoteCompositor'
+		'id'
 	],
 	#category : #'SDL-Experiments-App2'
 }
@@ -11,7 +10,7 @@ Class {
 { #category : #deleting }
 IPC2RemoteWindow >> destroy [
 	
-	remoteCompositor destroyWindow: id
+	compositor destroyWindow: id
 ]
 
 { #category : #accessing }
@@ -26,14 +25,8 @@ IPC2RemoteWindow >> id: anId [
 	id := anId
 ]
 
-{ #category : #accessing }
-IPC2RemoteWindow >> remoteCompositor [
+{ #category : #rendering }
+IPC2RemoteWindow >> sceneTree: anObject [
 
-	^ remoteCompositor
-]
-
-{ #category : #accessing }
-IPC2RemoteWindow >> remoteCompositor: anObject [
-
-	remoteCompositor := anObject
+	compositor updateSceneGraph: anObject windowId: id
 ]
