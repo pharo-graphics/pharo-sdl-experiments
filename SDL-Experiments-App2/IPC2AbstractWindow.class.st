@@ -2,34 +2,62 @@ Class {
 	#name : #IPC2AbstractWindow,
 	#superclass : #Object,
 	#instVars : [
-		'compositor'
+		'compositor',
+		'eventAnnouncer',
+		'sceneTree'
 	],
 	#category : #'SDL-Experiments-App2'
 }
 
-{ #category : #'event firing' }
+{ #category : #accessing }
+IPC2AbstractWindow >> announceEvent: anEvent [
+
+	eventAnnouncer announce: anEvent
+]
+
+{ #category : #accessing }
 IPC2AbstractWindow >> compositor [
 
 	^ compositor
 ]
 
-{ #category : #'event firing' }
+{ #category : #accessing }
 IPC2AbstractWindow >> compositor: aCompositor [
 
 	compositor := aCompositor 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #deleting }
 IPC2AbstractWindow >> destroy [
-	^ self subclassResponsibility
+	
+	compositor destroyWindow: self id
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
+IPC2AbstractWindow >> eventAnnouncer [
+
+	^ eventAnnouncer
+]
+
+{ #category : #accessing }
 IPC2AbstractWindow >> id [
 	^ self subclassResponsibility
 ]
 
-{ #category : #'as yet unclassified' }
-IPC2AbstractWindow >> sceneTree: anObject [ 
-	^ self subclassResponsibility
+{ #category : #initialization }
+IPC2AbstractWindow >> initialize [
+
+	eventAnnouncer := Announcer new
+]
+
+{ #category : #accessing }
+IPC2AbstractWindow >> sceneTree [
+
+	^ sceneTree
+]
+
+{ #category : #accessing }
+IPC2AbstractWindow >> sceneTree: anObject [
+
+	sceneTree := anObject
 ]

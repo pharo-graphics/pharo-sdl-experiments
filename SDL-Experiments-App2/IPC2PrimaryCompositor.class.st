@@ -3,12 +3,19 @@ Class {
 	#superclass : #IPC2DualProcessCompositor,
 	#instVars : [
 		'osSubprocess',
-		'windows',
-		'eventQueue',
-		'eventSignalSemaphore'
+		'windows'
 	],
 	#category : #'SDL-Experiments-App2'
 }
+
+{ #category : #'window API' }
+IPC2PrimaryCompositor >> announceEvent: anEvent windowId: aWindowId [
+
+	| aWindow |
+	self flag: #todo. "Duplicated from SingleProcess"
+	aWindow := windows at: aWindowId.
+	aWindow announceEvent: anEvent
+]
 
 { #category : #'window API' }
 IPC2PrimaryCompositor >> destroyWindow: id [
@@ -18,15 +25,6 @@ IPC2PrimaryCompositor >> destroyWindow: id [
 		(IPC2DestroyWindowCommand new
 			 windowId: id;
 			 yourself)
-]
-
-{ #category : #'window API' }
-IPC2PrimaryCompositor >> enqueueEvent: anEvent windowId: aWindowId [
-
-	self flag: #todo. "Duplicated from SingleProcess"
-	self flag: #todo. "do not ignore aWindowId?"
-	eventQueue nextPut: anEvent.
-	eventSignalSemaphore ifNotNil: [ eventSignalSemaphore signal ]
 ]
 
 { #category : #private }
@@ -64,8 +62,7 @@ IPC2PrimaryCompositor >> initialize [
 
 	self flag: #todo. "Duplicated from SingleProcess"
 	super initialize.
-	windows := OrderedCollection new.
-	eventQueue := WaitfreeQueue new
+	windows := Dictionary new
 ]
 
 { #category : #private }
@@ -112,18 +109,8 @@ IPC2PrimaryCompositor >> newWindow: osWindowAttributes [
 			id: windowId;
 			yourself.
 			
-	windows add: aWindow.
+	windows at: aWindow id put: aWindow.
 	^ aWindow
-]
-
-{ #category : #'as yet unclassified' }
-IPC2PrimaryCompositor >> pendingEvents [
-
-	| theEvents |
-	self flag: #todo. "Duplicated from SingleProcess"
-	theEvents := OrderedCollection new.
-	eventQueue flush: [ :anEvent | theEvents add: anEvent ].
-	^ theEvents 
 ]
 
 { #category : #private }
@@ -178,11 +165,4 @@ IPC2PrimaryCompositor >> updateSceneGraph: anObject windowId: windowId [
 			windowId: windowId;
 			content: anObject;
 			yourself)
-]
-
-{ #category : #initialization }
-IPC2PrimaryCompositor >> whenEventsSignal: aSemaphore [
-
-	self flag: #todo. "Duplicated from SingleProcess"
-	eventSignalSemaphore := aSemaphore
 ]

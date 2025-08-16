@@ -3,36 +3,32 @@ Class {
 	#superclass : #IPC2Compositor,
 	#instVars : [
 		'windows',
-		'eventQueue',
-		'eventSignalSemaphore'
+		'eventQueue'
 	],
 	#category : #'SDL-Experiments-App2'
 }
+
+{ #category : #'as yet unclassified' }
+IPC2SingleProcessCompositor >> announceEvent: anEvent windowId: aWindowId [
+
+	| aWindow |
+	aWindow := windows at: aWindowId.
+	aWindow announceEvent: anEvent
+]
 
 { #category : #'window API' }
 IPC2SingleProcessCompositor >> destroyWindow: id [
 
 	| aWindow |
-	aWindow := windows detect: [ :each | each id = id ].
-
-	windows remove: aWindow.
+	aWindow := windows removeKey: id ifAbsent: [ ^ self ].
 	aWindow basicDestroy
-]
-
-{ #category : #'as yet unclassified' }
-IPC2SingleProcessCompositor >> enqueueEvent: anEvent windowId: aWindowId [
-
-	self flag: #todo. "do not ignore aWindowId?"
-	eventQueue nextPut: anEvent.
-	eventSignalSemaphore ifNotNil: [ eventSignalSemaphore signal ]
 ]
 
 { #category : #initialization }
 IPC2SingleProcessCompositor >> initialize [
 
 	super initialize.
-	windows := OrderedCollection new.
-	eventQueue := WaitfreeQueue new.
+	windows := Dictionary new
 ]
 
 { #category : #'window API' }
@@ -40,28 +36,17 @@ IPC2SingleProcessCompositor >> newWindow: aOSWindowAttributes [
 
 	| aWindow |
 	aWindow := IPC2Window new.
-	windows add: aWindow.
+	windows at: aWindow id put: aWindow.
 	aWindow compositor: self.
 	aWindow attributes: aOSWindowAttributes.
 	aWindow create.
 	^ aWindow
 ]
 
-{ #category : #'as yet unclassified' }
-IPC2SingleProcessCompositor >> pendingEvents [
-
-	| theEvents |
-	theEvents := OrderedCollection new.
-	eventQueue flush: [ :anEvent | theEvents add: anEvent ].
-	^ theEvents 
-]
-
 { #category : #'debugging actions' }
 IPC2SingleProcessCompositor >> terminate [
 
-	windows
-		select: [ :each | each isValid ]
-		thenDo: [ :each | each destroy ].
+	windows valuesDo: [ :each | each isValid ifTrue: [ each destroy ] ].
 	windows removeAll
 ]
 
@@ -69,13 +54,7 @@ IPC2SingleProcessCompositor >> terminate [
 IPC2SingleProcessCompositor >> updateSceneGraph: update windowId: windowId [
 
 	| aWindow |
-	aWindow := windows detect: [ :each | each id = windowId ].
+	aWindow := windows at: windowId.
 
 	aWindow sceneTree: update
-]
-
-{ #category : #'as yet unclassified' }
-IPC2SingleProcessCompositor >> whenEventsSignal: aSemaphore [
-
-	eventSignalSemaphore := aSemaphore
 ]

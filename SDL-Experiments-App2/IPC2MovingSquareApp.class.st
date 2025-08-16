@@ -42,6 +42,21 @@ IPC2MovingSquareApp >> open [
 
 	window := compositor newWindow: self newOSWindowAttributes.
 
+	window eventAnnouncer
+		when: OSWindowCloseEvent
+		send: #close to: self.
+
+	window eventAnnouncer
+		when: OSMouseButtonPressEvent
+		do: [ :event |
+			window sceneTree addChild: 
+				(IPC2TreeNode new
+					shape: (event position extent: 50 @ 50);
+					fillColor: Color random;
+					yourself).
+			window sceneTree: window sceneTree ]
+		for: self.
+	
 	window sceneTree:
 		(IPC2TreeNode new
 			shape: (0 @ 0 extent: self initialExtent);
@@ -49,16 +64,6 @@ IPC2MovingSquareApp >> open [
 			strokeColor: Color green;
 			fillColor: Color blue;
 			yourself)
-]
-
-{ #category : #accessing }
-IPC2MovingSquareApp >> waitEvents [
-
-	| semaphore |
-	semaphore := Semaphore new.
-	compositor whenEventsSignal: semaphore.
-	semaphore wait.
-	^ compositor pendingEvents
 ]
 
 { #category : #accessing }

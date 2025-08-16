@@ -5,7 +5,6 @@ Class {
 		'renderer',
 		'osWindow',
 		'osWindowAttributes',
-		'sceneTree',
 		'renderDeferrer'
 	],
 	#category : #'SDL-Experiments-App2'
@@ -39,17 +38,11 @@ IPC2Window >> create [
 		maxMSDeferral: 25
 ]
 
-{ #category : #deleting }
-IPC2Window >> destroy [
-	
-	compositor destroyWindow: self id
-]
-
 { #category : #'api - event managing' }
 IPC2Window >> handleEvent: anEvent [
 	"We ignore the defaultAction and enqueue a copy of the event without the window (to avoid serializing it)"
 
-	compositor enqueueEvent: anEvent windowId: self id
+	compositor announceEvent: anEvent windowId: self id
 ]
 
 { #category : #'instance creation' }
@@ -64,6 +57,13 @@ IPC2Window >> isValid [
 	^ osWindow isValid
 ]
 
+{ #category : #accessing }
+IPC2Window >> mainLoopIteration [
+
+	'Events: ' trace. self pendingEvents size traceCr.
+	self render
+]
+
 { #category : #drawing }
 IPC2Window >> render [
 
@@ -76,14 +76,9 @@ IPC2Window >> render [
 		present
 ]
 
-{ #category : #accessing }
-IPC2Window >> sceneTree [
-	^ sceneTree
-]
-
 { #category : #rendering }
 IPC2Window >> sceneTree: anObject [
 
-	sceneTree := anObject.
+	super sceneTree: anObject.
 	renderDeferrer schedule
 ]

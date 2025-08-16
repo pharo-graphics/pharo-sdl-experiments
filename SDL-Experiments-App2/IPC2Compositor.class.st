@@ -11,15 +11,15 @@ IPC2Compositor class >> isAbstract [
 ]
 
 { #category : #'window API' }
-IPC2Compositor >> destroyWindow: windowId [
+IPC2Compositor >> announceEvent: anEvent windowId: aWindowId [
 
-	^ self subclassResponsibility
+	self subclassResponsibility
 ]
 
 { #category : #'window API' }
-IPC2Compositor >> enqueueEvent: anEvent windowId: aWindowId [
+IPC2Compositor >> destroyWindow: windowId [
 
-	self subclassResponsibility
+	^ self subclassResponsibility
 ]
 
 { #category : #'window API' }

@@ -7,12 +7,6 @@ Class {
 	#category : #'SDL-Experiments-App2'
 }
 
-{ #category : #deleting }
-IPC2RemoteWindow >> destroy [
-	
-	compositor destroyWindow: id
-]
-
 { #category : #accessing }
 IPC2RemoteWindow >> id [
 
@@ -28,5 +22,6 @@ IPC2RemoteWindow >> id: anId [
 { #category : #rendering }
 IPC2RemoteWindow >> sceneTree: anObject [
 
+	super sceneTree: anObject.
 	compositor updateSceneGraph: anObject windowId: id
 ]

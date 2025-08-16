@@ -23,13 +23,7 @@ IPC2SecondaryCompositor class >> reset [
 ]
 
 { #category : #'window API' }
-IPC2SecondaryCompositor >> destroyWindow: windowId [
-
-	^ singleProcessCompositor destroyWindow: windowId
-]
-
-{ #category : #'window API' }
-IPC2SecondaryCompositor >> enqueueEvent: anEvent windowId: aWindowId [
+IPC2SecondaryCompositor >> announceEvent: anEvent windowId: aWindowId [
 
 	| eventCopy |
 	eventCopy := anEvent copy.
@@ -40,6 +34,12 @@ IPC2SecondaryCompositor >> enqueueEvent: anEvent windowId: aWindowId [
 			 windowId: aWindowId;
 			 event: eventCopy;
 			 yourself)
+]
+
+{ #category : #'window API' }
+IPC2SecondaryCompositor >> destroyWindow: windowId [
+
+	^ singleProcessCompositor destroyWindow: windowId
 ]
 
 { #category : #initialization }

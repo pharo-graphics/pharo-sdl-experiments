@@ -25,7 +25,7 @@ IPC2EnqueueEventCommand >> value: aCommandService [
 
 	| compositor |
 	compositor := aCommandService owner.
-	compositor enqueueEvent: event windowId: windowId
+	compositor announceEvent: event windowId: windowId
 ]
 
 { #category : #accessing }
