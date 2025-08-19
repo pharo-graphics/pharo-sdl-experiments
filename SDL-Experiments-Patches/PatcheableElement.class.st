@@ -1,3 +1,6 @@
+"
+I'm a testing patcheable object that emulates being a scene graph node.
+"
 Class {
 	#name : #PatcheableElement,
 	#superclass : #Patcheable,

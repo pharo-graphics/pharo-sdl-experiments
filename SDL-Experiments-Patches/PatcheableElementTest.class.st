@@ -1,11 +1,11 @@
 Class {
-	#name : #PatcheableObjectTest,
+	#name : #PatcheableElementTest,
 	#superclass : #TestCase,
 	#category : #'SDL-Experiments-Patches'
 }
 
 { #category : #tests }
-PatcheableObjectTest >> testAccessors [
+PatcheableElementTest >> testAccessors [
 
 	| e |
 	e := PatcheableElement new.
@@ -65,7 +65,7 @@ PatcheableObjectTest >> testAccessors [
 ]
 
 { #category : #tests }
-PatcheableObjectTest >> testInstVarNamedPut [
+PatcheableElementTest >> testInstVarNamedPut [
 
 	| e |
 	e := PatcheableElement new.
@@ -125,7 +125,7 @@ PatcheableObjectTest >> testInstVarNamedPut [
 ]
 
 { #category : #tests }
-PatcheableObjectTest >> testInterleavedWrites [
+PatcheableElementTest >> testInterleavedWrites [
 
 	| e |
 	e := PatcheableElement new: 2.
@@ -152,7 +152,7 @@ PatcheableObjectTest >> testInterleavedWrites [
 ]
 
 { #category : #tests }
-PatcheableObjectTest >> testLastPatch [
+PatcheableElementTest >> testLastPatch [
 
 	| e |
 	e := PatcheableElement new.
@@ -160,15 +160,15 @@ PatcheableObjectTest >> testLastPatch [
 	self should: [ e firstPatch last ] raise: SubscriptOutOfBounds.
 
 	e opacity: 0.9.
-	self assert: e firstPatch last value equals: 0.9.
+	self assert: e firstPatch last writtenValue equals: 0.9.
 	
 	e background: Color blue.
-	self assert: e firstPatch value equals: Color blue.
-	self assert: e firstPatch last value equals: 0.9
+	self assert: e firstPatch writtenValue equals: Color blue.
+	self assert: e firstPatch last writtenValue equals: 0.9
 ]
 
 { #category : #tests }
-PatcheableObjectTest >> testMultipleAtPutReusesPatch [
+PatcheableElementTest >> testMultipleAtPutReusesPatch [
 
 	| e |
 	e := PatcheableElement new: 2.
@@ -208,7 +208,7 @@ PatcheableObjectTest >> testMultipleAtPutReusesPatch [
 ]
 
 { #category : #tests }
-PatcheableObjectTest >> testMultipleInstVarNamedPutReusesPatch [
+PatcheableElementTest >> testMultipleInstVarNamedPutReusesPatch [
 
 	| e |
 	e := PatcheableElement new.
@@ -225,7 +225,7 @@ PatcheableObjectTest >> testMultipleInstVarNamedPutReusesPatch [
 ]
 
 { #category : #tests }
-PatcheableObjectTest >> testMultipleMutatorsReusesPatch [
+PatcheableElementTest >> testMultipleMutatorsReusesPatch [
 
 	| e |
 	e := PatcheableElement new.
@@ -242,7 +242,7 @@ PatcheableObjectTest >> testMultipleMutatorsReusesPatch [
 ]
 
 { #category : #tests }
-PatcheableObjectTest >> testSubscriptOutOfBounds [
+PatcheableElementTest >> testSubscriptOutOfBounds [
 
 	| e |
 	e := PatcheableElement new: 1.

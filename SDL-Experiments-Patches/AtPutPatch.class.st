@@ -1,13 +1,16 @@
+"
+I'm a patch to a position in a variable-layout patcheable object.
+"
 Class {
 	#name : #AtPutPatch,
-	#superclass : #IndexedSlotPatch,
+	#superclass : #IndexedPatch,
 	#category : #'SDL-Experiments-Patches'
 }
 
 { #category : #applying }
 AtPutPatch >> applyPatchTo: aPatcheable [
 
-	aPatcheable basicAt: index put: value
+	aPatcheable basicAt: index put: writtenValue
 ]
 
 { #category : #printing }
@@ -18,7 +21,7 @@ AtPutPatch >> descriptionFor: aPatcheable [
 				nextPutAll: 'at: ';
 				print: index;
 				nextPutAll: ' put: (';
-				print: value;
+				print: writtenValue;
 				nextPut: $) ]
 ]
 
@@ -26,7 +29,7 @@ AtPutPatch >> descriptionFor: aPatcheable [
 AtPutPatch >> read: aPatcheable at: anInteger [
 
 	^ index = anInteger
-		ifTrue: [ value ]
+		ifTrue: [ writtenValue ]
 		ifFalse: [ super read: aPatcheable at: anInteger ]
 ]
 
@@ -34,6 +37,6 @@ AtPutPatch >> read: aPatcheable at: anInteger [
 AtPutPatch >> write: aPatcheable at: anInteger put: aValue [
 
 	index = anInteger
-		ifTrue: [ value := aValue ]
+		ifTrue: [ writtenValue := aValue ]
 		ifFalse: [ super write: aPatcheable at: anInteger put: aValue ]
 ]

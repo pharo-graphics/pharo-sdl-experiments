@@ -1,30 +1,36 @@
+"
+I'm a patch to an instance variable of a patcheable object.
+"
 Class {
 	#name : #InstVarAtPutPatch,
-	#superclass : #IndexedSlotPatch,
+	#superclass : #IndexedPatch,
 	#category : #'SDL-Experiments-Patches'
 }
 
 { #category : #applying }
 InstVarAtPutPatch >> applyPatchTo: aPatcheable [
 
-	aPatcheable instVarAt: index put: value
+	aPatcheable instVarAt: index put: writtenValue
 ]
 
 { #category : #printing }
 InstVarAtPutPatch >> descriptionFor: aPatcheable [
 
 	^ String streamContents: [ :stream |
+			| slotName |
+			slotName := (aPatcheable class allSlots at: index) name.
 			stream
-				nextPutAll: (aPatcheable class allSlots at: index) name;
-				nextPutAll: ': ';
-				print: value ]
+				nextPutAll: slotName;
+				nextPutAll: ': (';
+				print: writtenValue;
+				nextPut: $) ]
 ]
 
 { #category : #reading }
 InstVarAtPutPatch >> read: aPatcheable instVarAt: anInteger [
 
 	^ index = anInteger
-		ifTrue: [ value ]
+		ifTrue: [ writtenValue ]
 		ifFalse: [ super read: aPatcheable instVarAt: anInteger ]
 ]
 
@@ -32,6 +38,6 @@ InstVarAtPutPatch >> read: aPatcheable instVarAt: anInteger [
 InstVarAtPutPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
 
 	index = anInteger
-		ifTrue: [ value := aValue ]
+		ifTrue: [ writtenValue := aValue ]
 		ifFalse: [ super write: aPatcheable instVarAt: anInteger put: aValue ]
 ]

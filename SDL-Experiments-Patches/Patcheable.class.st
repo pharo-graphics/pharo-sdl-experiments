@@ -1,3 +1,6 @@
+"
+I'm an object whose mutations are written as patches. Accessors return the value from a patch, if available, or from the patcheable object, otherwise.
+"
 Class {
 	#name : #Patcheable,
 	#superclass : #Object,
@@ -17,7 +20,7 @@ Patcheable >> addPatchForAt: anInteger put: aValue [
 	patch :=
 		AtPutPatch new
 			index: anInteger;
-			value: aValue;
+			writtenValue: aValue;
 			nextPatch: patch;
 			yourself
 ]
@@ -29,7 +32,7 @@ Patcheable >> addPatchForInstVarAt: anInteger put: aValue [
 	patch :=
 		InstVarAtPutPatch new
 			index: anInteger;
-			value: aValue;
+			writtenValue: aValue;
 			nextPatch: patch;
 			yourself
 ]

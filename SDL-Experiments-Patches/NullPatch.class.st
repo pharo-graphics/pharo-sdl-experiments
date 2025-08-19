@@ -1,3 +1,6 @@
+"
+I implement the NULL object pattern for patches.
+"
 Class {
 	#name : #NullPatch,
 	#superclass : #Patch,

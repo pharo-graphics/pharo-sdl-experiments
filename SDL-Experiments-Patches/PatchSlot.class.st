@@ -1,3 +1,6 @@
+"
+I'm a slot for instance variables of patcheable objects.
+"
 Class {
 	#name : #PatchSlot,
 	#superclass : #IndexedSlot,
