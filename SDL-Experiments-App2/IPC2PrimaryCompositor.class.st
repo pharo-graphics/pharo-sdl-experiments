@@ -27,36 +27,6 @@ IPC2PrimaryCompositor >> destroyWindow: id [
 			 yourself)
 ]
 
-{ #category : #private }
-IPC2PrimaryCompositor >> forkOSSubprocessRun: isHeadless port: port [
-
-
-	[	OSPlatform current isWindows
-			ifTrue: [ self runWindowsSubprocess: isHeadless port: port ]
-			ifFalse: [ self runUnixSubprocess: isHeadless port: port ].
-		self terminate
-		]
-			forkAt: Processor lowIOPriority
-			named: 'Wait subprocess to connect'
-]
-
-{ #category : #private }
-IPC2PrimaryCompositor >> forkSocketListeningProcess: listenerSocket thenSignal: launchDoneSemaphore [
-
-	"Listener socket determines the port to be used by the subprocess."
-	[	| aSocket |
-		aSocket := listenerSocket waitForAcceptFor: self maxSecondsToLaunch.
-		aSocket
-			ifNotNil: [
-				self
-					startCommandServiceOn: (ZdcSocketStream on: aSocket)
-					onSuccess: [ launchDoneSemaphore signal ] ] 
-			ifNil: [ self terminate ]
-
-		]	forkAt: Processor lowIOPriority
-			named: 'Wait connection from subprocess'
-]
-
 { #category : #initialization }
 IPC2PrimaryCompositor >> initialize [
 
@@ -76,10 +46,18 @@ IPC2PrimaryCompositor >> launchHeadless: isHeadless [
 		bindToPort: Socket wildcardPort;
 		listenWithBacklog: 2.
 
-	self
-		forkSocketListeningProcess: listenerSocket
-		thenSignal: launchDoneSemaphore.
-	self forkOSSubprocessRun: isHeadless port: listenerSocket localPort.
+	[	self
+			startCommandServiceIfAccept: listenerSocket
+			thenSignal: launchDoneSemaphore
+	]	forkAt: Processor lowIOPriority
+		named: 'Wait connection from subprocess'.
+
+	[	self
+			runAndWaitSubprocess: isHeadless
+			port: listenerSocket localPort.
+		self terminate
+	]	forkAt: Processor lowIOPriority - 1
+		named: 'Wait subprocess to connect (and quit)'.
 
 	launchDoneSemaphore waitTimeoutSeconds: self maxSecondsToLaunch.
 
@@ -114,11 +92,13 @@ IPC2PrimaryCompositor >> newWindow: osWindowAttributes [
 ]
 
 { #category : #private }
-IPC2PrimaryCompositor >> runUnixSubprocess: isHeadless port: port [
+IPC2PrimaryCompositor >> runAndWaitSubprocess: isHeadless port: port [
 
-	osSubprocess := OSSUnixSubprocess new.
+	osSubprocess := OSPlatform current isWindows
+			ifTrue: [ OSWSWinProcess new ]
+			ifFalse: [ OSSUnixSubprocess new ].
 
-	osSubprocess command: Smalltalk vm binary fullPath pathString.
+	osSubprocess command: Smalltalk vm binary fullName.
 
 	osSubprocess arguments: (Array streamContents: [ :aStream |
 		isHeadless ifTrue: [ aStream nextPut: '--headless' ].
@@ -131,20 +111,16 @@ IPC2PrimaryCompositor >> runUnixSubprocess: isHeadless port: port [
 ]
 
 { #category : #private }
-IPC2PrimaryCompositor >> runWindowsSubprocess: isHeadless port: port [
+IPC2PrimaryCompositor >> startCommandServiceIfAccept: listenerSocket thenSignal: launchDoneSemaphore [
 
-	osSubprocess := OSWSWinProcess new.
+	"Listener socket determines the port to be used by the subprocess."
+	| aSocket |
+	aSocket := listenerSocket waitForAcceptFor: self maxSecondsToLaunch.
+	aSocket ifNil: [ ^ self terminate ].
 
-	osSubprocess command: Smalltalk vm binary fullPath pathString.
-
-	osSubprocess arguments: (Array streamContents: [ :aStream |
-		isHeadless ifTrue: [ aStream nextPut: '--headless' ].
-		aStream
-			nextPut: Smalltalk imageFile fullName;
-			nextPut: IPC2CompositorCommandLineHandler commandName;
-			nextPut: port printString ]).
-
-	osSubprocess runAndWait
+	self
+		startCommandServiceOn: (ZdcSocketStream on: aSocket)
+		onSuccess: [ launchDoneSemaphore signal ]
 ]
 
 { #category : #private }
