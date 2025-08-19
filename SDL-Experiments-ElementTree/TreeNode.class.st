@@ -1,9 +1,9 @@
 "
 I am a mutable representation a tree node.
 
-My children are mutable elements, too. However, I point to a shot which is an immutable object, that points to immutable element children. Both mutable and immutable children are in sync, I am responsible of consolidating updates to ensure consistency.
+My children are also mutable nodes. However, I point to a completed shot which is an immutable object, that points to immutable children nodes.
 
-Most of my accessors redirect to my shot (immutable object). When a mutator has to change a value the shot is replaced with a copy with the new value. This breaks my invariant temporarilly, while the chain of parents is updated until the root.
+Most of my accessors redirect to the activeShot variable. When a mutator has to change a value, the completed shot is replaced with a draft copy that has the new value and parents until the root are notified to act in consequence. I provide commit* API to consolidate mutations and recover the mentioned invariant.
 "
 Class {
 	#name : #TreeNode,
@@ -12,8 +12,8 @@ Class {
 		'children',
 		'parent',
 		'childIndex',
-		'commitShot',
-		'freshShot'
+		'completedShot',
+		'activeShot'
 	],
 	#category : #'SDL-Experiments-ElementTree'
 }
@@ -24,18 +24,24 @@ TreeNode class >> isAbstract [
 	^ self == TreeNode
 ]
 
+{ #category : #private }
+TreeNode >> activeShot [
+
+	^ activeShot
+]
+
 { #category : #accessing }
 TreeNode >> addChild: aTreeNode [
 
 	self
-		privateResizeShotTo: freshShot size + 1
+		privateResizeShotTo: activeShot size + 1
 		with: [ :old :new |
 			new
 				replaceFrom: 1
 				to: old size
 				with: old
 				startingAt: 1.
-			new at: new size put: aTreeNode freshShot ].
+			new at: new size put: aTreeNode activeShot ].
 
 	children addLast: aTreeNode.
 	aTreeNode privateBeChildOf: self at: children size
@@ -72,35 +78,35 @@ TreeNode >> childrenDo: aBlock [
 	children do: aBlock
 ]
 
-{ #category : #private }
-TreeNode >> commitShot [
-
-	^ commitShot
-]
-
 { #category : #accessing }
 TreeNode >> commitWithAllChildren [
 
-	"If ours is not draft then no children can be draft"
-	freshShot isDraft ifFalse: [ ^ self ].
+	"If our shot is not draft then no children can be draft"
+	activeShot isDraft ifFalse: [ ^ self ].
 	
-	commitShot := freshShot.
-	commitShot complete.
+	completedShot := activeShot.
+	completedShot complete.
 
-	"This is possible tobe done after complete because it doesn't
-	perform a recusrive completion."
+	"Commit recursively"
 	children do: [ :each | each commitWithAllChildren ]
 ]
 
 { #category : #accessing }
 TreeNode >> commitWithAllParents [
 
-	freshShot isDraft ifFalse: [ ^ self ].
+	activeShot isDraft ifFalse: [ ^ self ].
 	
-	commitShot := freshShot.
-	commitShot complete.
+	completedShot := activeShot.
+	completedShot complete.
 
+	"Commit up to root"
 	parent ifNotNil: [ :p | p commitWithAllParents ]
+]
+
+{ #category : #private }
+TreeNode >> completedShot [
+
+	^ completedShot
 ]
 
 { #category : #debugging }
@@ -110,20 +116,14 @@ TreeNode >> debugId [
 ]
 
 { #category : #accessing }
-TreeNode >> ensureDraftShot [
+TreeNode >> ensureActiveShotIsDraft [
 
-	freshShot isDraft ifTrue: [ ^ self ].
+	activeShot isDraft ifTrue: [ ^ self ].
 
-	freshShot := freshShot copy.
+	activeShot := activeShot copy.
 
 	parent ifNotNil: [
-		parent privateSetDraftChildShot: freshShot at: childIndex ]
-]
-
-{ #category : #private }
-TreeNode >> freshShot [
-
-	^ freshShot
+		parent privateSetDraftChildShot: activeShot at: childIndex ]
 ]
 
 { #category : #initialization }
@@ -142,8 +142,8 @@ TreeNode >> initializeShot [
 { #category : #initialization }
 TreeNode >> initializeWithShot: aShot [
 
-	freshShot := commitShot := aShot.
-	commitShot complete.
+	activeShot := completedShot := aShot.
+	completedShot complete.
 
 	children := OrderedCollection new
 ]
@@ -152,14 +152,14 @@ TreeNode >> initializeWithShot: aShot [
 TreeNode >> inspectionPresenterForCommitTreeOn: aBuilder [
 	<inspectorPresentationOrder: 3 title: 'Commit Tree'>
 
-	^ commitShot inspectionPresenterOn: aBuilder
+	^ completedShot inspectionPresenterOn: aBuilder
 ]
 
 { #category : #debugging }
 TreeNode >> inspectionPresenterForFreshTreeOn: aBuilder [
-	<inspectorPresentationOrder: 2 title: 'Fresh Tree'>
+	<inspectorPresentationOrder: 2 title: 'Active Tree'>
 
-	^ freshShot inspectionPresenterOn: aBuilder
+	^ activeShot inspectionPresenterOn: aBuilder
 ]
 
 { #category : #debugging }
@@ -175,7 +175,7 @@ TreeNode >> inspectionPresenterOn: aBuilder [
 			evaluated: [ :each | each debugId ]);
 		addColumn: (SpStringTableColumn 
 			title: 'draft?'
-			evaluated: [ :each | each freshShot isDraft ]).
+			evaluated: [ :each | each activeShot isDraft ]).
 
 	^ treeTable
 		roots: { self };
@@ -216,19 +216,19 @@ TreeNode >> printOn: aStream [
 		aStream nextPutAll: ' ROOT' ].
 
 	aStream
-		nextPutAll: ' commit: ';
-		nextPutAll: commitShot debugId.
+		nextPutAll: ' completed: ';
+		nextPutAll: completedShot debugId.
 
-	freshShot isDraft ifTrue: [
+	activeShot isDraft ifTrue: [
 		aStream
 			nextPutAll: ' draft: ';
-			nextPutAll: freshShot debugId ].
+			nextPutAll: activeShot debugId ].
 
 	aStream
 		nextPutAll: ' children: ';
 		print: children size.
 
-	commitShot printDetailsOn: aStream.
+	completedShot printDetailsOn: aStream.
 
 	aStream nextPutAll: ')'
 ]
@@ -257,13 +257,13 @@ TreeNode >> privateBeRoot [
 TreeNode >> privateResizeShotTo: newSize with: aChildrenInitializationBlock [
 
 	"ATTENTION: This shot may have modifications already"
-	freshShot :=
-		freshShot
+	activeShot :=
+		activeShot
 			copyResized: newSize
 			with: aChildrenInitializationBlock.
 
 	parent ifNotNil: [
-		parent privateSetDraftChildShot: freshShot at: childIndex ]
+		parent privateSetDraftChildShot: activeShot at: childIndex ]
 ]
 
 { #category : #private }
@@ -272,11 +272,11 @@ TreeNode >> privateSetDraftChildShot: newChildShot at: aChildIndex [
 	The objective is to restore the invariant after the child node changed its shot."
 
 	"Stop early if I already knew it"
-	(freshShot isDraft and: [ (freshShot at: aChildIndex) == newChildShot ])
+	(activeShot isDraft and: [ (activeShot at: aChildIndex) == newChildShot ])
 		ifTrue: [ ^ self ].
 
-	self ensureDraftShot.
-	freshShot at: aChildIndex put: newChildShot
+	self ensureActiveShotIsDraft.
+	activeShot at: aChildIndex put: newChildShot
 ]
 
 { #category : #accessing }
@@ -286,7 +286,7 @@ TreeNode >> removeChild: aTreeNode [
 	index := aTreeNode childIndex.
 
 	self
-		privateResizeShotTo: freshShot size - 1
+		privateResizeShotTo: activeShot size - 1
 		with: [ :old :new |
 			new	
 				replaceFrom: 1

@@ -7,8 +7,8 @@ Class {
 	#name : #Element,
 	#superclass : #TreeNode,
 	#instVars : [
-		'#background => FreshShotSlot',
-		'#opacity => FreshShotSlot'
+		'#background => ActiveShotSlot',
+		'#opacity => ActiveShotSlot'
 	],
 	#category : #'SDL-Experiments-ElementTree'
 }

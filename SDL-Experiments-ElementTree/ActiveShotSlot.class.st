@@ -27,27 +27,33 @@ And benchmarks show better performance, especially on write.
 
 "
 Class {
-	#name : #FreshShotSlot,
+	#name : #ActiveShotSlot,
 	#superclass : #DerivedSlot,
 	#category : #'SDL-Experiments-ElementTree'
 }
 
 { #category : #accessing }
-FreshShotSlot >> accessingSelector [
+ActiveShotSlot >> accessingSelector [
 
 	^ self name asSymbol
 ]
 
+{ #category : #'meta-object-protocol' }
+ActiveShotSlot >> activeShotFrom: anObject [
+
+	^ self baseSlot read: anObject
+]
+
 { #category : #accessing }
-FreshShotSlot >> baseSlot [
+ActiveShotSlot >> baseSlot [
 
 	^ baseSlot ifNil: [
 		baseSlot := owningClass allSlots
-			detect: [ :slot | slot name = #freshShot ] ]
+			detect: [ :slot | slot name = #activeShot ] ]
 ]
 
 { #category : #'code generation' }
-FreshShotSlot >> emitStore: aMethodBuilder [
+ActiveShotSlot >> emitStore: aMethodBuilder [
 	"Generate bytecode to ensure the shot is draft and then send the new value via mutator selector."
 
 	| tempName |
@@ -60,7 +66,7 @@ FreshShotSlot >> emitStore: aMethodBuilder [
 
 	aMethodBuilder
 		pushReceiver;
-		send: #ensureDraftShot.
+		send: #ensureActiveShotIsDraft.
 
 	aMethodBuilder
 		pushInstVar: self baseSlot index;
@@ -69,39 +75,33 @@ FreshShotSlot >> emitStore: aMethodBuilder [
 ]
 
 { #category : #'code generation' }
-FreshShotSlot >> emitValue: methodBuilder [
-	"Generate bytecode for 'freshSlot <name>' message send to the instvar."
+ActiveShotSlot >> emitValue: methodBuilder [
+	"Generate bytecode for 'activeSlot <name>' message send to the instvar."
 
 	methodBuilder
 		pushInstVar: self baseSlot index;
 		send: self accessingSelector
 ]
 
-{ #category : #'meta-object-protocol' }
-FreshShotSlot >> freshShotFrom: anObject [
-
-	^ self baseSlot read: anObject
-]
-
 { #category : #accessing }
-FreshShotSlot >> mutatorSelector [
+ActiveShotSlot >> mutatorSelector [
 
 	^ (self name copyWith: $:) asSymbol
 ]
 
 { #category : #'meta-object-protocol' }
-FreshShotSlot >> read: anObject [
+ActiveShotSlot >> read: anObject [
 	<reflection: 'Object Inspection - State inspection'>
 
-	^ (self freshShotFrom: anObject) perform: self accessingSelector
+	^ (self activeShotFrom: anObject) perform: self accessingSelector
 ]
 
 { #category : #'meta-object-protocol' }
-FreshShotSlot >> write: aValue to: anObject [
+ActiveShotSlot >> write: aValue to: anObject [
 	<reflection: 'Object Modification - State modification'>
 
-	anObject ensureDraftShot.
-	(self freshShotFrom: anObject)
+	anObject ensureActiveShotIsDraft.
+	(self activeShotFrom: anObject)
 		perform: self mutatorSelector
 		with: aValue
 ]

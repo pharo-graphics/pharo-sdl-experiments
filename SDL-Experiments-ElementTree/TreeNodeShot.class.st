@@ -30,7 +30,7 @@ TreeNodeShot class >> isAbstract [
 TreeNodeShot >> assertDraft [
 
 	draft ifNil: [ ^ self ].
-	CannotWriteShot signal
+	CompletedShotError signal
 ]
 
 { #category : #accessing }
@@ -76,6 +76,10 @@ TreeNodeShot >> complete [
 	draft := false
 ]
 
+{ #category : #initialization }
+TreeNodeShot >> copyInstanceVariablesFrom: sourceObject [
+]
+
 { #category : #copying }
 TreeNodeShot >> copyResized: newSize with: aChildrenInitializationBlock [
 	"Answer a copy of self with the specified size. The children must be copied in the block."
@@ -83,7 +87,7 @@ TreeNodeShot >> copyResized: newSize with: aChildrenInitializationBlock [
 	| copy |
 	copy := self class new: newSize.
 
-	copy initializeInstanceVariablesFrom: self.
+	copy copyInstanceVariablesFrom: self.
 	aChildrenInitializationBlock value: self value: copy.
 
 	^ copy
@@ -93,10 +97,6 @@ TreeNodeShot >> copyResized: newSize with: aChildrenInitializationBlock [
 TreeNodeShot >> debugId [
 
 	^ (self identityHash printStringHex allButLast: 2) asLowercase
-]
-
-{ #category : #initialization }
-TreeNodeShot >> initializeInstanceVariablesFrom: sourceObject [
 ]
 
 { #category : #debugging }
