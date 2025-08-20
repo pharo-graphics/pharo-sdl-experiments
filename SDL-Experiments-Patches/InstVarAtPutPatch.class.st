@@ -10,7 +10,7 @@ Class {
 { #category : #applying }
 InstVarAtPutPatch >> applyPatchTo: aPatcheable [
 
-	aPatcheable instVarAt: index put: writtenValue
+	aPatcheable basicInstVarAt: index put: writtenValue
 ]
 
 { #category : #printing }

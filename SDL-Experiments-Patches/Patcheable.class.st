@@ -61,6 +61,18 @@ Patcheable >> at: index put: aValue [
 	patch write: self at: index put: aValue
 ]
 
+{ #category : #accessing }
+Patcheable >> basicInstVarAt: index [
+
+	^ super instVarAt: index
+]
+
+{ #category : #accessing }
+Patcheable >> basicInstVarAt: index put: anObject [
+
+	^ super instVarAt: index put: anObject
+]
+
 { #category : #'as yet unclassified' }
 Patcheable >> discardPatches [
 
@@ -98,7 +110,20 @@ Patcheable >> inspectionOfPatches: aBuilder [
 		yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
+Patcheable >> instVarAt: index [
+
+	^ patch read: self instVarAt: index
+]
+
+{ #category : #accessing }
+Patcheable >> instVarAt: index put: aValue [
+
+	Halt once. "not tested?"
+	patch write: self instVarAt: index put: aValue
+]
+
+{ #category : #accessing }
 Patcheable >> patchCount [
 
 	^ patch count

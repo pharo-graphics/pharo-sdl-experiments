@@ -43,7 +43,7 @@ NullPatch >> read: aPatcheable at: anInteger [
 { #category : #reading }
 NullPatch >> read: aPatcheable instVarAt: anInteger [ 
 	
-	^ aPatcheable instVarAt: anInteger
+	^ aPatcheable basicInstVarAt: anInteger
 ]
 
 { #category : #writing }
