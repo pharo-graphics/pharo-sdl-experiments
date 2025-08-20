@@ -49,11 +49,11 @@ NullPatch >> read: aPatcheable instVarAt: anInteger [
 { #category : #writing }
 NullPatch >> write: aPatcheable at: anInteger put: aValue [ 
 
-	aPatcheable addPatchForAt: anInteger put: aValue
+	aPatcheable linkPatchForAt: anInteger put: aValue
 ]
 
 { #category : #writing }
 NullPatch >> write: aPatcheable instVarAt: anInteger put: aValue [ 
 
-	aPatcheable addPatchForInstVarAt: anInteger put: aValue
+	aPatcheable linkPatchForInstVarAt: anInteger put: aValue
 ]

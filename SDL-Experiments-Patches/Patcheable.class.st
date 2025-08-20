@@ -10,33 +10,6 @@ Class {
 	#category : #'SDL-Experiments-Patches'
 }
 
-{ #category : #accessing }
-Patcheable >> addPatchForAt: anInteger put: aValue [
-	"Initialize the first patch, for this operation."
-
-	(anInteger between: 1 and: self size) ifFalse: [
-		^ self errorSubscriptBounds: anInteger ].
-
-	patch :=
-		AtPutPatch new
-			index: anInteger;
-			writtenValue: aValue;
-			nextPatch: patch;
-			yourself
-]
-
-{ #category : #accessing }
-Patcheable >> addPatchForInstVarAt: anInteger put: aValue [
-	"This is evaluated when there wasn't a patch for this index, so create one."
-
-	patch :=
-		InstVarAtPutPatch new
-			index: anInteger;
-			writtenValue: aValue;
-			nextPatch: patch;
-			yourself
-]
-
 { #category : #'as yet unclassified' }
 Patcheable >> applyPatches [
 
@@ -121,6 +94,33 @@ Patcheable >> instVarAt: index put: aValue [
 
 	Halt once. "not tested?"
 	patch write: self instVarAt: index put: aValue
+]
+
+{ #category : #private }
+Patcheable >> linkPatchForAt: anInteger put: aValue [
+	"Add a patch assuming there wasn't a linked matching patch."
+
+	(anInteger between: 1 and: self size) ifFalse: [
+		^ self errorSubscriptBounds: anInteger ].
+
+	patch :=
+		AtPutPatch new
+			index: anInteger;
+			writtenValue: aValue;
+			nextPatch: patch;
+			yourself
+]
+
+{ #category : #private }
+Patcheable >> linkPatchForInstVarAt: anInteger put: aValue [
+	"Add a patch assuming there wasn't a linked matching patch."
+
+	patch :=
+		InstVarAtPutPatch new
+			index: anInteger;
+			writtenValue: aValue;
+			nextPatch: patch;
+			yourself
 ]
 
 { #category : #accessing }
