@@ -65,6 +65,38 @@ PatcheableElementTest >> testAccessors [
 ]
 
 { #category : #tests }
+PatcheableElementTest >> testCopy [
+
+	| p q |
+	"Prepare a patcheable with some values applied and some unapplied"
+	p := PatcheableElement new: 3.
+	p opacity: 0.1.
+	p at: 1 put: $a.
+	p at: 2 put: $b.
+	p applyPatches.
+	p background: Color green.
+	p at: 1 put: $c.
+	p at: 3 put: $d.
+	"(opacity and second index remain untouched)"
+	self assert: p opacity equals: 0.1.
+	self assert: p background equals: Color green.
+	self assert: p asCollection equals: #($c $b $d).
+	
+	q := p copy.
+	"q has same values as p; patches are applied"
+	self deny: q hasPatches.
+	self assert: q opacity equals: 0.1.
+	self assert: q background equals: Color green.
+	self assert: q asCollection equals: #($c $b $d).
+	"p keeps same values and patches unapplied"
+	self assert: p hasPatches.
+	self assert: p opacity equals: 0.1.
+	self assert: p background equals: Color green.
+	self assert: p asCollection equals: #($c $b $d).
+
+]
+
+{ #category : #tests }
 PatcheableElementTest >> testInstVarNamedPut [
 
 	| e |

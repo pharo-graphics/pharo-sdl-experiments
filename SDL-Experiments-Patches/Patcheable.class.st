@@ -20,6 +20,18 @@ Patcheable >> applyPatches [
 	self privateResetPatch
 ]
 
+{ #category : #converting }
+Patcheable >> asCollection [
+
+	| array |
+	array := Array new: self size.
+
+	1 to: array size do: [ :index |
+		array at: index put: (self at: index) ].
+
+	^ array
+]
+
 { #category : #accessing }
 Patcheable >> at: index [
 
@@ -147,6 +159,17 @@ Patcheable >> patchesDo: aUnaryBlock [
 	[ current isNullPatch ] whileFalse: [
 		aUnaryBlock value: current.
 		current := current nextPatch ]
+]
+
+{ #category : #copying }
+Patcheable >> postCopy [
+	"The copy has the patches applied. Do not return patches to pool since we assume they are owned by the source object."
+
+	patch isNullPatch ifTrue: [ ^ self ].
+
+	self patchesDo: [ :each | each applyPatchTo: self ].
+
+	self privateResetPatch
 ]
 
 { #category : #private }
