@@ -15,11 +15,9 @@ Patcheable >> applyPatches [
 
 	patch isNullPatch ifTrue: [ ^ self ].
 
-	self patchesDo: [ :each |
-		self flag: #todo. "Return each to its pool"
-		each applyPatchTo: self ].
+	self patchesDo: [ :each | each applyPatchTo: self ].
 
-	patch := NullPatch instance
+	self privateResetPatch
 ]
 
 { #category : #accessing }
@@ -51,8 +49,7 @@ Patcheable >> discardPatches [
 
 	patch isNullPatch ifTrue: [ ^ self ].
 
-	self flag: #todo. "Return each patch to its pool"
-	patch := NullPatch instance
+	self privateResetPatch
 ]
 
 { #category : #accessing }
@@ -70,7 +67,7 @@ Patcheable >> hasPatches [
 { #category : #initialization }
 Patcheable >> initialize [
 
-	patch := NullPatch instance
+	self privateResetPatch
 ]
 
 { #category : #debugging }
@@ -150,4 +147,12 @@ Patcheable >> patchesDo: aUnaryBlock [
 	[ current isNullPatch ] whileFalse: [
 		aUnaryBlock value: current.
 		current := current nextPatch ]
+]
+
+{ #category : #private }
+Patcheable >> privateResetPatch [
+
+	self flag: #todo. "Return each to its pool"
+
+	patch := NullPatch instance
 ]
