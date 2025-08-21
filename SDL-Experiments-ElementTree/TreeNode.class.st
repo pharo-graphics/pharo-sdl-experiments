@@ -33,24 +33,43 @@ TreeNode >> activeShot [
 { #category : #accessing }
 TreeNode >> addChild: aTreeNode [
 
+	children addLast: aTreeNode.
+
 	self
 		privateResizeShotTo: activeShot size + 1
 		with: [ :old :new |
+			| index |
 			new
 				replaceFrom: 1
 				to: old size
 				with: old
 				startingAt: 1.
-			new at: new size put: aTreeNode activeShot ].
 
-	children addLast: aTreeNode.
-	aTreeNode privateBeChildOf: self at: children size
+			index := new size.
+			new at: index put: aTreeNode activeShot.
+			aTreeNode privateBeChildOf: self at: index ]
 ]
 
 { #category : #accessing }
-TreeNode >> addChildren: aCollection [
+TreeNode >> addChildren: treeNodes [
 
-	aCollection do: [ :each | self addChild: each ]
+	children addAllLast: treeNodes.
+
+	self
+		privateResizeShotTo: activeShot size + treeNodes size
+		with: [ :old :new |
+			| index |
+			new
+				replaceFrom: 1
+				to: old size
+				with: old
+				startingAt: 1.
+
+			index := old size.
+			treeNodes do: [ :each |
+				index := index + 1.
+				new at: index put: each activeShot.
+				each privateBeChildOf: self at: index ] ]
 ]
 
 { #category : #enumerating }

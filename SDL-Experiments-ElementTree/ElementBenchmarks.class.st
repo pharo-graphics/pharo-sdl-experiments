@@ -59,6 +59,34 @@ ElementBenchmarks >> benchAddRemoveChildIIndividual [
 ]
 
 { #category : #benchmarks }
+ElementBenchmarks >> benchAddRemoveChildren [
+	<script: 'self new benchAddRemoveChildren'>
+
+	| rootElement elements |
+	#benchAddRemoveChildren traceCr.
+	
+	#(1 5 10 100 1000) do: [ :n |
+		| benchAddChildren benchAddChild |
+		benchAddChildren := [
+			rootElement := Element new.
+			elements := (1 to: n) collect: [ :_ | Element new ].
+			rootElement addChildren: elements ] bench.
+		benchAddChild := [
+			rootElement := Element new.
+			elements := (1 to: n) collect: [ :_ | Element new ].
+			elements do: [ :each | rootElement addChild: each ] ] bench.
+
+		'children count:					' trace.
+		n traceCr.
+		'frequency via #addChildren:	' trace.
+		benchAddChildren shortPrintString traceCr.
+		'frequency via #addChild:		' trace.
+		benchAddChild shortPrintString traceCr.
+		'execution time ratio:			' trace.
+		(benchAddChild period / benchAddChildren period) asFloat traceCr ]
+]
+
+{ #category : #benchmarks }
 ElementBenchmarks >> benchCreateAndUpdateDepth: depth n: n [
 	<script: '1 to: 6 do: [ :n | self new benchCreateAndUpdateDepth: 1 n: n ]'>
 
