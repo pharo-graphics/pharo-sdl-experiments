@@ -34,20 +34,18 @@ TreeNode >> activeShot [
 TreeNode >> addChild: aTreeNode [
 
 	children addLast: aTreeNode.
+	aTreeNode privateBeChildOf: self at: children size.
 
+ 	"We need to resize the shot"
 	self
 		privateResizeShotTo: activeShot size + 1
 		with: [ :old :new |
-			| index |
 			new
 				replaceFrom: 1
 				to: old size
 				with: old
 				startingAt: 1.
-
-			index := new size.
-			new at: index put: aTreeNode activeShot.
-			aTreeNode privateBeChildOf: self at: index ]
+			new at: new size put: aTreeNode activeShot ]
 ]
 
 { #category : #accessing }
@@ -55,6 +53,7 @@ TreeNode >> addChildren: treeNodes [
 
 	children addAllLast: treeNodes.
 
+ 	"We need to resize the shot"
 	self
 		privateResizeShotTo: activeShot size + treeNodes size
 		with: [ :old :new |
@@ -69,6 +68,8 @@ TreeNode >> addChildren: treeNodes [
 			treeNodes do: [ :each |
 				index := index + 1.
 				new at: index put: each activeShot.
+				
+				"Do it here to avoid iterating again the new nodes"
 				each privateBeChildOf: self at: index ] ]
 ]
 
@@ -103,11 +104,11 @@ TreeNode >> commitWithAllChildren [
 	"If our shot is not draft then no children can be draft"
 	activeShot isDraft ifFalse: [ ^ self ].
 	
-	completedShot := activeShot.
-	completedShot complete.
+	"Commit recursively depth-first"
+	children do: [ :each | each commitWithAllChildren ].
 
-	"Commit recursively"
-	children do: [ :each | each commitWithAllChildren ]
+	completedShot := activeShot.
+	completedShot complete
 ]
 
 { #category : #accessing }
@@ -304,6 +305,15 @@ TreeNode >> removeChild: aTreeNode [
 	| index |
 	index := aTreeNode childIndex.
 
+	"Mutate the collection and adjust index of affected children"
+	children removeAt: aTreeNode childIndex.
+	children
+		from: index
+		to: children size
+		do: [ :each | each privateAdjustChildIndexBy: -1 ].
+	aTreeNode privateBeRoot.
+
+ 	"We need to resize the shot"
 	self
 		privateResizeShotTo: activeShot size - 1
 		with: [ :old :new |
@@ -315,15 +325,7 @@ TreeNode >> removeChild: aTreeNode [
 				replaceFrom: index
 					to: new size
 					with: old
-					startingAt: index + 1 ].
-				
-	"Mutate the collection; then, we may need to adjust children indices"
-	children removeAt: aTreeNode childIndex.
-	children
-		from: aTreeNode childIndex
-		to: children size
-		do: [ :each | each privateAdjustChildIndexBy: -1 ].
-	aTreeNode privateBeRoot
+					startingAt: index + 1 ]
 ]
 
 { #category : #removing }

@@ -8,7 +8,7 @@ Class {
 	#superclass : #Object,
 	#type : #variable,
 	#instVars : [
-		'draft'
+		'complete'
 	],
 	#category : #'SDL-Experiments-ElementTree'
 }
@@ -29,8 +29,7 @@ TreeNodeShot class >> isAbstract [
 { #category : #asserting }
 TreeNodeShot >> assertDraft [
 
-	draft ifNil: [ ^ self ].
-	CompletedShotError signal
+	complete ifNotNil: [ UnexpectedCompleteShotError signal ]
 ]
 
 { #category : #accessing }
@@ -73,7 +72,7 @@ TreeNodeShot >> complete [
 	"From now on, my mutator API signal `CannotWriteShot`.
 	IMPORTANT: this is NOT recursive, so a child can be still draft."
 
-	draft := false
+	complete := true
 ]
 
 { #category : #initialization }
@@ -127,14 +126,14 @@ TreeNodeShot >> inspectionPresenterOn: aBuilder [
 { #category : #testing }
 TreeNodeShot >> isDraft [
 
-	^ draft isNil
+	^ complete isNil
 ]
 
 { #category : #copying }
 TreeNodeShot >> postCopy [
 	"Copies are draft"
 
-	draft := nil
+	complete := nil
 ]
 
 { #category : #printing }

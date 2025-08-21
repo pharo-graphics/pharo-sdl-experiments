@@ -1,7 +1,7 @@
 "
 I'm Slot to reduce duplicated code in accessors and mutators to shots, from mutable objects.
 
-If we define `#background => FreshShotSlot`, then we can define:
+If we define `#background => ActiveShotSlot`, then we can define:
 ```
 background
 	^ background
@@ -9,7 +9,7 @@ background
 instead of:
 ```
 background
-	^ freshShot background
+	^ activeShot background
 ```
 
 and, more importantly:
@@ -20,7 +20,8 @@ background: aColor
 instead of:
 ```
 background: aColor
-	self writeShot: [ :shot | shot privateBackground: aColor ]
+	self ensureActiveShotIsDraft.
+	activeShot background: aColor
 ```
 
 And benchmarks show better performance, especially on write.
