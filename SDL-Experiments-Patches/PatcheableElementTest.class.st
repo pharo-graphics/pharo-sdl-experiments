@@ -97,6 +97,71 @@ PatcheableElementTest >> testCopy [
 ]
 
 { #category : #tests }
+PatcheableElementTest >> testInstVarAtPut [
+
+	| e indexOfOpacityInstVar indexOfBackgroundInstVar |
+	indexOfOpacityInstVar :=
+		(PatcheableElement slotNamed: #opacity) index.
+	indexOfBackgroundInstVar :=
+		(PatcheableElement slotNamed: #background) index.
+	
+	e := PatcheableElement new.
+	self assert: (e instVarAt: indexOfOpacityInstVar) isNil.
+	self assert: (e instVarAt: indexOfBackgroundInstVar) isNil.
+	self deny: e hasPatches.
+	self assert: e patchCount equals: 0.
+
+	e instVarNamed: #opacity put: 0.2.
+	self assert: e hasPatches.
+	self assert: e patchCount equals: 1.
+	self assert: (e instVarAt: indexOfBackgroundInstVar) isNil.
+	self assert: (e instVarAt: indexOfOpacityInstVar) equals: 0.2.
+
+	e instVarNamed: #background put: Color blue.
+	self assert: (e instVarAt: indexOfBackgroundInstVar) equals: Color blue.
+	self assert: (e instVarAt: indexOfOpacityInstVar) equals: 0.2.
+	self assert: e patchCount equals: 2.
+	self assert: e hasPatches.
+	e discardPatches.
+	self deny: e hasPatches.
+	self assert: (e instVarAt: indexOfOpacityInstVar) isNil.
+	self assert: (e instVarAt: indexOfBackgroundInstVar) isNil.
+
+	e instVarAt: indexOfOpacityInstVar put: 0.3.
+	e instVarAt: indexOfBackgroundInstVar put: Color green.
+	self assert: e hasPatches.
+	self assert: e patchCount equals: 2.
+	e applyPatches.
+	self deny: e hasPatches.
+	self assert: e patchCount equals: 0.
+	self assert: (e instVarAt: indexOfOpacityInstVar) equals: 0.3.
+	self assert: (e instVarAt: indexOfBackgroundInstVar) equals: Color green.
+
+	e instVarAt: indexOfBackgroundInstVar put: Color red.
+	e instVarAt: indexOfOpacityInstVar put: 0.4.
+	self assert: e hasPatches.
+	e discardPatches.
+	self deny: e hasPatches.
+	self assert: (e instVarAt: indexOfOpacityInstVar) equals: 0.3.
+	self assert: (e instVarAt: indexOfBackgroundInstVar) equals: Color green.
+
+	e instVarAt: indexOfBackgroundInstVar put: Color red.
+	e instVarAt: indexOfOpacityInstVar put: 0.4.
+	e applyPatches.
+	self deny: e hasPatches.
+	self assert: (e instVarAt: indexOfOpacityInstVar) equals: 0.4.
+	self assert: (e instVarAt: indexOfBackgroundInstVar) equals: Color red.
+
+	e instVarAt: indexOfBackgroundInstVar put: nil.
+	e instVarAt: indexOfOpacityInstVar put: nil.
+	self assert: (e instVarAt: indexOfOpacityInstVar) isNil.
+	self assert: (e instVarAt: indexOfBackgroundInstVar) isNil.
+	e applyPatches.
+	self assert: (e instVarAt: indexOfOpacityInstVar) isNil.
+	self assert: (e instVarAt: indexOfBackgroundInstVar) isNil
+]
+
+{ #category : #tests }
 PatcheableElementTest >> testInstVarNamedPut [
 
 	| e |
