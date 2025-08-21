@@ -3,8 +3,10 @@ I'm a testing patcheable object that emulates being a scene graph node.
 "
 Class {
 	#name : #PatcheableElement,
-	#superclass : #Patcheable,
+	#superclass : #Object,
 	#type : #variable,
+	#traits : 'TInstVarsPatcheable + TIndexedVarsPatcheable',
+	#classTraits : 'TInstVarsPatcheable classTrait + TIndexedVarsPatcheable classTrait',
 	#instVars : [
 		'#opacity => PatchSlot',
 		'#background => PatchSlot'
@@ -22,6 +24,13 @@ PatcheableElement >> background [
 PatcheableElement >> background: anObject [
 
 	background := anObject
+]
+
+{ #category : #initialization }
+PatcheableElement >> initialize [
+
+	super initialize.
+	self initializePatch.
 ]
 
 { #category : #accessing }
