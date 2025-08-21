@@ -46,6 +46,12 @@ NullPatch >> read: aPatcheable instVarAt: anInteger [
 	^ aPatcheable basicInstVarAt: anInteger
 ]
 
+{ #category : #public }
+NullPatch >> sizeOf: aPatcheable [
+
+	^ aPatcheable basicSize
+]
+
 { #category : #writing }
 NullPatch >> write: aPatcheable at: anInteger put: aValue [ 
 

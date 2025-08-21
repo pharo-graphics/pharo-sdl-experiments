@@ -98,6 +98,12 @@ LinkPatch >> read: aPatcheable instVarAt: anInteger [
 	^ nextPatch read: aPatcheable instVarAt: anInteger
 ]
 
+{ #category : #public }
+LinkPatch >> sizeOf: aPatcheable [
+
+	^ nextPatch sizeOf: aPatcheable
+]
+
 { #category : #writing }
 LinkPatch >> write: aPatcheable at: anInteger put: aValue [
 

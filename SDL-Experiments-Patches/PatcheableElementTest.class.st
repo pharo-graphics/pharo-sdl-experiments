@@ -96,6 +96,36 @@ PatcheableElementTest >> testCopy [
 
 ]
 
+{ #category : #'tests - resizing' }
+PatcheableElementTest >> testCopyWithResize [
+
+	| p q |
+	"Prepare a patcheable with some values applied and some unapplied"
+	p := PatcheableElement new: 4.
+	p opacity: 0.1.
+	p at: 2 put: $b.
+	p applyPatches.
+	p background: false.
+	p at: 3 put: $c.
+	p add: $d at: 4.
+	self assert: p opacity equals: 0.1.
+	self assert: p background equals: false.
+	self assert: p asCollection equals: #(nil $b $c $d nil).
+	
+	q := p copy.
+	"q has same values as p; patches are applied"
+	self deny: q hasPatches.
+	self assert: q opacity equals: 0.1.
+	self assert: q background equals: false.
+	self assert: q asCollection equals: #(nil $b $c $d nil).
+	"p keeps same values and patches unapplied"
+	self assert: p hasPatches.
+	self assert: p opacity equals: 0.1.
+	self assert: p background equals: false.
+	self assert: p asCollection equals: #(nil $b $c $d nil).
+
+]
+
 { #category : #tests }
 PatcheableElementTest >> testInstVarAtPut [
 
@@ -336,6 +366,99 @@ PatcheableElementTest >> testMultipleMutatorsReusesPatch [
 	e applyPatches.
 	self assert: e patchCount equals: 0.
 	self assert: e opacity equals: 0.1
+]
+
+{ #category : #'tests - resizing' }
+PatcheableElementTest >> testResizingPatches [
+
+	| p q |
+	p := PatcheableElement new: 2.
+	p at: 1 put: $a.
+	p at: 2 put: $b.
+	self assertCollection: p asCollection equals: #($a $b).
+	p applyPatches.
+
+	p add: $c at: 2.
+	self assertCollection: p asCollection equals: #($a $c $b).
+	
+	p add: $d at: 2.
+	self assertCollection: p asCollection equals: #($a $d $c $b).
+
+	p add: $e at: 1.
+	self assertCollection: p asCollection equals: #($e $a $d $c $b).
+
+	p add: $f at: 6.
+	self assertCollection: p asCollection equals: #($e $a $d $c $b $f).
+
+	self should: [ p add: $g at: 8 ] raise: SubscriptOutOfBounds.
+	self should: [ p add: $g at: 0 ] raise: SubscriptOutOfBounds.
+
+	1 to: 6 do: [ :index | p at: index put: index ].
+	self assertCollection: p asCollection equals: (1 to: 6).
+
+	q := p copy.
+	self assert: p hasPatches.
+	self assertCollection: p asCollection equals: (1 to: 6).
+	self deny: q hasPatches.
+	self assertCollection: q asCollection equals: p asCollection.
+
+	p removeAt: 3.
+	q removeAt: 3.
+	self assertCollection: p asCollection equals: #(1 2 4 5 6).
+	self assertCollection: q asCollection equals: p asCollection.
+
+	p removeAt: 5.
+	q removeAt: 5.
+	self assertCollection: p asCollection equals: #(1 2 4 5).
+	self assertCollection: q asCollection equals: p asCollection.
+
+	p removeAt: 1.
+	q removeAt: 1.
+	self assertCollection: p asCollection equals: #(2 4 5).
+	self assertCollection: q asCollection equals: p asCollection.
+	
+	"Bug narrowed in testResizingPatchesBug"
+	1 to: 3 do: [ :index |
+		p at: index put: index.
+		q at: index put: index ].
+	self assertCollection: p asCollection equals: (1 to: 3).
+	self assertCollection: q asCollection equals: p asCollection
+]
+
+{ #category : #'tests - resizing' }
+PatcheableElementTest >> testResizingPatchesBug [
+
+	| p |
+	p := PatcheableElement new: 2.
+	p at: 1 put: $a.
+	p at: 2 put: $b.
+	p removeAt: 1.
+	p at: 1 put: $c.
+	self assertCollection: p asCollection equals: { $c }
+]
+
+{ #category : #'tests - resizing' }
+PatcheableElementTest >> testResizingPatchesBug2 [
+
+	| p |
+	p := PatcheableElement new: 2.
+	p at: 1 put: $a.
+	p removeAt: 1.
+	p at: 1 put: $c.
+	self assertCollection: p asCollection equals: { $c }
+]
+
+{ #category : #'tests - resizing' }
+PatcheableElementTest >> testResizingPatchesBug3 [
+
+	| p |
+	p := PatcheableElement new: 2.
+	p at: 2 put: $b.
+	p removeAt: 1.
+	self assertCollection: p asCollection equals: { $b }.
+	p at: 1 put: $c.
+	self assertCollection: p asCollection equals: { $c }.
+
 ]
 
 { #category : #tests }

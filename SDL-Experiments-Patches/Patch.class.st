@@ -37,6 +37,19 @@ Patch >> read: aPatcheable instVarAt: anInteger [
 	^ self subclassResponsibility
 ]
 
+{ #category : #accessing }
+Patch >> sizeOf: aPatcheable [
+
+	^ self subclassResponsibility
+]
+
+{ #category : #writing }
+Patch >> write: aPatcheable add: aValue at: anInteger [
+	"Resizing patches are linked directly"
+
+	aPatcheable linkPatchForAdd: aValue at: anInteger
+]
+
 { #category : #writing }
 Patch >> write: aPatcheable at: anInteger put: aValue [ 
 
@@ -47,4 +60,11 @@ Patch >> write: aPatcheable at: anInteger put: aValue [
 Patch >> write: aPatcheable instVarAt: anInteger put: aValue [ 
 
 	self subclassResponsibility
+]
+
+{ #category : #writing }
+Patch >> write: aPatcheable removeAt: anInteger [
+	"Resizing patches are linked directly"
+
+	aPatcheable linkPatchForRemoveAt: anInteger
 ]

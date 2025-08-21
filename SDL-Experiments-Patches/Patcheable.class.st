@@ -10,6 +10,12 @@ Class {
 	#category : #'SDL-Experiments-Patches'
 }
 
+{ #category : #accessing }
+Patcheable >> add: aValue at: index [
+
+	patch write: self add: aValue at: index
+]
+
 { #category : #'as yet unclassified' }
 Patcheable >> applyPatches [
 
@@ -54,6 +60,31 @@ Patcheable >> basicInstVarAt: index [
 Patcheable >> basicInstVarAt: index put: anObject [
 
 	^ super instVarAt: index put: anObject
+]
+
+{ #category : #copying }
+Patcheable >> copy [
+
+	| class newObject newSize |
+	"Optimization if class layout isn't variable"
+	class := self class.
+	class isVariable ifFalse: [ ^ super copy ].
+
+	"Optimization if variable size didn't change"
+	newSize := self size.
+	newSize = self basicSize ifTrue: [ ^ super copy ].
+
+	"Otherwise, copy without the specialized primitive"
+	newObject := class basicNew: newSize.
+	1 to: newSize do: [ :index |
+		newObject basicAt: index put: (self at: index) ].
+
+	1 to: class instSize do: [ :index |
+		newObject basicInstVarAt: index put: (self instVarAt: index) ].
+
+	newObject privateResetPatch.
+	
+	^ newObject
 ]
 
 { #category : #'as yet unclassified' }
@@ -105,6 +136,20 @@ Patcheable >> instVarAt: index put: aValue [
 ]
 
 { #category : #private }
+Patcheable >> linkPatchForAdd: aValue at: anInteger [ 
+	
+	(anInteger between: 1 and: self size + 1) ifFalse: [
+		^ self errorSubscriptBounds: anInteger ].
+
+	patch :=
+		AddAtPatch new
+			index: anInteger;
+			writtenValue: aValue;
+			nextPatch: patch;
+			yourself
+]
+
+{ #category : #private }
 Patcheable >> linkPatchForAt: anInteger put: aValue [
 	"Add a patch assuming there wasn't a linked matching patch."
 
@@ -127,6 +172,19 @@ Patcheable >> linkPatchForInstVarAt: anInteger put: aValue [
 		InstVarAtPutPatch new
 			index: anInteger;
 			writtenValue: aValue;
+			nextPatch: patch;
+			yourself
+]
+
+{ #category : #private }
+Patcheable >> linkPatchForRemoveAt: anInteger [
+	
+	(anInteger between: 1 and: self size) ifFalse: [
+		^ self errorSubscriptBounds: anInteger ].
+
+	patch :=
+		RemoveAtPatch new
+			index: anInteger;
 			nextPatch: patch;
 			yourself
 ]
@@ -177,4 +235,17 @@ Patcheable >> privateResetPatch [
 	self flag: #todo. "Return each to its pool"
 
 	patch := NullPatch instance
+]
+
+{ #category : #accessing }
+Patcheable >> removeAt: index [
+
+	patch write: self removeAt: index
+]
+
+{ #category : #accessing }
+Patcheable >> size [
+	"Answer the number of indexable variables in the receiver, taking into account the patches which may add or remove positions."
+
+	^ patch sizeOf: self
 ]
