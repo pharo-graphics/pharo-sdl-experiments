@@ -1,14 +1,35 @@
+"
+I'm a trait for object whose mutations to indexed variables are written as patches. Accessors return the value from a patch, if available, or from the patcheable object, otherwise.
+"
 Trait {
 	#name : #TIndexedVarsPatcheable,
-	#traits : 'TPatcheable',
-	#classTraits : 'TPatcheable classTrait',
+	#traits : 'TInstVarsPatcheable',
+	#classTraits : 'TInstVarsPatcheable classTrait',
 	#category : #'SDL-Experiments-Patches'
 }
+
+{ #category : #adding }
+TIndexedVarsPatcheable >> add: anObject [
+
+	self addFirst: anObject
+]
 
 { #category : #accessing }
 TIndexedVarsPatcheable >> add: aValue at: index [
 
 	patch write: self add: aValue at: index
+]
+
+{ #category : #adding }
+TIndexedVarsPatcheable >> addFirst: anObject [
+
+	self add: anObject at: 1
+]
+
+{ #category : #adding }
+TIndexedVarsPatcheable >> addLast: anObject [
+
+	self add: anObject at: self size + 1
 ]
 
 { #category : #converting }

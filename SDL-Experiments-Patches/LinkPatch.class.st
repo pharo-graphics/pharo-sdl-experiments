@@ -7,23 +7,8 @@ Class {
 	#instVars : [
 		'nextPatch'
 	],
-	#classInstVars : [
-		'pool'
-	],
 	#category : #'SDL-Experiments-Patches'
 }
-
-{ #category : #accessing }
-LinkPatch class >> forgetPool [
-
-	pool := nil
-]
-
-{ #category : #accessing }
-LinkPatch class >> pool [
-
-	^ pool ifNil: [ pool := PatchPool new patchClass: self; yourself ]
-]
 
 { #category : #applying }
 LinkPatch >> applyPatchTo: aPatcheable [
@@ -47,12 +32,6 @@ LinkPatch >> descriptionFor: aPatcheable [
 LinkPatch >> hasNextPatch [
 
 	^ nextPatch isNullPatch not
-]
-
-{ #category : #accessing }
-LinkPatch >> last [
-
-	self hasNextPatch ifTrue: [ ^ nextPatch last ]
 ]
 
 { #category : #accessing }
@@ -105,6 +84,12 @@ LinkPatch >> sizeOf: aPatcheable [
 ]
 
 { #category : #writing }
+LinkPatch >> write: aPatcheable add: aValue at: anInteger [
+
+	nextPatch write: aPatcheable add: aValue at: anInteger
+]
+
+{ #category : #writing }
 LinkPatch >> write: aPatcheable at: anInteger put: aValue [
 
 	nextPatch write: aPatcheable at: anInteger put: aValue
@@ -114,4 +99,10 @@ LinkPatch >> write: aPatcheable at: anInteger put: aValue [
 LinkPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
 
 	nextPatch write: aPatcheable instVarAt: anInteger put: aValue
+]
+
+{ #category : #writing }
+LinkPatch >> write: aPatcheable removeAt: anInteger [
+
+	nextPatch write: aPatcheable removeAt: anInteger
 ]

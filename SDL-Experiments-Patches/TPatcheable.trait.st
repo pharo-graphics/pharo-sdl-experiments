@@ -1,3 +1,6 @@
+"
+I'm an object whose mutations are written as patches. Accessors return the value from a patch, if available, or from the patcheable object, otherwise.
+"
 Trait {
 	#name : #TPatcheable,
 	#instVars : [
@@ -14,6 +17,17 @@ TPatcheable >> applyPatches [
 	self patchesDo: [ :each | each applyPatchTo: self ].
 
 	self privateResetPatch
+]
+
+{ #category : #'as yet unclassified' }
+TPatcheable >> condensePatches [
+
+	patch isNullPatch ifTrue: [ ^self ].
+
+	patch :=
+		FullPatch new
+			patcheableCopy: self copy;
+			yourself
 ]
 
 { #category : #dispatching }
@@ -34,6 +48,13 @@ TPatcheable >> firstPatch [
 TPatcheable >> hasPatches [
 
 	^ patch isNullPatch not
+]
+
+{ #category : #initialization }
+TPatcheable >> initialize [
+
+	super initialize.
+	self initializePatch.
 ]
 
 { #category : #initialization }
@@ -70,7 +91,7 @@ TPatcheable >> patches [
 	^ stream contents
 ]
 
-{ #category : #'private - patching' }
+{ #category : #debugging }
 TPatcheable >> patchesDo: aUnaryBlock [
 	"Evaluate a block on each of my (not null) patches."
 

@@ -28,12 +28,6 @@ NullPatch >> isNullPatch [
 	^ true
 ]
 
-{ #category : #accessing }
-NullPatch >> last [
-
-	^ self errorSubscriptBounds: 0
-]
-
 { #category : #reading }
 NullPatch >> read: aPatcheable at: anInteger [ 
 	
@@ -53,6 +47,12 @@ NullPatch >> sizeOf: aPatcheable [
 ]
 
 { #category : #writing }
+NullPatch >> write: aPatcheable add: aValue at: anInteger [
+
+	aPatcheable linkPatchForAdd: aValue at: anInteger
+]
+
+{ #category : #writing }
 NullPatch >> write: aPatcheable at: anInteger put: aValue [ 
 
 	aPatcheable linkPatchForAt: anInteger put: aValue
@@ -62,4 +62,10 @@ NullPatch >> write: aPatcheable at: anInteger put: aValue [
 NullPatch >> write: aPatcheable instVarAt: anInteger put: aValue [ 
 
 	aPatcheable linkPatchForInstVarAt: anInteger put: aValue
+]
+
+{ #category : #writing }
+NullPatch >> write: aPatcheable removeAt: anInteger [
+
+	aPatcheable linkPatchForRemoveAt: anInteger
 ]

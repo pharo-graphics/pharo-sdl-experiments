@@ -21,7 +21,7 @@ RemoveAtPatch >> read: aPatcheable at: anInteger [
 
 	^ nextPatch
 		read: aPatcheable
-		at: (anInteger <= index
+		at: (anInteger < index
 			   ifTrue: [ anInteger ]
 			   ifFalse: [ anInteger + 1 ])
 ]

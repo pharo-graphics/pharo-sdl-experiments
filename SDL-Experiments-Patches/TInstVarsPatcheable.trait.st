@@ -1,3 +1,6 @@
+"
+I'm a trait for object whose mutations to instance variables are written as patches. Accessors return the value from a patch, if available, or from the patcheable object, otherwise.
+"
 Trait {
 	#name : #TInstVarsPatcheable,
 	#traits : 'TPatcheable',

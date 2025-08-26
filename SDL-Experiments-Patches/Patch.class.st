@@ -9,6 +9,7 @@ Class {
 
 { #category : #accessing }
 Patch >> count [
+	"Answer the number of linked patches. Mostly intended for debugging purposes."
 
 	^ self subclassResponsibility
 ]
@@ -19,52 +20,51 @@ Patch >> isNullPatch [
 	^ false
 ]
 
-{ #category : #accessing }
-Patch >> last [
-
-	^ self subclassResponsibility
-]
-
 { #category : #reading }
 Patch >> read: aPatcheable at: anInteger [
+	"Answer the value of the specified indexed variable (either patched or real value). It is intended for objects with variable layout."
 
 	^ self subclassResponsibility
 ]
 
 { #category : #reading }
 Patch >> read: aPatcheable instVarAt: anInteger [
+	"Answer the value of the specified instance variable (either patched or real value)."
 
 	^ self subclassResponsibility
 ]
 
 { #category : #accessing }
 Patch >> sizeOf: aPatcheable [
+	"Answer the variable size (either patched or real size). It is intended for objects with variable layout."
 
 	^ self subclassResponsibility
 ]
 
 { #category : #writing }
 Patch >> write: aPatcheable add: aValue at: anInteger [
-	"Resizing patches are linked directly"
+	"Insert a value the specified indexed position of a variable patcheable object."
 
-	aPatcheable linkPatchForAdd: aValue at: anInteger
+	self subclassResponsibility
 ]
 
 { #category : #writing }
 Patch >> write: aPatcheable at: anInteger put: aValue [ 
+	"Write the value of the specified indexed variable (either create a patch or update an existing patch). It is intended for objects with variable layout."
 
 	self subclassResponsibility
 ]
 
 { #category : #writing }
 Patch >> write: aPatcheable instVarAt: anInteger put: aValue [ 
+	"Write the value of the specified instance variable (either create a patch or update an existing patch)."
 
 	self subclassResponsibility
 ]
 
 { #category : #writing }
 Patch >> write: aPatcheable removeAt: anInteger [
-	"Resizing patches are linked directly"
+	"Remove the specified indexed position of a variable patcheable object."
 
-	aPatcheable linkPatchForRemoveAt: anInteger
+	self subclassResponsibility
 ]

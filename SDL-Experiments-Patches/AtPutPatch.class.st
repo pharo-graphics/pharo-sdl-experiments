@@ -34,9 +34,35 @@ AtPutPatch >> read: aPatcheable at: anInteger [
 ]
 
 { #category : #writing }
+AtPutPatch >> write: aPatcheable add: aValue at: anInteger [
+
+	"Prevent conflicts"
+	index >= anInteger
+		ifTrue: [
+			aPatcheable
+				condensePatches;
+				add: aValue at: anInteger ]
+		ifFalse: [
+			super write: aPatcheable add: aValue at: anInteger ]
+]
+
+{ #category : #writing }
 AtPutPatch >> write: aPatcheable at: anInteger put: aValue [
 
 	index = anInteger
 		ifTrue: [ writtenValue := aValue ]
 		ifFalse: [ super write: aPatcheable at: anInteger put: aValue ]
+]
+
+{ #category : #writing }
+AtPutPatch >> write: aPatcheable removeAt: anInteger [
+
+	"Prevent conflicts"
+	index <= anInteger
+		ifTrue: [
+			aPatcheable
+				condensePatches;
+				removeAt: anInteger ]
+		ifFalse: [
+			super write: aPatcheable removeAt: anInteger ]
 ]

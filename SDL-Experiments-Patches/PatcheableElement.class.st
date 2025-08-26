@@ -26,13 +26,6 @@ PatcheableElement >> background: anObject [
 	background := anObject
 ]
 
-{ #category : #initialization }
-PatcheableElement >> initialize [
-
-	super initialize.
-	self initializePatch.
-]
-
 { #category : #accessing }
 PatcheableElement >> opacity [
 
