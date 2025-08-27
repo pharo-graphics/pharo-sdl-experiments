@@ -6,7 +6,7 @@ Trait {
 	#instVars : [
 		'patch'
 	],
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #dispatching }

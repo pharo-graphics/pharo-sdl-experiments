@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'nextPatch'
 	],
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #applying }

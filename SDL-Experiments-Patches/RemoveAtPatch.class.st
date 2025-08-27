@@ -4,7 +4,7 @@ I'm a patch to remove certain indexed position of a variable patcheable object.
 Class {
 	#name : #RemoveAtPatch,
 	#superclass : #ResizingPatch,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #printing }

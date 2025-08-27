@@ -1,11 +1,11 @@
 "
-I'm a trait for object whose mutations to instance variables are written as patches. Accessors return the value from a patch, if available, or from the patcheable object, otherwise.
+I'm a trait for objects whose mutations to instance variables are written as patches. Accessors return the value from a patch, if available, or from the patcheable object, otherwise.
 "
 Trait {
 	#name : #TInstVarsPatcheable,
 	#traits : 'TPatcheable',
 	#classTraits : 'TPatcheable classTrait',
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #introspection }

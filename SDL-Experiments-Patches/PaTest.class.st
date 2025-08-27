@@ -1,14 +1,14 @@
 Class {
-	#name : #PatcheableElementTest,
+	#name : #PaTest,
 	#superclass : #TestCase,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Tests'
 }
 
 { #category : #tests }
-PatcheableElementTest >> testAccessors [
+PaTest >> testAccessors [
 
 	| e |
-	e := PatcheableElement new.
+	e := PaTestingElement new.
 	self assert: e opacity isNil.
 	self assert: e background isNil.
 	self deny: e hasPatches.
@@ -65,10 +65,10 @@ PatcheableElementTest >> testAccessors [
 ]
 
 { #category : #'tests - resizing' }
-PatcheableElementTest >> testAddAtConflictingWithAtPut [
+PaTest >> testAddAtConflictingWithAtPut [
 
 	| p |
-	p := PatcheableElement new: 2.
+	p := PaTestingElement new: 2.
 	p at: 1 put: $a.
 	p add: $b at: 1.
 	self assert: (p at: 1) equals: $b.
@@ -81,11 +81,11 @@ PatcheableElementTest >> testAddAtConflictingWithAtPut [
 ]
 
 { #category : #tests }
-PatcheableElementTest >> testCopy [
+PaTest >> testCopy [
 
 	| p q |
 	"Prepare a patcheable with some values applied and some unapplied"
-	p := PatcheableElement new: 3.
+	p := PaTestingElement new: 3.
 	p opacity: 0.1.
 	p at: 1 put: $a.
 	p at: 2 put: $b.
@@ -113,11 +113,11 @@ PatcheableElementTest >> testCopy [
 ]
 
 { #category : #'tests - resizing' }
-PatcheableElementTest >> testCopyWithResize [
+PaTest >> testCopyWithResize [
 
 	| p q |
 	"Prepare a patcheable with some values applied and some unapplied"
-	p := PatcheableElement new: 4.
+	p := PaTestingElement new: 4.
 	p opacity: 0.1.
 	p at: 2 put: $b.
 	p applyPatches.
@@ -143,11 +143,11 @@ PatcheableElementTest >> testCopyWithResize [
 ]
 
 { #category : #'tests - resizing' }
-PatcheableElementTest >> testFullPatch [
+PaTest >> testFullPatch [
 
 	| p q |
 	"Produce a conflict"
-	p := PatcheableElement new: 1.
+	p := PaTestingElement new: 1.
 	p at: 1 put: $b.
 	p addLast: $c.
 	p addFirst: $a.
@@ -163,15 +163,15 @@ PatcheableElementTest >> testFullPatch [
 ]
 
 { #category : #tests }
-PatcheableElementTest >> testInstVarAtPut [
+PaTest >> testInstVarAtPut [
 
 	| e indexOfOpacityInstVar indexOfBackgroundInstVar |
 	indexOfOpacityInstVar :=
-		(PatcheableElement slotNamed: #opacity) index.
+		(PaTestingElement slotNamed: #opacity) index.
 	indexOfBackgroundInstVar :=
-		(PatcheableElement slotNamed: #background) index.
+		(PaTestingElement slotNamed: #background) index.
 	
-	e := PatcheableElement new.
+	e := PaTestingElement new.
 	self assert: (e instVarAt: indexOfOpacityInstVar) isNil.
 	self assert: (e instVarAt: indexOfBackgroundInstVar) isNil.
 	self deny: e hasPatches.
@@ -228,10 +228,10 @@ PatcheableElementTest >> testInstVarAtPut [
 ]
 
 { #category : #tests }
-PatcheableElementTest >> testInstVarNamedPut [
+PaTest >> testInstVarNamedPut [
 
 	| e |
-	e := PatcheableElement new.
+	e := PaTestingElement new.
 	self assert: (e instVarNamed: #opacity) isNil.
 	self assert: (e instVarNamed: #background) isNil.
 	self deny: e hasPatches.
@@ -288,10 +288,10 @@ PatcheableElementTest >> testInstVarNamedPut [
 ]
 
 { #category : #tests }
-PatcheableElementTest >> testInterleavedWrites [
+PaTest >> testInterleavedWrites [
 
 	| e |
-	e := PatcheableElement new: 2.
+	e := PaTestingElement new: 2.
 
 	e opacity: 0.1.
 	e at: 1 put: $a.
@@ -315,10 +315,10 @@ PatcheableElementTest >> testInterleavedWrites [
 ]
 
 { #category : #tests }
-PatcheableElementTest >> testMultipleAtPutReusesPatch [
+PaTest >> testMultipleAtPutReusesPatch [
 
 	| e |
-	e := PatcheableElement new: 2.
+	e := PaTestingElement new: 2.
 	self assert: (e at: 1) isNil.
 	self assert: (e at: 2) isNil.
 	self assert: e patchCount equals: 0.
@@ -355,10 +355,10 @@ PatcheableElementTest >> testMultipleAtPutReusesPatch [
 ]
 
 { #category : #tests }
-PatcheableElementTest >> testMultipleInstVarNamedPutReusesPatch [
+PaTest >> testMultipleInstVarNamedPutReusesPatch [
 
 	| e |
-	e := PatcheableElement new.
+	e := PaTestingElement new.
 	self assert: (e instVarNamed: #opacity) isNil.
 	self assert: e patchCount equals: 0.
 
@@ -372,10 +372,10 @@ PatcheableElementTest >> testMultipleInstVarNamedPutReusesPatch [
 ]
 
 { #category : #tests }
-PatcheableElementTest >> testMultipleMutatorsReusesPatch [
+PaTest >> testMultipleMutatorsReusesPatch [
 
 	| e |
-	e := PatcheableElement new.
+	e := PaTestingElement new.
 	self assert: e opacity isNil.
 	self assert: e patchCount equals: 0.
 
@@ -389,10 +389,10 @@ PatcheableElementTest >> testMultipleMutatorsReusesPatch [
 ]
 
 { #category : #'tests - resizing' }
-PatcheableElementTest >> testRemoveAtConflictingWithAtPut [
+PaTest >> testRemoveAtConflictingWithAtPut [
 
 	| p |
-	p := PatcheableElement new: 2.
+	p := PaTestingElement new: 2.
 	p at: 1 put: $a.
 	p removeAt: 1.
 	p at: 1 put: $c.
@@ -404,10 +404,10 @@ PatcheableElementTest >> testRemoveAtConflictingWithAtPut [
 ]
 
 { #category : #'tests - resizing' }
-PatcheableElementTest >> testRemoveAtConflictingWithAtPut2 [
+PaTest >> testRemoveAtConflictingWithAtPut2 [
 
 	| p |
-	p := PatcheableElement new: 2.
+	p := PaTestingElement new: 2.
 	p at: 1 put: $a.
 	p at: 2 put: $b.
 	p removeAt: 1.
@@ -416,10 +416,10 @@ PatcheableElementTest >> testRemoveAtConflictingWithAtPut2 [
 ]
 
 { #category : #'tests - resizing' }
-PatcheableElementTest >> testRemoveAtConflictingWithAtPut3 [
+PaTest >> testRemoveAtConflictingWithAtPut3 [
 
 	| p |
-	p := PatcheableElement new: 2.
+	p := PaTestingElement new: 2.
 	p at: 2 put: $b.
 	p removeAt: 1.
 	self assert: (p at: 1) equals: $b.
@@ -428,10 +428,10 @@ PatcheableElementTest >> testRemoveAtConflictingWithAtPut3 [
 ]
 
 { #category : #'tests - resizing' }
-PatcheableElementTest >> testResizingPatches [
+PaTest >> testResizingPatches [
 
 	| p q |
-	p := PatcheableElement new: 2.
+	p := PaTestingElement new: 2.
 	p at: 1 put: $a.
 	p at: 2 put: $b.
 	self assertCollection: p asCollection equals: #($a $b).
@@ -497,10 +497,10 @@ PatcheableElementTest >> testResizingPatches [
 ]
 
 { #category : #tests }
-PatcheableElementTest >> testSubscriptOutOfBounds [
+PaTest >> testSubscriptOutOfBounds [
 
 	| e |
-	e := PatcheableElement new: 1.
+	e := PaTestingElement new: 1.
 
 	self should: [ e at: -1 ] raise: SubscriptOutOfBounds.
 	self should: [ e at: 0 ] raise: SubscriptOutOfBounds.

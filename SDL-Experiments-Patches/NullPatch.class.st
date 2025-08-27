@@ -7,7 +7,7 @@ Class {
 	#classInstVars : [
 		'instance'
 	],
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #accessing }

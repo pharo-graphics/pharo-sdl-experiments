@@ -1,7 +1,7 @@
 Class {
 	#name : #ResizingPatch,
 	#superclass : #IndexedPatch,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #applying }

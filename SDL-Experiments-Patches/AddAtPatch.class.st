@@ -4,7 +4,7 @@ I'm a patch to insert a value at certain indexed position of a variable patcheab
 Class {
 	#name : #AddAtPatch,
 	#superclass : #ResizingPatch,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #printing }

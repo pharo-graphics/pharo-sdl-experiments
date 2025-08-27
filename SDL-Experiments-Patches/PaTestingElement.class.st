@@ -2,44 +2,44 @@
 I'm a testing patcheable object that emulates being a scene graph node.
 "
 Class {
-	#name : #PatcheableElement,
+	#name : #PaTestingElement,
 	#superclass : #Object,
 	#type : #variable,
-	#traits : 'TInstVarsPatcheable + TIndexedVarsPatcheable',
-	#classTraits : 'TInstVarsPatcheable classTrait + TIndexedVarsPatcheable classTrait',
+	#traits : 'TInstVarsPatcheable + TResizingPatcheable',
+	#classTraits : 'TInstVarsPatcheable classTrait + TResizingPatcheable classTrait',
 	#instVars : [
-		'#opacity => PatchSlot',
-		'#background => PatchSlot'
+		'#opacity => PaSlot',
+		'#background => PaSlot'
 	],
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Tests'
 }
 
 { #category : #accessing }
-PatcheableElement >> background [
+PaTestingElement >> background [
 
 	^ background
 ]
 
 { #category : #accessing }
-PatcheableElement >> background: anObject [
+PaTestingElement >> background: anObject [
 
 	background := anObject
 ]
 
 { #category : #accessing }
-PatcheableElement >> opacity [
+PaTestingElement >> opacity [
 
 	^ opacity
 ]
 
 { #category : #accessing }
-PatcheableElement >> opacity: anObject [
+PaTestingElement >> opacity: anObject [
 
 	opacity := anObject
 ]
 
 { #category : #printing }
-PatcheableElement >> printOn: aStream [
+PaTestingElement >> printOn: aStream [
 
 	super printOn: aStream.
 	aStream

@@ -4,7 +4,7 @@ I'm a patch to a patcheable object.
 Class {
 	#name : #Patch,
 	#superclass : #Object,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #accessing }

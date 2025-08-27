@@ -4,7 +4,7 @@ I'm a patch to a position in a variable-layout patcheable object.
 Class {
 	#name : #AtPutPatch,
 	#superclass : #IndexedPatch,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #applying }

@@ -4,7 +4,7 @@ I'm a patch to an instance variable of a patcheable object.
 Class {
 	#name : #InstVarAtPutPatch,
 	#superclass : #IndexedPatch,
-	#category : #'SDL-Experiments-Patches'
+	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #applying }
