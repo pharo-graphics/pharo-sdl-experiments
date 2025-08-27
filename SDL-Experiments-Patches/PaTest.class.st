@@ -25,7 +25,7 @@ PaTest >> testAccessors [
 	self assert: e opacity equals: 0.2.
 	self assert: e patchCount equals: 2.
 	self assert: e hasPatches.
-	e discardPatches.
+	e resetPatches.
 	self deny: e hasPatches.
 	self assert: e opacity isNil.
 	self assert: e background isNil.
@@ -43,7 +43,7 @@ PaTest >> testAccessors [
 	e background: Color red.
 	e opacity: 0.4.
 	self assert: e hasPatches.
-	e discardPatches.
+	e resetPatches.
 	self deny: e hasPatches.
 	self assert: e opacity equals: 0.3.
 	self assert: e background equals: Color green.
@@ -188,7 +188,7 @@ PaTest >> testInstVarAtPut [
 	self assert: (e instVarAt: indexOfOpacityInstVar) equals: 0.2.
 	self assert: e patchCount equals: 2.
 	self assert: e hasPatches.
-	e discardPatches.
+	e resetPatches.
 	self deny: e hasPatches.
 	self assert: (e instVarAt: indexOfOpacityInstVar) isNil.
 	self assert: (e instVarAt: indexOfBackgroundInstVar) isNil.
@@ -206,7 +206,7 @@ PaTest >> testInstVarAtPut [
 	e instVarAt: indexOfBackgroundInstVar put: Color red.
 	e instVarAt: indexOfOpacityInstVar put: 0.4.
 	self assert: e hasPatches.
-	e discardPatches.
+	e resetPatches.
 	self deny: e hasPatches.
 	self assert: (e instVarAt: indexOfOpacityInstVar) equals: 0.3.
 	self assert: (e instVarAt: indexOfBackgroundInstVar) equals: Color green.
@@ -248,7 +248,7 @@ PaTest >> testInstVarNamedPut [
 	self assert: (e instVarNamed: #opacity) equals: 0.2.
 	self assert: e patchCount equals: 2.
 	self assert: e hasPatches.
-	e discardPatches.
+	e resetPatches.
 	self deny: e hasPatches.
 	self assert: (e instVarNamed: #opacity) isNil.
 	self assert: (e instVarNamed: #background) isNil.
@@ -266,7 +266,7 @@ PaTest >> testInstVarNamedPut [
 	e instVarNamed: #background put: Color red.
 	e instVarNamed: #opacity put: 0.4.
 	self assert: e hasPatches.
-	e discardPatches.
+	e resetPatches.
 	self deny: e hasPatches.
 	self assert: (e instVarNamed: #opacity) equals: 0.3.
 	self assert: (e instVarNamed: #background) equals: Color green.

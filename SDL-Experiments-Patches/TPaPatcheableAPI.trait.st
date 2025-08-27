@@ -9,17 +9,17 @@ Trait {
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
-{ #category : #dispatching }
+{ #category : #patching }
 TPaPatcheableAPI >> applyPatches [
 
 	patch isNullPatch ifTrue: [ ^ self ].
 
 	self patchesDo: [ :each | each applyPatchTo: self ].
 
-	self privateResetPatch
+	self resetPatches
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #patching }
 TPaPatcheableAPI >> condensePatches [
 
 	patch isNullPatch ifTrue: [ ^self ].
@@ -30,15 +30,7 @@ TPaPatcheableAPI >> condensePatches [
 			yourself
 ]
 
-{ #category : #dispatching }
-TPaPatcheableAPI >> discardPatches [
-
-	patch isNullPatch ifTrue: [ ^ self ].
-
-	self privateResetPatch
-]
-
-{ #category : #'private - patching' }
+{ #category : #patching }
 TPaPatcheableAPI >> firstPatch [
 
 	^ patch
@@ -60,7 +52,7 @@ TPaPatcheableAPI >> initialize [
 { #category : #initialization }
 TPaPatcheableAPI >> initializePatch [
 
-	self privateResetPatch
+	self resetPatches
 ]
 
 { #category : #debugging }
@@ -73,13 +65,13 @@ TPaPatcheableAPI >> inspectionOfPatches: aBuilder [
 		yourself
 ]
 
-{ #category : #'private - patching' }
+{ #category : #patching }
 TPaPatcheableAPI >> patchCount [
 
 	^ patch count
 ]
 
-{ #category : #'private - patching' }
+{ #category : #patching }
 TPaPatcheableAPI >> patches [
 	"Answer an array with all my patches."
 
@@ -91,7 +83,7 @@ TPaPatcheableAPI >> patches [
 	^ stream contents
 ]
 
-{ #category : #debugging }
+{ #category : #patching }
 TPaPatcheableAPI >> patchesDo: aUnaryBlock [
 	"Evaluate a block on each of my (not null) patches."
 
@@ -110,13 +102,11 @@ TPaPatcheableAPI >> postCopy [
 
 	self patchesDo: [ :each | each applyPatchTo: self ].
 
-	self privateResetPatch
+	self resetPatches
 ]
 
-{ #category : #'private - patching' }
-TPaPatcheableAPI >> privateResetPatch [
-
-	self flag: #todo. "Return each to its pool"
+{ #category : #patching }
+TPaPatcheableAPI >> resetPatches [
 
 	patch := PaNullPatch instance
 ]

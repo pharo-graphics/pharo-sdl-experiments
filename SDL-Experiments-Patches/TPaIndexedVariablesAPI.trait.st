@@ -26,7 +26,7 @@ TPaIndexedVariablesAPI >> at: index put: aValue [
 	patch write: self at: index put: aValue
 ]
 
-{ #category : #newtools }
+{ #category : #debugging }
 TPaIndexedVariablesAPI >> inspectionItems: aBuilder [
 	<inspectorPresentationOrder: 0 title: 'Items'> 
 

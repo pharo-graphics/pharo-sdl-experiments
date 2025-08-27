@@ -52,7 +52,7 @@ TPaResizeAPI >> copy [
 	1 to: class instSize do: [ :index |
 		newObject basicInstVarAt: index put: (self instVarAt: index) ].
 
-	newObject privateResetPatch.
+	newObject resetPatches.
 	
 	^ newObject
 ]
