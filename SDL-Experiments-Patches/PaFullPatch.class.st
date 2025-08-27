@@ -1,6 +1,6 @@
 Class {
-	#name : #FullPatch,
-	#superclass : #Patch,
+	#name : #PaFullPatch,
+	#superclass : #PaPatch,
 	#instVars : [
 		'patcheableCopy'
 	],
@@ -8,13 +8,13 @@ Class {
 }
 
 { #category : #accessing }
-FullPatch >> count [
+PaFullPatch >> count [
 
 	^ 1
 ]
 
 { #category : #printing }
-FullPatch >> descriptionFor: aPatcheable [
+PaFullPatch >> descriptionFor: aPatcheable [
 
 	^ String streamContents: [ :stream |
 			stream
@@ -24,67 +24,67 @@ FullPatch >> descriptionFor: aPatcheable [
 ]
 
 { #category : #testing }
-FullPatch >> hasNextPatch [
+PaFullPatch >> hasNextPatch [
 
 	^ false
 ]
 
 { #category : #accessing }
-FullPatch >> nextPatch [
+PaFullPatch >> nextPatch [
 	
-	^ NullPatch instance
+	^ PaNullPatch instance
 ]
 
 { #category : #accessing }
-FullPatch >> patcheableCopy [
+PaFullPatch >> patcheableCopy [
 
 	^ patcheableCopy
 ]
 
 { #category : #accessing }
-FullPatch >> patcheableCopy: anObject [
+PaFullPatch >> patcheableCopy: anObject [
 
 	patcheableCopy := anObject
 ]
 
 { #category : #reading }
-FullPatch >> read: aPatcheable at: anInteger [
+PaFullPatch >> read: aPatcheable at: anInteger [
 
 	^ patcheableCopy at: anInteger
 ]
 
 { #category : #reading }
-FullPatch >> read: aPatcheable instVarAt: anInteger [
+PaFullPatch >> read: aPatcheable instVarAt: anInteger [
 
 	^ patcheableCopy instVarAt: anInteger
 ]
 
 { #category : #public }
-FullPatch >> sizeOf: aPatcheable [
+PaFullPatch >> sizeOf: aPatcheable [
 
 	^ patcheableCopy size
 ]
 
 { #category : #writing }
-FullPatch >> write: aPatcheable add: aValue at: anInteger [
+PaFullPatch >> write: aPatcheable add: aValue at: anInteger [
 
 	patcheableCopy add: aValue at: anInteger
 ]
 
 { #category : #writing }
-FullPatch >> write: aPatcheable at: anInteger put: aValue [
+PaFullPatch >> write: aPatcheable at: anInteger put: aValue [
 
 	patcheableCopy at: anInteger put: aValue
 ]
 
 { #category : #writing }
-FullPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
+PaFullPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
 
 	patcheableCopy instVarAt: anInteger put: aValue
 ]
 
 { #category : #writing }
-FullPatch >> write: aPatcheable removeAt: anInteger [
+PaFullPatch >> write: aPatcheable removeAt: anInteger [
 
 	patcheableCopy removeAt: anInteger
 ]

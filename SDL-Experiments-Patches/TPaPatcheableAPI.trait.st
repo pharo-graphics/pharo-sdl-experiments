@@ -2,7 +2,7 @@
 I'm an object whose mutations are written as patches. Accessors return the value from a patch, if available, or from the patcheable object, otherwise.
 "
 Trait {
-	#name : #TPatcheable,
+	#name : #TPaPatcheableAPI,
 	#instVars : [
 		'patch'
 	],
@@ -10,7 +10,7 @@ Trait {
 }
 
 { #category : #dispatching }
-TPatcheable >> applyPatches [
+TPaPatcheableAPI >> applyPatches [
 
 	patch isNullPatch ifTrue: [ ^ self ].
 
@@ -20,18 +20,18 @@ TPatcheable >> applyPatches [
 ]
 
 { #category : #'as yet unclassified' }
-TPatcheable >> condensePatches [
+TPaPatcheableAPI >> condensePatches [
 
 	patch isNullPatch ifTrue: [ ^self ].
 
 	patch :=
-		FullPatch new
+		PaFullPatch new
 			patcheableCopy: self copy;
 			yourself
 ]
 
 { #category : #dispatching }
-TPatcheable >> discardPatches [
+TPaPatcheableAPI >> discardPatches [
 
 	patch isNullPatch ifTrue: [ ^ self ].
 
@@ -39,32 +39,32 @@ TPatcheable >> discardPatches [
 ]
 
 { #category : #'private - patching' }
-TPatcheable >> firstPatch [
+TPaPatcheableAPI >> firstPatch [
 
 	^ patch
 ]
 
 { #category : #testing }
-TPatcheable >> hasPatches [
+TPaPatcheableAPI >> hasPatches [
 
 	^ patch isNullPatch not
 ]
 
 { #category : #initialization }
-TPatcheable >> initialize [
+TPaPatcheableAPI >> initialize [
 
 	super initialize.
 	self initializePatch.
 ]
 
 { #category : #initialization }
-TPatcheable >> initializePatch [
+TPaPatcheableAPI >> initializePatch [
 
 	self privateResetPatch
 ]
 
 { #category : #debugging }
-TPatcheable >> inspectionOfPatches: aBuilder [
+TPaPatcheableAPI >> inspectionOfPatches: aBuilder [
 	<inspectorPresentationOrder: 1 title: 'Patches'>
 
 	^ aBuilder newList
@@ -74,13 +74,13 @@ TPatcheable >> inspectionOfPatches: aBuilder [
 ]
 
 { #category : #'private - patching' }
-TPatcheable >> patchCount [
+TPaPatcheableAPI >> patchCount [
 
 	^ patch count
 ]
 
 { #category : #'private - patching' }
-TPatcheable >> patches [
+TPaPatcheableAPI >> patches [
 	"Answer an array with all my patches."
 
 	| stream |
@@ -92,7 +92,7 @@ TPatcheable >> patches [
 ]
 
 { #category : #debugging }
-TPatcheable >> patchesDo: aUnaryBlock [
+TPaPatcheableAPI >> patchesDo: aUnaryBlock [
 	"Evaluate a block on each of my (not null) patches."
 
 	| current |
@@ -103,7 +103,7 @@ TPatcheable >> patchesDo: aUnaryBlock [
 ]
 
 { #category : #copying }
-TPatcheable >> postCopy [
+TPaPatcheableAPI >> postCopy [
 	"The copy has the patches applied. Do not return patches to pool since we assume they are owned by the source object."
 
 	patch isNullPatch ifTrue: [ ^ self ].
@@ -114,9 +114,9 @@ TPatcheable >> postCopy [
 ]
 
 { #category : #'private - patching' }
-TPatcheable >> privateResetPatch [
+TPaPatcheableAPI >> privateResetPatch [
 
 	self flag: #todo. "Return each to its pool"
 
-	patch := NullPatch instance
+	patch := PaNullPatch instance
 ]

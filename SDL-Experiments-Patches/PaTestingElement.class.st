@@ -5,8 +5,8 @@ Class {
 	#name : #PaTestingElement,
 	#superclass : #Object,
 	#type : #variable,
-	#traits : 'TInstVarsPatcheable + TResizingPatcheable',
-	#classTraits : 'TInstVarsPatcheable classTrait + TResizingPatcheable classTrait',
+	#traits : 'TPaInstanceVariablesAPI + TPaResizeAPI',
+	#classTraits : 'TPaInstanceVariablesAPI classTrait + TPaResizeAPI classTrait',
 	#instVars : [
 		'#opacity => PaSlot',
 		'#background => PaSlot'

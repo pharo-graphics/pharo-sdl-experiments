@@ -153,7 +153,7 @@ PaTest >> testFullPatch [
 	p addFirst: $a.
 	p add: $d.
 	
-	self assert: (p patches collect: #class) equals: { FullPatch }.
+	self assert: (p patches collect: #class) equals: { PaFullPatch }.
 	
 	q := p copy.
 	self assert: q size equals: 4.

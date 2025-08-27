@@ -2,19 +2,19 @@
 I'm a patch to a position in a variable-layout patcheable object.
 "
 Class {
-	#name : #AtPutPatch,
-	#superclass : #IndexedPatch,
+	#name : #PaAtPutPatch,
+	#superclass : #PaIndexedPatch,
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #applying }
-AtPutPatch >> applyPatchTo: aPatcheable [
+PaAtPutPatch >> applyPatchTo: aPatcheable [
 
 	aPatcheable basicAt: index put: writtenValue
 ]
 
 { #category : #printing }
-AtPutPatch >> descriptionFor: aPatcheable [
+PaAtPutPatch >> descriptionFor: aPatcheable [
 
 	^ String streamContents: [ :stream |
 			stream
@@ -26,7 +26,7 @@ AtPutPatch >> descriptionFor: aPatcheable [
 ]
 
 { #category : #reading }
-AtPutPatch >> read: aPatcheable at: anInteger [
+PaAtPutPatch >> read: aPatcheable at: anInteger [
 
 	^ index = anInteger
 		ifTrue: [ writtenValue ]
@@ -34,7 +34,7 @@ AtPutPatch >> read: aPatcheable at: anInteger [
 ]
 
 { #category : #writing }
-AtPutPatch >> write: aPatcheable add: aValue at: anInteger [
+PaAtPutPatch >> write: aPatcheable add: aValue at: anInteger [
 
 	"Prevent conflicts"
 	index >= anInteger
@@ -47,7 +47,7 @@ AtPutPatch >> write: aPatcheable add: aValue at: anInteger [
 ]
 
 { #category : #writing }
-AtPutPatch >> write: aPatcheable at: anInteger put: aValue [
+PaAtPutPatch >> write: aPatcheable at: anInteger put: aValue [
 
 	index = anInteger
 		ifTrue: [ writtenValue := aValue ]
@@ -55,7 +55,7 @@ AtPutPatch >> write: aPatcheable at: anInteger put: aValue [
 ]
 
 { #category : #writing }
-AtPutPatch >> write: aPatcheable removeAt: anInteger [
+PaAtPutPatch >> write: aPatcheable removeAt: anInteger [
 
 	"Prevent conflicts"
 	index <= anInteger

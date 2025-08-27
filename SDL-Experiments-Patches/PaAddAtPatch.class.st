@@ -2,13 +2,13 @@
 I'm a patch to insert a value at certain indexed position of a variable patcheable object.
 "
 Class {
-	#name : #AddAtPatch,
-	#superclass : #ResizingPatch,
+	#name : #PaAddAtPatch,
+	#superclass : #PaResizingPatch,
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #printing }
-AddAtPatch >> descriptionFor: aPatcheable [
+PaAddAtPatch >> descriptionFor: aPatcheable [
 
 	^ String streamContents: [ :stream |
 			stream
@@ -19,7 +19,7 @@ AddAtPatch >> descriptionFor: aPatcheable [
 ]
 
 { #category : #reading }
-AddAtPatch >> read: aPatcheable at: anInteger [
+PaAddAtPatch >> read: aPatcheable at: anInteger [
 
 	anInteger = index ifTrue: [ ^ writtenValue ].
 
@@ -31,7 +31,7 @@ AddAtPatch >> read: aPatcheable at: anInteger [
 ]
 
 { #category : #public }
-AddAtPatch >> sizeOf: aPatcheable [
+PaAddAtPatch >> sizeOf: aPatcheable [
 
 	^ (super sizeOf: aPatcheable) + 1
 ]

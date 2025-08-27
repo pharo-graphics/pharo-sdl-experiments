@@ -2,13 +2,13 @@
 I'm a patch to remove certain indexed position of a variable patcheable object.
 "
 Class {
-	#name : #RemoveAtPatch,
-	#superclass : #ResizingPatch,
+	#name : #PaRemoveAtPatch,
+	#superclass : #PaResizingPatch,
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #printing }
-RemoveAtPatch >> descriptionFor: aPatcheable [
+PaRemoveAtPatch >> descriptionFor: aPatcheable [
 
 	^ String streamContents: [ :stream |
 			stream
@@ -17,7 +17,7 @@ RemoveAtPatch >> descriptionFor: aPatcheable [
 ]
 
 { #category : #reading }
-RemoveAtPatch >> read: aPatcheable at: anInteger [
+PaRemoveAtPatch >> read: aPatcheable at: anInteger [
 
 	^ nextPatch
 		read: aPatcheable
@@ -27,7 +27,7 @@ RemoveAtPatch >> read: aPatcheable at: anInteger [
 ]
 
 { #category : #public }
-RemoveAtPatch >> sizeOf: aPatcheable [
+PaRemoveAtPatch >> sizeOf: aPatcheable [
 
 	^ (super sizeOf: aPatcheable) - 1
 ]

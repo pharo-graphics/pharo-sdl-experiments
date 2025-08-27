@@ -2,19 +2,19 @@
 I'm a patch to an instance variable of a patcheable object.
 "
 Class {
-	#name : #InstVarAtPutPatch,
-	#superclass : #IndexedPatch,
+	#name : #PaInstVarAtPutPatch,
+	#superclass : #PaIndexedPatch,
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
 { #category : #applying }
-InstVarAtPutPatch >> applyPatchTo: aPatcheable [
+PaInstVarAtPutPatch >> applyPatchTo: aPatcheable [
 
 	aPatcheable basicInstVarAt: index put: writtenValue
 ]
 
 { #category : #printing }
-InstVarAtPutPatch >> descriptionFor: aPatcheable [
+PaInstVarAtPutPatch >> descriptionFor: aPatcheable [
 
 	^ String streamContents: [ :stream |
 			| slotName |
@@ -27,7 +27,7 @@ InstVarAtPutPatch >> descriptionFor: aPatcheable [
 ]
 
 { #category : #reading }
-InstVarAtPutPatch >> read: aPatcheable instVarAt: anInteger [
+PaInstVarAtPutPatch >> read: aPatcheable instVarAt: anInteger [
 
 	^ index = anInteger
 		ifTrue: [ writtenValue ]
@@ -35,7 +35,7 @@ InstVarAtPutPatch >> read: aPatcheable instVarAt: anInteger [
 ]
 
 { #category : #writing }
-InstVarAtPutPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
+PaInstVarAtPutPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
 
 	index = anInteger
 		ifTrue: [ writtenValue := aValue ]
