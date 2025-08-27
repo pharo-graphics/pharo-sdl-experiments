@@ -17,7 +17,7 @@ TPaResizeAPI >> add: anObject [
 { #category : #accessing }
 TPaResizeAPI >> add: aValue at: index [
 
-	patch write: self add: aValue at: index
+	self firstPatch write: self add: aValue at: index
 ]
 
 { #category : #adding }
@@ -63,12 +63,11 @@ TPaResizeAPI >> linkPatchForAdd: aValue at: anInteger [
 	(anInteger between: 1 and: self size + 1) ifFalse: [
 		^ self errorSubscriptBounds: anInteger ].
 
-	patch :=
-		PaAddAtPatch new
+	self linkPatch:
+		(PaAddAtPatch new
 			index: anInteger;
 			writtenValue: aValue;
-			nextPatch: patch;
-			yourself
+			yourself)
 ]
 
 { #category : #private }
@@ -77,22 +76,21 @@ TPaResizeAPI >> linkPatchForRemoveAt: anInteger [
 	(anInteger between: 1 and: self size) ifFalse: [
 		^ self errorSubscriptBounds: anInteger ].
 
-	patch :=
-		PaRemoveAtPatch new
+	self linkPatch:
+		(PaRemoveAtPatch new
 			index: anInteger;
-			nextPatch: patch;
-			yourself
+			yourself)
 ]
 
 { #category : #accessing }
 TPaResizeAPI >> removeAt: index [
 
-	patch write: self removeAt: index
+	self firstPatch write: self removeAt: index
 ]
 
 { #category : #accessing }
 TPaResizeAPI >> size [
 	"Answer the number of indexable variables in the receiver, taking into account the patches which may add or remove positions."
 
-	^ patch sizeOf: self
+	^ self firstPatch sizeOf: self
 ]

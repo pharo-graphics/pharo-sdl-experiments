@@ -36,6 +36,11 @@ PaFullPatch >> nextPatch [
 ]
 
 { #category : #accessing }
+PaFullPatch >> nextPatch: aPatch [
+	"Ignore as I replace any other patch"
+]
+
+{ #category : #accessing }
 PaFullPatch >> patcheableCopy [
 
 	^ patcheableCopy

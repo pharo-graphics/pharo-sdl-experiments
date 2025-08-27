@@ -23,23 +23,22 @@ TPaInstanceVariablesAPI >> basicInstVarAt: index put: anObject [
 { #category : #introspection }
 TPaInstanceVariablesAPI >> instVarAt: index [
 
-	^ patch read: self instVarAt: index
+	^ self firstPatch read: self instVarAt: index
 ]
 
 { #category : #introspection }
 TPaInstanceVariablesAPI >> instVarAt: index put: aValue [
 
-	patch write: self instVarAt: index put: aValue
+	self firstPatch write: self instVarAt: index put: aValue
 ]
 
 { #category : #private }
 TPaInstanceVariablesAPI >> linkPatchForInstVarAt: anInteger put: aValue [
 	"Add a patch assuming there wasn't a linked matching patch."
 
-	patch :=
-		PaInstVarAtPutPatch new
+	self linkPatch:
+		(PaInstVarAtPutPatch new
 			index: anInteger;
 			writtenValue: aValue;
-			nextPatch: patch;
-			yourself
+			yourself)
 ]

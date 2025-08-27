@@ -12,8 +12,6 @@ Trait {
 { #category : #patching }
 TPaPatcheableAPI >> applyPatches [
 
-	patch isNullPatch ifTrue: [ ^ self ].
-
 	self patchesDo: [ :each | each applyPatchTo: self ].
 
 	self resetPatches
@@ -22,37 +20,24 @@ TPaPatcheableAPI >> applyPatches [
 { #category : #patching }
 TPaPatcheableAPI >> condensePatches [
 
-	patch isNullPatch ifTrue: [ ^self ].
+	self hasPatches ifFalse: [ ^ self ].
 
-	patch :=
-		PaFullPatch new
+	self linkPatch:
+		(PaFullPatch new
 			patcheableCopy: self copy;
-			yourself
+			yourself)
 ]
 
 { #category : #patching }
 TPaPatcheableAPI >> firstPatch [
 
-	^ patch
+	^ patch ifNil: [ PaNullPatch instance ]
 ]
 
 { #category : #testing }
 TPaPatcheableAPI >> hasPatches [
 
-	^ patch isNullPatch not
-]
-
-{ #category : #initialization }
-TPaPatcheableAPI >> initialize [
-
-	super initialize.
-	self initializePatch.
-]
-
-{ #category : #initialization }
-TPaPatcheableAPI >> initializePatch [
-
-	self resetPatches
+	^ patch notNil
 ]
 
 { #category : #debugging }
@@ -66,9 +51,16 @@ TPaPatcheableAPI >> inspectionOfPatches: aBuilder [
 ]
 
 { #category : #patching }
+TPaPatcheableAPI >> linkPatch: aLinkPatch [
+	
+	aLinkPatch nextPatch: self firstPatch.
+	patch := aLinkPatch
+]
+
+{ #category : #patching }
 TPaPatcheableAPI >> patchCount [
 
-	^ patch count
+	^ self firstPatch count
 ]
 
 { #category : #patching }
@@ -88,6 +80,8 @@ TPaPatcheableAPI >> patchesDo: aUnaryBlock [
 	"Evaluate a block on each of my (not null) patches."
 
 	| current |
+	patch ifNil: [ ^ self ].
+
 	current := patch.
 	[ current isNullPatch ] whileFalse: [
 		aUnaryBlock value: current.
@@ -96,17 +90,13 @@ TPaPatcheableAPI >> patchesDo: aUnaryBlock [
 
 { #category : #copying }
 TPaPatcheableAPI >> postCopy [
-	"The copy has the patches applied. Do not return patches to pool since we assume they are owned by the source object."
+	"The copy has the patches applied. Note: patches are owned by the source object."
 
-	patch isNullPatch ifTrue: [ ^ self ].
-
-	self patchesDo: [ :each | each applyPatchTo: self ].
-
-	self resetPatches
+	self applyPatches
 ]
 
 { #category : #patching }
 TPaPatcheableAPI >> resetPatches [
 
-	patch := PaNullPatch instance
+	patch := nil
 ]

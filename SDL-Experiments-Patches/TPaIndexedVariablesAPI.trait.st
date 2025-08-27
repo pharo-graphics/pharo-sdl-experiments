@@ -17,13 +17,13 @@ TPaIndexedVariablesAPI >> asCollection [
 { #category : #accessing }
 TPaIndexedVariablesAPI >> at: index [
 
-	^ patch read: self at: index
+	^ self firstPatch read: self at: index
 ]
 
 { #category : #accessing }
 TPaIndexedVariablesAPI >> at: index put: aValue [
 
-	patch write: self at: index put: aValue
+	self firstPatch write: self at: index put: aValue
 ]
 
 { #category : #debugging }
@@ -40,10 +40,9 @@ TPaIndexedVariablesAPI >> linkPatchForAt: anInteger put: aValue [
 	(anInteger between: 1 and: self size) ifFalse: [
 		^ self errorSubscriptBounds: anInteger ].
 
-	patch :=
-		PaAtPutPatch new
+	self linkPatch:
+		(PaAtPutPatch new
 			index: anInteger;
 			writtenValue: aValue;
-			nextPatch: patch;
-			yourself
+			yourself)
 ]

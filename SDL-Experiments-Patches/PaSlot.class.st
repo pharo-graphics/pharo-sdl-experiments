@@ -20,5 +20,8 @@ PaSlot >> write: aValue to: aPatcheable [
 	"Write the value in a patch. In the case there is already a patch for my index, override its value. Otherwise, a new patch will be used."
 	<reflection: 'Object Modification - State modification'>
 
-	aPatcheable firstPatch write: aPatcheable instVarAt: index put: aValue
+	aPatcheable firstPatch
+		write: aPatcheable
+		instVarAt: index
+		put: aValue
 ]
