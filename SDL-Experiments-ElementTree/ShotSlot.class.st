@@ -1,5 +1,5 @@
 "
-I'm a Slot to ensure immutability of a shot when it's not draft anymore.
+I'm a Slot to ensure immutability of a shot when it's completed, and so not draft anymore.
 "
 Class {
 	#name : #ShotSlot,

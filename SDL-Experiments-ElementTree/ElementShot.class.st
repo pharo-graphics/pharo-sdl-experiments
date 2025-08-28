@@ -1,5 +1,5 @@
 "
-I am an immutable representation a scene graph element.
+I am a shot representation a scene graph element.
 
 See comment in my superclass.
 "
@@ -27,7 +27,7 @@ ElementShot >> background: aColor [
 ]
 
 { #category : #initialization }
-ElementShot >> initializeInstanceVariablesFrom: sourceObject [
+ElementShot >> copyInstanceVariablesFrom: sourceObject [
 
 	background := sourceObject background.
 	opacity := sourceObject opacity

@@ -130,24 +130,24 @@ ElementTest >> testIsDraft [
 	child2 := root children second.
 	grandChild := child1 children first.
 
-	self deny: root freshShot isDraft.
-	self deny: child1 freshShot isDraft.
-	self deny: child2 freshShot isDraft.
-	self deny: grandChild freshShot isDraft.
+	self deny: root activeShot isDraft.
+	self deny: child1 activeShot isDraft.
+	self deny: child2 activeShot isDraft.
+	self deny: grandChild activeShot isDraft.
 
 	child1 opacity: 0.1.
 	
-	self assert: root freshShot isDraft.
-	self assert: child1 freshShot isDraft.
-	self deny: child2 freshShot isDraft.
-	self deny: grandChild freshShot isDraft.
+	self assert: root activeShot isDraft.
+	self assert: child1 activeShot isDraft.
+	self deny: child2 activeShot isDraft.
+	self deny: grandChild activeShot isDraft.
 
 	root commitWithAllChildren.
 
-	self deny: root freshShot isDraft.
-	self deny: child1 freshShot isDraft.
-	self deny: child2 freshShot isDraft.
-	self deny: grandChild freshShot isDraft
+	self deny: root activeShot isDraft.
+	self deny: child1 activeShot isDraft.
+	self deny: child2 activeShot isDraft.
+	self deny: grandChild activeShot isDraft
 ]
 
 { #category : #tests }
@@ -155,39 +155,39 @@ ElementTest >> testMutators [
 
 	| initialShot root child1 grandChild |
 	root := self newRootWithTwoChildrenAndGrandChild.
-	initialShot := root commitShot.
+	initialShot := root completedShot.
 	child1 := root children first.
 	grandChild := child1 children first.
 
-	root withAllChildrenDo: [ :each | self deny: each freshShot isDraft ].
+	root withAllChildrenDo: [ :each | self deny: each activeShot isDraft ].
 
 
 	"Set a color in first child"
 	child1 background: Color blue.
 	self assert: child1 background equals: Color blue.
 
-	"After mutation, the commit shots are the same, but fresh shot did change."
+	"After mutation, the commit shots are the same, but active shot did change."
 	self
-		assert: child1 commitShot
+		assert: child1 completedShot
 		identicalTo: initialShot children first.
 	self
-		deny: child1 freshShot
+		deny: child1 activeShot
 		identicalTo: initialShot children first.
 	
-	self assert: root freshShot isDraft.
-	self assert: child1 freshShot isDraft.
+	self assert: root activeShot isDraft.
+	self assert: child1 activeShot isDraft.
 	child1 commitWithAllParents.
-	root withAllChildrenDo: [ :each | self deny: each freshShot isDraft ].
+	root withAllChildrenDo: [ :each | self deny: each activeShot isDraft ].
 	self
-		deny: child1 commitShot
+		deny: child1 completedShot
 		identicalTo: initialShot children first.
 
 	"Both the sibling and the grand-child elements keep same shot"
 	self
-		assert: root children second freshShot
+		assert: root children second activeShot
 		identicalTo: initialShot children second.
 	self
-		assert: grandChild freshShot
+		assert: grandChild activeShot
 		identicalTo: initialShot children first children first.
 
 
