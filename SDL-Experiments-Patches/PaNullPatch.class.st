@@ -49,23 +49,23 @@ PaNullPatch >> sizeOf: aPatcheable [
 { #category : #writing }
 PaNullPatch >> write: aPatcheable add: aValue at: anInteger [
 
-	aPatcheable linkPatchForAdd: aValue at: anInteger
+	aPatcheable addPatchForAdd: aValue at: anInteger
 ]
 
 { #category : #writing }
 PaNullPatch >> write: aPatcheable at: anInteger put: aValue [ 
 
-	aPatcheable linkPatchForAt: anInteger put: aValue
+	aPatcheable addPatchForAt: anInteger put: aValue
 ]
 
 { #category : #writing }
 PaNullPatch >> write: aPatcheable instVarAt: anInteger put: aValue [ 
 
-	aPatcheable linkPatchForInstVarAt: anInteger put: aValue
+	aPatcheable addPatchForInstVarAt: anInteger put: aValue
 ]
 
 { #category : #writing }
 PaNullPatch >> write: aPatcheable removeAt: anInteger [
 
-	aPatcheable linkPatchForRemoveAt: anInteger
+	aPatcheable addPatchForRemoveAt: anInteger
 ]

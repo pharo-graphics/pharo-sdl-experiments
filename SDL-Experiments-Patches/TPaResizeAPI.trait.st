@@ -32,6 +32,31 @@ TPaResizeAPI >> addLast: anObject [
 	self add: anObject at: self size + 1
 ]
 
+{ #category : #private }
+TPaResizeAPI >> addPatchForAdd: aValue at: anInteger [ 
+	
+	(anInteger between: 1 and: self size + 1) ifFalse: [
+		^ self errorSubscriptBounds: anInteger ].
+
+	self addPatchFirst:
+		(PaAddAtPatch new
+			index: anInteger;
+			writtenValue: aValue;
+			yourself)
+]
+
+{ #category : #private }
+TPaResizeAPI >> addPatchForRemoveAt: anInteger [
+	
+	(anInteger between: 1 and: self size) ifFalse: [
+		^ self errorSubscriptBounds: anInteger ].
+
+	self addPatchFirst:
+		(PaRemoveAtPatch new
+			index: anInteger;
+			yourself)
+]
+
 { #category : #copying }
 TPaResizeAPI >> copy [
 
@@ -55,31 +80,6 @@ TPaResizeAPI >> copy [
 	newObject resetPatches.
 	
 	^ newObject
-]
-
-{ #category : #private }
-TPaResizeAPI >> linkPatchForAdd: aValue at: anInteger [ 
-	
-	(anInteger between: 1 and: self size + 1) ifFalse: [
-		^ self errorSubscriptBounds: anInteger ].
-
-	self linkPatch:
-		(PaAddAtPatch new
-			index: anInteger;
-			writtenValue: aValue;
-			yourself)
-]
-
-{ #category : #private }
-TPaResizeAPI >> linkPatchForRemoveAt: anInteger [
-	
-	(anInteger between: 1 and: self size) ifFalse: [
-		^ self errorSubscriptBounds: anInteger ].
-
-	self linkPatch:
-		(PaRemoveAtPatch new
-			index: anInteger;
-			yourself)
 ]
 
 { #category : #accessing }

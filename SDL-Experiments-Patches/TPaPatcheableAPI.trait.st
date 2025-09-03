@@ -9,6 +9,43 @@ Trait {
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
+{ #category : #accessing }
+TPaPatcheableAPI classSide >> patcheableSlotIndices [
+
+	| result |
+	result := OrderedCollection new.
+	self classLayout allSlotsDo: [ :each |
+		each class = PaSlot ifTrue: [ result add: each index ] ].
+	^ result
+]
+
+{ #category : #accessing }
+TPaPatcheableAPI classSide >> patcheableSlotNames [
+
+	| result |
+	result := OrderedCollection new.
+	self classLayout allSlotsDo: [ :each |
+		each class = PaSlot ifTrue: [ result add: each name ] ].
+	^ result
+]
+
+{ #category : #accessing }
+TPaPatcheableAPI classSide >> patcheableSlots [
+
+	| result |
+	result := OrderedCollection new.
+	self classLayout allSlotsDo: [ :each |
+		each class = PaSlot ifTrue: [ result add: each ] ].
+	^ result
+]
+
+{ #category : #patching }
+TPaPatcheableAPI >> addPatchFirst: aLinkPatch [
+	
+	aLinkPatch nextPatch: self firstPatch.
+	patch := aLinkPatch
+]
+
 { #category : #patching }
 TPaPatcheableAPI >> applyPatches [
 
@@ -22,7 +59,7 @@ TPaPatcheableAPI >> condensePatches [
 
 	self hasPatches ifFalse: [ ^ self ].
 
-	self linkPatch:
+	self addPatchFirst:
 		(PaFullPatch new
 			patcheableCopy: self copy;
 			yourself)
@@ -48,13 +85,6 @@ TPaPatcheableAPI >> inspectionOfPatches: aBuilder [
 		items: self patches;
 		display: [ :each | each descriptionFor: self ]
 		yourself
-]
-
-{ #category : #patching }
-TPaPatcheableAPI >> linkPatch: aLinkPatch [
-	
-	aLinkPatch nextPatch: self firstPatch.
-	patch := aLinkPatch
 ]
 
 { #category : #patching }

@@ -8,6 +8,20 @@ Trait {
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
+{ #category : #private }
+TPaIndexedVariablesAPI >> addPatchForAt: anInteger put: aValue [
+	"Add a patch assuming there wasn't a linked matching patch."
+
+	(anInteger between: 1 and: self size) ifFalse: [
+		^ self errorSubscriptBounds: anInteger ].
+
+	self addPatchFirst:
+		(PaAtPutPatch new
+			index: anInteger;
+			writtenValue: aValue;
+			yourself)
+]
+
 { #category : #converting }
 TPaIndexedVariablesAPI >> asCollection [
 
@@ -31,18 +45,4 @@ TPaIndexedVariablesAPI >> inspectionItems: aBuilder [
 	<inspectorPresentationOrder: 0 title: 'Items'> 
 
 	^ self asCollection inspectionItems: aBuilder
-]
-
-{ #category : #private }
-TPaIndexedVariablesAPI >> linkPatchForAt: anInteger put: aValue [
-	"Add a patch assuming there wasn't a linked matching patch."
-
-	(anInteger between: 1 and: self size) ifFalse: [
-		^ self errorSubscriptBounds: anInteger ].
-
-	self linkPatch:
-		(PaAtPutPatch new
-			index: anInteger;
-			writtenValue: aValue;
-			yourself)
 ]

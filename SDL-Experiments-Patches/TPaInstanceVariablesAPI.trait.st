@@ -8,6 +8,17 @@ Trait {
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
+{ #category : #private }
+TPaInstanceVariablesAPI >> addPatchForInstVarAt: anInteger put: aValue [
+	"Add a patch assuming there wasn't a linked matching patch."
+
+	self addPatchFirst:
+		(PaInstVarAtPutPatch new
+			index: anInteger;
+			writtenValue: aValue;
+			yourself)
+]
+
 { #category : #introspection }
 TPaInstanceVariablesAPI >> basicInstVarAt: index [
 
@@ -30,15 +41,4 @@ TPaInstanceVariablesAPI >> instVarAt: index [
 TPaInstanceVariablesAPI >> instVarAt: index put: aValue [
 
 	self firstPatch write: self instVarAt: index put: aValue
-]
-
-{ #category : #private }
-TPaInstanceVariablesAPI >> linkPatchForInstVarAt: anInteger put: aValue [
-	"Add a patch assuming there wasn't a linked matching patch."
-
-	self linkPatch:
-		(PaInstVarAtPutPatch new
-			index: anInteger;
-			writtenValue: aValue;
-			yourself)
 ]
