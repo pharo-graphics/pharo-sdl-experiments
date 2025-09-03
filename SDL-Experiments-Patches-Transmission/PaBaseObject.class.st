@@ -12,6 +12,29 @@ PaBaseObject class >> soilPersistentInstVars [
 	^ self patcheableSlotNames
 ]
 
+{ #category : #printing }
+PaBaseObject >> printBasicOn: aStream [
+
+	aStream
+		nextPutAll: '#patches: ';
+		print: self patchCount
+]
+
+{ #category : #printing }
+PaBaseObject >> printDetailsOn: aStream [
+]
+
+{ #category : #printing }
+PaBaseObject >> printOn: aStream [
+
+	super printOn: aStream.
+	aStream nextPut: $(.
+	self printBasicOn: aStream.
+	aStream space.
+	self printDetailsOn: aStream.
+	aStream nextPut: $)
+]
+
 { #category : #serialization }
 PaBaseObject >> soilBasicSerialize: serializer [
 	"Delegate serialization to the class layout"

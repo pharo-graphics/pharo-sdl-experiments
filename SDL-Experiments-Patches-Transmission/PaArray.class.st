@@ -30,3 +30,13 @@ PaArray >> copyWith: anObject [
 
 	^ copy
 ]
+
+{ #category : #printing }
+PaArray >> printDetailsOn: aStream [
+
+	aStream nextPutAll: 'items: '.
+
+	self withIndexDo: [ :element :index |
+		aStream print: element.
+		index = self size ifFalse: [ aStream space ] ]
+]

@@ -99,10 +99,13 @@ PaTransmissionTest >> test3PushTree [
 	pulledA := pullEndpoint root.
 	self assert: pulledA opacity equals: 0.1.
 	pulledB := pulledA children at: 1.
+	self assert: pulledB parent identicalTo: pulledA.
 	self assert: pulledB opacity equals: 0.2.
 	pulledC := pulledB children at: 1.
+	self assert: pulledC parent identicalTo: pulledB.
 	self assert: pulledC opacity equals: 0.3.
 	pulledD := pulledB children at: 2.
+	self assert: pulledD parent identicalTo: pulledB.
 	self assert: pulledD opacity equals: 0.4.
 	
 	self deny: a hasPatches.
