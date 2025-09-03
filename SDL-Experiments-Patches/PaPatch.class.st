@@ -41,6 +41,17 @@ PaPatch >> sizeOf: aPatcheable [
 	^ self subclassResponsibility
 ]
 
+{ #category : #enumerating }
+PaPatch >> withAllPatchesDo: aUnaryBlock [
+	"Evaluate a block on me and each of my (not null) next patches."
+
+	| current |
+	current := self.
+	[ current isNullPatch ] whileFalse: [
+		aUnaryBlock value: current.
+		current := current nextPatch ]
+]
+
 { #category : #writing }
 PaPatch >> write: aPatcheable add: aValue at: anInteger [
 	"Insert a value the specified indexed position of a variable patcheable object."

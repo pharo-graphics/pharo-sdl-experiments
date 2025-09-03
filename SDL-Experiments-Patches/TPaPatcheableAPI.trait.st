@@ -49,9 +49,17 @@ TPaPatcheableAPI >> addPatchFirst: aLinkPatch [
 { #category : #patching }
 TPaPatcheableAPI >> applyPatches [
 
-	self patchesDo: [ :each | each applyPatchTo: self ].
+	self hasPatches ifFalse: [ ^ self ].
+
+	self applyPatches: patch.
 
 	self resetPatches
+]
+
+{ #category : #patching }
+TPaPatcheableAPI >> applyPatches: aFirstPatch [
+
+	aFirstPatch withAllPatchesDo: [ :each | each applyPatchTo: self ]
 ]
 
 { #category : #patching }
