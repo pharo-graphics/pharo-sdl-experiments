@@ -3,7 +3,7 @@ Class {
 	#superclass : #Object,
 	#traits : 'TPaPatcheableAPI',
 	#classTraits : 'TPaPatcheableAPI classTrait',
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Core'
 }
 
 { #category : #accessing }

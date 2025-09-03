@@ -2,12 +2,11 @@ Extension { #name : #FixedLayout }
 
 { #category : #'*SDL-Experiments-Patches-Transmission' }
 FixedLayout >> patcheableSoilBasicMaterialize: description with: materializer [
+	"When materializing, we update the base patcheable (avoid patches)."
 
 	| patcheable |
 	patcheable := description basicNew.
 	materializer registerObject: patcheable.
-
-	self flag: #review. "When materializing, we update the base patcheable (avoid patches)."
 
 	description patcheableSlotIndices do: [ :index | 
 		patcheable basicInstVarAt: index put: (materializer nextSoilObject) ].
@@ -17,14 +16,15 @@ FixedLayout >> patcheableSoilBasicMaterialize: description with: materializer [
 
 { #category : #'*SDL-Experiments-Patches-Transmission' }
 FixedLayout >> patcheableSoilBasicSerialize: patcheable with: serializer [
+	"Encode the patcheable. Prepare it by applying any available patch."
 
 	| description |
-	description := serializer serializeBehaviorDescriptionFor: patcheable.
+	patcheable applyPatches.
 
-	self flag: #review. "When serializing, the patches are taken into account"
+	description := serializer serializeBehaviorDescriptionFor: patcheable.
 
 	description patcheableSlotIndices do: [:index |
 		(patcheable instVarAt: index) soilSerialize: serializer ].
 
-	serializer patcheableWasFullySerialized: patcheable
+	serializer notifyFullySerialized: patcheable
 ]

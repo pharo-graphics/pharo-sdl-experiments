@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'patcheableSlotIndices'
 	],
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Soil'
 }
 
 { #category : #initialization }

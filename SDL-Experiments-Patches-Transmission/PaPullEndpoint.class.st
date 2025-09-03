@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'materializer'
 	],
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Core'
 }
 
 { #category : #synchronization }

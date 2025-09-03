@@ -9,7 +9,7 @@ Class {
 		'FullByte',
 		'PatchesByte'
 	],
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Core'
 }
 
 { #category : #'class initialization' }

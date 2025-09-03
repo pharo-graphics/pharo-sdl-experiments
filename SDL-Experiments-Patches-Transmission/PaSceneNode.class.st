@@ -8,7 +8,7 @@ Class {
 		'#children => PaSlot',
 		'#parent => PaSlot'
 	],
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Core'
 }
 
 { #category : #adding }
@@ -20,6 +20,17 @@ PaSceneNode >> addChild: aChild [
 		children
 			ifNil: [ PaArray with: aChild ]
 			ifNotNil: [ children copyWith: aChild ]
+]
+
+{ #category : #adding }
+PaSceneNode >> addChildren: aCollection [
+
+	aCollection do: [ :each | each parent: self ].
+
+	children :=
+		children
+			ifNil: [ PaArray withAll: aCollection ]
+			ifNotNil: [ children copyWithAll: aCollection ]
 ]
 
 { #category : #accessing }
@@ -86,6 +97,8 @@ PaSceneNode >> parent [
 
 { #category : #accessing }
 PaSceneNode >> parent: aNode [
+
+	parent ifNotNil: [ self error: 'Cannot have multiple parents' ].
 
 	parent := aNode
 ]

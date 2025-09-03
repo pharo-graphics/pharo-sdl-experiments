@@ -2,13 +2,12 @@ Extension { #name : #VariableLayout }
 
 { #category : #'*SDL-Experiments-Patches-Transmission' }
 VariableLayout >> patcheableSoilBasicMaterialize: description with: materializer [
+	"When materializing, we update the base patcheable (avoid patches)."
 
 	| patcheable basicSize |
 	basicSize := materializer nextLengthEncodedInteger.
 	patcheable := description basicNew: basicSize.
 	materializer registerObject: patcheable.
-
-	self flag: #review. "When materializing, we update the base patcheable (avoid patches)."
 
 	description patcheableSlotIndices do: [ :index | 
 		patcheable basicInstVarAt: index put: (materializer nextSoilObject) ].
@@ -21,19 +20,20 @@ VariableLayout >> patcheableSoilBasicMaterialize: description with: materializer
 
 { #category : #'*SDL-Experiments-Patches-Transmission' }
 VariableLayout >> patcheableSoilBasicSerialize: patcheable with: serializer [
+	"Encode the patcheable. Prepare it by applying any available patch."
 
 	| description basicSize |
+	patcheable applyPatches.
+
 	description := serializer serializeBehaviorDescriptionFor: patcheable.
 	basicSize := patcheable basicSize.
 	serializer nextPutLengthEncodedInteger: basicSize.
 
-	self flag: #review. "When serializing, the patches are taken into account"
-
 	description patcheableSlotIndices do: [ :index |
-		(patcheable basicInstVarAt: index) soilSerialize: serializer ].
+		(patcheable instVarAt: index) soilSerialize: serializer ].
 
 	1 to: basicSize do: [ :index |
-		(patcheable basicAt: index) soilSerialize: serializer ].
+		(patcheable at: index) soilSerialize: serializer ].
 
-	serializer patcheableWasFullySerialized: patcheable
+	serializer notifyFullySerialized: patcheable
 ]

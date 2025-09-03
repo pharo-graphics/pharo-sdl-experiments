@@ -5,7 +5,7 @@ Class {
 		'nextId',
 		'descriptionCache'
 	],
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Soil'
 }
 
 { #category : #query }

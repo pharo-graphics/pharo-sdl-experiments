@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'serializer'
 	],
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Core'
 }
 
 { #category : #initialization }

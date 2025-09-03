@@ -1,7 +1,7 @@
 Class {
 	#name : #PaSoilMaterializer,
 	#superclass : #SoilMaterializer,
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Soil'
 }
 
 { #category : #initialization }

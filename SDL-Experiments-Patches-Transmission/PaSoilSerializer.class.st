@@ -5,14 +5,8 @@ Class {
 		'dirtyPatcheables',
 		'subscriptions'
 	],
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Soil'
 }
-
-{ #category : #subscription }
-PaSoilSerializer >> firstPatchWasAddedTo: aPatcheable [
-	
-	dirtyPatcheables add: aPatcheable
-]
 
 { #category : #initialization }
 PaSoilSerializer >> initialize [
@@ -26,11 +20,15 @@ PaSoilSerializer >> initialize [
 ]
 
 { #category : #subscription }
-PaSoilSerializer >> patcheableWasFullySerialized: aPatcheable [.
-	"This is only executed on full serialization. After this object is registered,
-	only patches will be serialized."
+PaSoilSerializer >> notifyDirty: aPatcheable [
+	
+	dirtyPatcheables add: aPatcheable
+]
 
-	aPatcheable applyPatches.
+{ #category : #subscription }
+PaSoilSerializer >> notifyFullySerialized: aPatcheable [
+	"After a patcheable is serialized, only the new patches will be encoded."
+
 	aPatcheable addSubscriber: self.
 	subscriptions add: aPatcheable
 ]
@@ -45,15 +43,14 @@ PaSoilSerializer >> registerObject: anObject [
 { #category : #dependencies }
 PaSoilSerializer >> release [
 
-	subscriptions do: [ :each |
-		each removeSubscription: self ]
+	subscriptions do: [ :each | each removeSubscription: self ]
 ]
 
 { #category : #serialization }
 PaSoilSerializer >> serializePatches [
 
 	| patches |
-	"Encode the patcheablees that are dirty
+	"Encode the patcheables that are dirty
 	(i.e. patches were added after last serialization)"
 
 	patches := Array streamContents: [ :str |

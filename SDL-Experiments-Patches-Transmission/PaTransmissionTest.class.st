@@ -1,7 +1,7 @@
 Class {
 	#name : #PaTransmissionTest,
 	#superclass : #TestCase,
-	#category : #'SDL-Experiments-Patches-Transmission'
+	#category : #'SDL-Experiments-Patches-Transmission-Tests'
 }
 
 { #category : #tests }
@@ -152,10 +152,13 @@ PaTransmissionTest >> test4PushTreeGradually [
 	pulledA := pullEndpoint root.
 	self assert: pulledA opacity equals: 0.1.
 	pulledB := pulledA children at: 1.
+	self assert: pulledB parent identicalTo: pulledA.
 	self assert: pulledB opacity equals: 0.2.
 	pulledC := pulledB children at: 1.
+	self assert: pulledC parent identicalTo: pulledB.
 	self assert: pulledC opacity equals: 0.3.
 	pulledD := pulledB children at: 2.
+	self assert: pulledD parent identicalTo: pulledB.
 	self assert: pulledD opacity equals: 0.4.
 	
 	self deny: a hasPatches.
@@ -169,21 +172,20 @@ PaTransmissionTest >> test4PushTreeGradually [
 	self deny: d identicalTo: pulledD
 ]
 
-{ #category : #nil }
-PaTransmissionTest >> testLifecycle [
+{ #category : #tests }
+PaTransmissionTest >> test5PushAfterReset [
 
-	| writeStream pushEndpoint pullEndpoint a b c pulledB pulledC d pulledD |
+	| writeStream pushEndpoint pullEndpoint a b c d pulledA pulledB pulledC pulledD |
 	writeStream := WriteStream on: #[].
 
 	pushEndpoint := PaPushEndpoint new.
 	pushEndpoint stream: writeStream.
-	pushEndpoint push.
+
 	a := pushEndpoint root.
 	a opacity: 0.1.
 	pushEndpoint push.
 	b := PaSceneNode new.
 	a addChild: b.
-	pushEndpoint push.
 	b opacity: 0.2.
 	pushEndpoint push.
 	c := PaSceneNode new.
@@ -191,19 +193,37 @@ PaTransmissionTest >> testLifecycle [
 	b addChild: c.
 	pushEndpoint push.
 	d := PaSceneNode new.
-	d opacity: 0.4.
 	b addChild: d.
+
+	pushEndpoint reset. "Next push will be full"
+
+	pushEndpoint push.
+	d opacity: 0.4.
 	pushEndpoint push.
 
 	pullEndpoint := PaPullEndpoint new.
 	pullEndpoint stream: writeStream contents readStream.
 	pullEndpoint pullUntilEnd.
-	a := pullEndpoint root.
-	self assert: a opacity equals: 0.1.
-	pulledB := a children at: 1.
+
+	pulledA := pullEndpoint root.
+	self assert: pulledA opacity equals: 0.1.
+	pulledB := pulledA children at: 1.
+	self assert: pulledB parent identicalTo: pulledA.
 	self assert: pulledB opacity equals: 0.2.
 	pulledC := pulledB children at: 1.
+	self assert: pulledC parent identicalTo: pulledB.
 	self assert: pulledC opacity equals: 0.3.
 	pulledD := pulledB children at: 2.
+	self assert: pulledD parent identicalTo: pulledB.
 	self assert: pulledD opacity equals: 0.4.
+	
+	self deny: a hasPatches.
+	self deny: b hasPatches.
+	self deny: c hasPatches.
+	self deny: d hasPatches.
+
+	self deny: a identicalTo: pulledA.
+	self deny: b identicalTo: pulledB.
+	self deny: c identicalTo: pulledC.
+	self deny: d identicalTo: pulledD
 ]
