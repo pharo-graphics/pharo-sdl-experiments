@@ -22,11 +22,12 @@ PaSoilTypeCodes class >> initialize [
 
 { #category : #initialization }
 PaSoilTypeCodes class >> initializeTypeCodeMapping [
+	"Extend Soil v3 typecodes, to optimize space and speed performance."
 	<script>
 
 	PaTypeCodeMapping := self originalTypeCodes copy.
 
-	"Optimization for common float values"
+	"Common float values"
 	self
 		mapAt: TypeCodeFloatZero put: [ :_ | 0.0 ];
 		mapAt: TypeCodeFloatOne  put: [ :_ | 1.0 ].
@@ -34,19 +35,28 @@ PaSoilTypeCodes class >> initializeTypeCodeMapping [
 	"Singleton instance (anyway we may avoid all references in the graph to this instance)"
 	self mapAt: TypeCodeNullPatch put: [ :_ | PaNullPatch instance ].
 
-	"We do not register the patch because we assume it is not referenced by other
-	object in the graph and this way we improve performance."
-	self
-		mapAt: TypeCodeAtPutPatch put: [ :materializer |
-			PaAtPutPatch
-				index: materializer nextByte
-				value: materializer nextSoilObject
-				nextPatch: materializer nextSoilObject ];
-		mapAt: TypeCodeInstVarAtPutPatch put: [ :materializer |
+	"We do not register the patches because we assume it is not referenced by other
+	object in the graph"
+	self mapAt: TypeCodeAtPutPatch put: [ :materializer |
+		PaAtPutPatch
+			index: materializer nextByte
+			value: materializer nextSoilObject
+			nextPatch: materializer nextSoilObject ].
+
+	"Map the PaInstVarAtPutPatch generically for all indices"
+	self mapAt: TypeCodeInstVarAtPutPatch put: [ :materializer |
+		PaInstVarAtPutPatch
+			index: materializer nextByte
+			value: materializer nextSoilObject
+			nextPatch: materializer nextSoilObject ].
+
+	"Map PaInstVarAtPutPatch for small indices (reduces 1 byte)"
+	1 to: NumberOfEmbeddedIndexInstVarAtPutPatchTypeCode do: [ :index |
+		self mapAt: TypeCodeInstVarAtPutPatch + index put: [ :materializer |
 			PaInstVarAtPutPatch
-				index: materializer nextByte
+				index: index
 				value: materializer nextSoilObject
-				nextPatch: materializer nextSoilObject ]
+				nextPatch: materializer nextSoilObject ] ]
 ]
 
 { #category : #initialization }
