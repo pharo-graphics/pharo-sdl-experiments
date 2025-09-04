@@ -59,9 +59,15 @@ PaSoilSerializer >> nextPutPaAtPutPatch: aPatch [
 { #category : #writing }
 PaSoilSerializer >> nextPutPaInstVarAtPutPatch: aPatch [
 
-	self
-		nextPutByte: TypeCodeInstVarAtPutPatch;
-		nextPutByte: aPatch index.
+	"Small indices can be directly embedded in the typecode"
+	aPatch index > NumberOfEmbeddedIndexInstVarAtPutPatchTypeCode
+		ifTrue: [
+			self
+				nextPutByte: TypeCodeInstVarAtPutPatch;
+				nextPutByte: aPatch index ]
+		ifFalse: [
+			self nextPutByte: TypeCodeInstVarAtPutPatch + aPatch index ].
+
 	aPatch writtenValue soilSerialize: self.
 	aPatch nextPatch soilSerialize: self
 ]

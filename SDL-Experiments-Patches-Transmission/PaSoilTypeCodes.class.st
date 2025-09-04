@@ -2,6 +2,7 @@ Class {
 	#name : #PaSoilTypeCodes,
 	#superclass : #SharedPool,
 	#classVars : [
+		'NumberOfEmbeddedIndexInstVarAtPutPatchTypeCode',
 		'PaTypeCodeMapping',
 		'TypeCodeAtPutPatch',
 		'TypeCodeFloatOne',
@@ -56,8 +57,9 @@ PaSoilTypeCodes class >> initializeTypeCodes [
 	TypeCodeFloatOne := 12.
 	
 	TypeCodeNullPatch := 70.
-	TypeCodeInstVarAtPutPatch := 71.
-	TypeCodeAtPutPatch := 72
+	TypeCodeAtPutPatch := 71.
+	TypeCodeInstVarAtPutPatch := 72.
+	NumberOfEmbeddedIndexInstVarAtPutPatchTypeCode := 7
 ]
 
 { #category : #initialization }

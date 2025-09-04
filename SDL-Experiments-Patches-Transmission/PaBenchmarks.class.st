@@ -8,6 +8,32 @@ Class {
 }
 
 { #category : #benchmarks }
+PaBenchmarks >> benchIntegerOpacity [
+	<script: 'self new benchIntegerOpacity' >
+
+	'
+
+#benchIntegerOpacity
+
+' traceCr.
+
+	#(1 5 9 11) do: [ :n |
+		| root |
+		'
+# n: ' trace.
+		n traceCr.
+
+		"Initial tree"
+		root := (self fractalBranchDepth: 3 n: n) first.
+		root withAllChildrenDo: [ :each | each opacity: 0 ].
+
+		self
+			benchRoot: root
+			mutateBlock: [ :node |
+				node withAllChildrenDo: [ :each | each opacity: 1 ] ] ]
+]
+
+{ #category : #benchmarks }
 PaBenchmarks >> benchNilToOneOpacity [
 	<script: 'self new benchNilToOneOpacity' >
 
