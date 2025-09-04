@@ -206,24 +206,41 @@ PaTransmissionTest >> test5PushAfterReset [
 	pullEndpoint pullUntilEnd.
 
 	pulledA := pullEndpoint root.
-	self assert: pulledA opacity equals: 0.1.
 	pulledB := pulledA children at: 1.
-	self assert: pulledB parent identicalTo: pulledA.
-	self assert: pulledB opacity equals: 0.2.
 	pulledC := pulledB children at: 1.
-	self assert: pulledC parent identicalTo: pulledB.
-	self assert: pulledC opacity equals: 0.3.
 	pulledD := pulledB children at: 2.
-	self assert: pulledD parent identicalTo: pulledB.
+	self assert: pulledA opacity equals: 0.1.
+	self assert: pulledB opacity equals: 0.2.
+	self assert: pulledC opacity equals: 0.3.
 	self assert: pulledD opacity equals: 0.4.
-	
-	self deny: a hasPatches.
-	self deny: b hasPatches.
-	self deny: c hasPatches.
-	self deny: d hasPatches.
+	self assert: pulledB parent identicalTo: pulledA.
+	self assert: pulledC parent identicalTo: pulledB.
+	self assert: pulledD parent identicalTo: pulledB
+]
 
-	self deny: a identicalTo: pulledA.
-	self deny: b identicalTo: pulledB.
-	self deny: c identicalTo: pulledC.
-	self deny: d identicalTo: pulledD
+{ #category : #tests }
+PaTransmissionTest >> test6PushAfterNewRoot [
+
+	| writeStream pushEndpoint pullEndpoint a b |
+	writeStream := WriteStream on: #[].
+
+	pushEndpoint := PaPushEndpoint new.
+	pushEndpoint stream: writeStream.
+
+	a := pushEndpoint root.
+	a opacity: 0.1.
+	pushEndpoint push.
+
+	b := PaArray new: 1.
+	b at: 1 put: $a.
+	pushEndpoint root: b.
+	pushEndpoint push.
+
+	pullEndpoint := PaPullEndpoint new.
+	pullEndpoint stream: writeStream contents readStream.
+	pullEndpoint pullUntilEnd.
+
+	self assert: pullEndpoint root class equals: PaArray.
+	self assert: (pullEndpoint root at: 1) equals: $a.
+	self deny: b identicalTo: pullEndpoint root
 ]

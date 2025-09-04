@@ -58,3 +58,10 @@ PaPushEndpoint >> reset [
 	serializer release.
 	serializer := nil
 ]
+
+{ #category : #accessing }
+PaPushEndpoint >> root: aPatcheable [
+
+	root := aPatcheable.
+	self reset
+]
