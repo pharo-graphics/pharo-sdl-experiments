@@ -6,6 +6,7 @@ Class {
 
 { #category : #tests }
 PaSceneNodeTest >> testCantShareNode [
+	"Note, however, this is an arbitrary rule to imitate Bloc, and not a limitation of this package."
 
 	| a b c |
 	a := PaSceneNode new.

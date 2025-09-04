@@ -5,7 +5,7 @@ Class {
 }
 
 { #category : #tests }
-PaTransmissionTest >> test0PushEmpty [
+PaTransmissionTest >> test0PushEmptyNode [
 
 	| writeStream pushEndpoint pullEndpoint |
 	writeStream := WriteStream on: #[].
@@ -150,21 +150,28 @@ PaTransmissionTest >> test4PushTreeGradually [
 	pullEndpoint pullUntilEnd.
 
 	pulledA := pullEndpoint root.
-	self assert: pulledA opacity equals: 0.1.
 	pulledB := pulledA children at: 1.
-	self assert: pulledB parent identicalTo: pulledA.
-	self assert: pulledB opacity equals: 0.2.
 	pulledC := pulledB children at: 1.
-	self assert: pulledC parent identicalTo: pulledB.
-	self assert: pulledC opacity equals: 0.3.
 	pulledD := pulledB children at: 2.
-	self assert: pulledD parent identicalTo: pulledB.
+
+	self assert: pulledA opacity equals: 0.1.
+	self assert: pulledB opacity equals: 0.2.
+	self assert: pulledC opacity equals: 0.3.
 	self assert: pulledD opacity equals: 0.4.
+
+	self assert: pulledB parent identicalTo: pulledA.
+	self assert: pulledC parent identicalTo: pulledB.
+	self assert: pulledD parent identicalTo: pulledB.
 	
 	self deny: a hasPatches.
 	self deny: b hasPatches.
 	self deny: c hasPatches.
 	self deny: d hasPatches.
+
+	self deny: pulledA hasPatches.
+	self deny: pulledB hasPatches.
+	self deny: pulledC hasPatches.
+	self deny: pulledD hasPatches.
 
 	self deny: a identicalTo: pulledA.
 	self deny: b identicalTo: pulledB.
