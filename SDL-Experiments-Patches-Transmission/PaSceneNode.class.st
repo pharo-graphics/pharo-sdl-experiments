@@ -85,6 +85,13 @@ PaSceneNode >> inspectionPresenterOn: aBuilder [
 ]
 
 { #category : #accessing }
+PaSceneNode >> level [
+	"Answer the number of edges between self and the root."
+
+	^ parent ifNil: [ 0 ] ifNotNil: [ 1 + parent level ]
+]
+
+{ #category : #accessing }
 PaSceneNode >> opacity [
 
 	^ opacity

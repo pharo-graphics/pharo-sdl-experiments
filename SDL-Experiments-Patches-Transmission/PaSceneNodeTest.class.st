@@ -17,6 +17,23 @@ PaSceneNodeTest >> testCantShareNode [
 ]
 
 { #category : #tests }
+PaSceneNodeTest >> testLevel [
+
+	| a b c d |
+	a := PaSceneNode new.
+	b := PaSceneNode new.
+	c := PaSceneNode new.
+	d := PaSceneNode new.
+	a addChild: b.
+	b addChildren: {c. d}.
+	
+	self assert: a level equals: 0.
+	self assert: b level equals: 1.
+	self assert: c level equals: 2.
+	self assert: d level equals: 2
+]
+
+{ #category : #tests }
 PaSceneNodeTest >> testTreeCreation [
 
 	| a b c d |
