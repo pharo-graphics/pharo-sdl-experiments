@@ -40,5 +40,5 @@ PaEndpoint >> stream: anObject [
 { #category : #synchronization }
 PaEndpoint >> wellKnownObjects [
 	
-	^ { PaNullPatch instance }
+	^ { "0.0. 1.0" }
 ]

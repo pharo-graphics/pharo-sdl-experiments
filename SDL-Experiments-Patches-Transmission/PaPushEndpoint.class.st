@@ -7,6 +7,12 @@ Class {
 	#category : #'SDL-Experiments-Patches-Transmission-Core'
 }
 
+{ #category : #accessing }
+PaPushEndpoint >> dirtyPatcheablesCount [
+
+	^ serializer dirtyPatcheables size
+]
+
 { #category : #initialization }
 PaPushEndpoint >> initialize [
 

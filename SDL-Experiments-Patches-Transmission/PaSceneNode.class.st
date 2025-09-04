@@ -55,6 +55,13 @@ PaSceneNode >> childrenCount [
 		ifNotNil: [ children size ]
 ]
 
+{ #category : #enumerating }
+PaSceneNode >> childrenDo: aBlock [
+
+	children ifNil: [ ^ self ].
+	children do: aBlock
+]
+
 { #category : #debugging }
 PaSceneNode >> inspectionPresenterOn: aBuilder [
 	<inspectorPresentationOrder: 1 title: 'Tree'>
@@ -112,4 +119,20 @@ PaSceneNode >> printDetailsOn: aStream [
 	aStream
 		nextPutAll: ' #children: ';
 		print: self childrenCount
+]
+
+{ #category : #enumerating }
+PaSceneNode >> withAllChildrenCount [
+
+	| count |
+	count := 0.
+	self withAllChildrenDo: [ :_ | count := count + 1 ].
+	^ count
+]
+
+{ #category : #enumerating }
+PaSceneNode >> withAllChildrenDo: aBlock [
+
+	aBlock value: self.
+	self childrenDo: [ :child | child withAllChildrenDo: aBlock ]
 ]

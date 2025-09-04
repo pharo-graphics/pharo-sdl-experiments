@@ -12,6 +12,23 @@ Class {
 }
 
 { #category : #accessing }
+PaIndexedPatch class >> index: anInteger value: anObject [
+
+	^ self basicNew
+		initializeIndex: anInteger value: anObject;
+		yourself
+]
+
+{ #category : #accessing }
+PaIndexedPatch class >> index: anInteger value: anObject nextPatch: anotherPatch [
+
+	^ self basicNew
+		initializeIndex: anInteger value: anObject;
+		nextPatch: anotherPatch;
+		yourself
+]
+
+{ #category : #accessing }
 PaIndexedPatch >> index [
 
 	^ index
@@ -21,6 +38,15 @@ PaIndexedPatch >> index [
 PaIndexedPatch >> index: anInteger [
 
 	index := anInteger
+]
+
+{ #category : #accessing }
+PaIndexedPatch >> initializeIndex: anInteger value: anObject [
+
+	self initialize.
+
+	index := anInteger.
+	writtenValue := anObject
 ]
 
 { #category : #accessing }

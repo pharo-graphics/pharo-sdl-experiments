@@ -13,10 +13,7 @@ TPaInstanceVariablesAPI >> addPatchForInstVarAt: anInteger put: aValue [
 	"Add a patch assuming there wasn't a linked matching patch."
 
 	self addPatchFirst:
-		(PaInstVarAtPutPatch new
-			index: anInteger;
-			writtenValue: aValue;
-			yourself)
+		(PaInstVarAtPutPatch index: anInteger value: aValue)
 ]
 
 { #category : #introspection }

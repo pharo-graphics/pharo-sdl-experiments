@@ -15,11 +15,7 @@ TPaIndexedVariablesAPI >> addPatchForAt: anInteger put: aValue [
 	(anInteger between: 1 and: self size) ifFalse: [
 		^ self errorSubscriptBounds: anInteger ].
 
-	self addPatchFirst:
-		(PaAtPutPatch new
-			index: anInteger;
-			writtenValue: aValue;
-			yourself)
+	self addPatchFirst: (PaAtPutPatch index: anInteger value: aValue)
 ]
 
 { #category : #converting }

@@ -33,16 +33,12 @@ TPaResizeAPI >> addLast: anObject [
 ]
 
 { #category : #private }
-TPaResizeAPI >> addPatchForAdd: aValue at: anInteger [ 
-	
+TPaResizeAPI >> addPatchForAdd: aValue at: anInteger [
+
 	(anInteger between: 1 and: self size + 1) ifFalse: [
 		^ self errorSubscriptBounds: anInteger ].
 
-	self addPatchFirst:
-		(PaAddAtPatch new
-			index: anInteger;
-			writtenValue: aValue;
-			yourself)
+	self addPatchFirst: (PaAddAtPatch index: anInteger value: aValue)
 ]
 
 { #category : #private }
