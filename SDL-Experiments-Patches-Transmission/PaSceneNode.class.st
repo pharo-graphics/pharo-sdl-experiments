@@ -201,6 +201,14 @@ PaSceneNode >> replaceChildAt: anIndex with: newNode [
 	children at: anIndex put: newNode
 ]
 
+{ #category : #serialization }
+PaSceneNode >> soilBasicSerialize: serializer [
+	"Optimization over inherited generic implementation, to reduce
+	the number of stack contexts in Soil serialization of a tree."
+
+	serializer nextPutFixedLayoutPatcheable: self
+]
+
 { #category : #enumerating }
 PaSceneNode >> withAllChildrenCount [
 

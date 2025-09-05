@@ -31,6 +31,21 @@ PaPushEndpoint >> initialize [
 ]
 
 { #category : #writing }
+PaPushEndpoint >> nextPutFixedLayoutPatcheable: patcheable [
+	"Encode the patcheable. Prepare it by applying any available patch."
+
+	| description |
+	patcheable applyPatches.
+
+	description := self serializeBehaviorDescriptionFor: patcheable.
+
+	description patcheableSlotIndices do: [:index |
+		(patcheable instVarAt: index) soilSerialize: self ].
+
+	self subscribeToNewPatchesOf: patcheable
+]
+
+{ #category : #writing }
 PaPushEndpoint >> nextPutFloat: aFloat [
 	"Encode a 64-bits float. Override Soil v3 encoding with Fuel, which is more performant."
 
@@ -87,18 +102,30 @@ PaPushEndpoint >> nextPutPaInstVarAtPutPatch: aPatch [
 	aPatch nextPatch soilSerialize: self
 ]
 
+{ #category : #writing }
+PaPushEndpoint >> nextPutVariableLayoutPatcheable: patcheable [
+	"Encode the patcheable. Prepare it by applying any available patch."
+
+	| description basicSize |
+	patcheable applyPatches.
+
+	description := self serializeBehaviorDescriptionFor: patcheable.
+	basicSize := patcheable basicSize.
+	self nextPutLengthEncodedInteger: basicSize.
+
+	description patcheableSlotIndices do: [ :index |
+		(patcheable instVarAt: index) soilSerialize: self ].
+
+	1 to: basicSize do: [ :index |
+		(patcheable at: index) soilSerialize: self ].
+
+	self subscribeToNewPatchesOf: patcheable
+]
+
 { #category : #subscription }
 PaPushEndpoint >> notifyDirty: aPatcheable [
 	
 	dirtyPatcheables add: aPatcheable
-]
-
-{ #category : #subscription }
-PaPushEndpoint >> notifyFullySerialized: aPatcheable [
-	"After a patcheable is serialized, only the new patches will be encoded."
-
-	aPatcheable addSubscriber: self.
-	subscriptions add: aPatcheable
 ]
 
 { #category : #synchronization }
@@ -176,6 +203,14 @@ PaPushEndpoint >> root: aPatcheable [
 	self reset.
 
 	root := aPatcheable
+]
+
+{ #category : #subscription }
+PaPushEndpoint >> subscribeToNewPatchesOf: aPatcheable [
+	"After a patcheable is serialized, only the new patches will be encoded."
+
+	aPatcheable addSubscriber: self.
+	subscriptions add: aPatcheable
 ]
 
 { #category : #accessing }

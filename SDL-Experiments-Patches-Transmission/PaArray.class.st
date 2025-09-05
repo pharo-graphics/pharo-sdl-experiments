@@ -155,6 +155,14 @@ PaArray >> replaceFrom: start to: stop with: replacement startingAt: repStart [
 		self basicAt: i put: (replacement at: repStart - start + i) ]
 ]
 
+{ #category : #serialization }
+PaArray >> soilBasicSerialize: serializer [
+	"Optimization over inherited generic implementation, to reduce
+	the number of stack contexts in Soil serialization of a tree."
+
+	serializer nextPutVariableLayoutPatcheable: self
+]
+
 { #category : #enumerating }
 PaArray >> withIndexDo: aBlock [
 

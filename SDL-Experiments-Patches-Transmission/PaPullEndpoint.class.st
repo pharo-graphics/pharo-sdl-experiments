@@ -18,6 +18,20 @@ PaPullEndpoint >> initialize [
 ]
 
 { #category : #reading }
+PaPullEndpoint >> nextFixedLayoutPatcheable: description [
+	"When materializing, we update the base patcheable (avoid patches)."
+
+	| patcheable |
+	patcheable := description basicNew.
+	self registerObject: patcheable.
+
+	description patcheableSlotIndices do: [ :index | 
+		patcheable basicInstVarAt: index put: (self nextSoilObject) ].
+
+	^ patcheable
+]
+
+{ #category : #reading }
 PaPullEndpoint >> nextPaAtPutPatch [
 
 	^ PaAtPutPatch
@@ -40,6 +54,24 @@ PaPullEndpoint >> nextSoilObject [
 	"Hacky: Override this key Soil method. Ignore #soilMaterializationReplacement."
 
 	^ (PaTypeCodeMapping at: self nextByte) soilMaterialize: self
+]
+
+{ #category : #reading }
+PaPullEndpoint >> nextVariableLayoutPatcheable: description [
+	"When materializing, we update the base patcheable (avoid patches)."
+
+	| patcheable basicSize |
+	basicSize := self nextLengthEncodedInteger.
+	patcheable := description basicNew: basicSize.
+	self registerObject: patcheable.
+
+	description patcheableSlotIndices do: [ :index | 
+		patcheable basicInstVarAt: index put: (self nextSoilObject) ].
+
+	1 to: basicSize do: [ :index |
+		patcheable basicAt: index put: self nextSoilObject ].
+
+	^ patcheable
 ]
 
 { #category : #synchronization }
