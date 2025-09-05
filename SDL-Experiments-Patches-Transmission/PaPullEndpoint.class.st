@@ -13,9 +13,8 @@ Class {
 { #category : #initialization }
 PaPullEndpoint >> initialize [
 
-	super initialize.
-
-	self externalObjectRegistry: PaSoilRegistry new
+	objects := WeakOrderedCollection new.
+	externalObjectRegistry := PaSoilRegistry new
 ]
 
 { #category : #reading }
@@ -63,12 +62,13 @@ PaPullEndpoint >> pullFull [
 
 { #category : #synchronization }
 PaPullEndpoint >> pullPatches [
-	"Root remains the same, but patches are applied to objects previously materialized."
+	"Root remains the same. Apply incoming patches to objects materialized in a previous pull"
 
-	| patches |
-	patches := self nextSoilObject.
-
-	patches pairsDo: [ :patcheable :firstPatch |
+	| indexOfPatcheable |
+	[ (indexOfPatcheable := self nextLengthEncodedInteger) > 0 ] whileTrue: [
+		| patcheable firstPatch |
+		patcheable := objects at: indexOfPatcheable.
+		firstPatch := self nextSoilObject.
 		patcheable applyPatches: firstPatch ]
 ]
 

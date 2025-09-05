@@ -92,10 +92,47 @@ PaArray >> copyWithAll: aCollection [
 	^ self, aCollection
 ]
 
+{ #category : #copying }
+PaArray >> copyWithout: anObject [
+
+	| indexToRemove |
+	indexToRemove := self indexOf: anObject.
+	indexToRemove > 0 ifFalse: [ NotFound signalFor: anObject ].
+	
+	^ self copyWithoutIndex: indexToRemove
+]
+
+{ #category : #copying }
+PaArray >> copyWithoutIndex: anIndex [
+
+	| copy |	
+	copy := self class new: self size - 1.
+	copy
+		replaceFrom: 1
+		to: anIndex - 1
+		with: self
+		startingAt: 1.
+	copy
+		replaceFrom: anIndex
+		to: copy size
+		with: self
+		startingAt: anIndex + 1.
+
+	^ copy
+]
+
 { #category : #enumerating }
 PaArray >> do: aBlock [
 
 	1 to: self size do: [ :index | aBlock value: (self at: index) ]
+]
+
+{ #category : #accessing }
+PaArray >> indexOf: anObject [
+
+	self withIndexDo: [ :each :index |
+		each = anObject ifTrue: [ ^ index ] ].
+	^ 0
 ]
 
 { #category : #printing }

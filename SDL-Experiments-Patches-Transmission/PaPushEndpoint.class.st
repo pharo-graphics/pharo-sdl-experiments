@@ -22,12 +22,12 @@ PaPushEndpoint >> dirtyPatcheables [
 { #category : #initialization }
 PaPushEndpoint >> initialize [
 
-	super initialize.
-	
+	objectIdTable := PaSoilObjectTable new.
+	externalObjectRegistry := PaSoilRegistry new.
+		
 	dirtyPatcheables := WeakOrderedCollection new.
 	subscriptions := WeakSet new.
-	needsFull := true.
-	self externalObjectRegistry: PaSoilRegistry new
+	needsFull := true
 ]
 
 { #category : #writing }
@@ -41,6 +41,17 @@ PaPushEndpoint >> nextPutFloat: aFloat [
 		^ self nextPutByte: TypeCodeFloatOne ].
 
 	super nextPutFloat: aFloat
+]
+
+{ #category : #private }
+PaPushEndpoint >> nextPutIndexOfInternalObject: anObject [
+	"Encode the index of the argument in the objectIdTable, without a TypeCode (low-level optimization)."
+
+	| index |
+	index := objectIdTable identityIndexOf: anObject.
+	index < 1 ifTrue: [ NotFound signalFor: anObject ].
+
+	self nextPutLengthEncodedInteger: index
 ]
 
 { #category : #writing }
@@ -92,40 +103,43 @@ PaPushEndpoint >> notifyFullySerialized: aPatcheable [
 
 { #category : #synchronization }
 PaPushEndpoint >> push [
+	"Only do full serialization when it was required. Else, only serialize the patches."
 
-	^ needsFull ifTrue: [ self pushFull ] ifFalse: [ self pushPatches ]
+	needsFull
+		ifTrue: [
+			self nextPutByte: TypeCodeRoot.
+			self pushFull ]
+		ifFalse: [
+			self nextPutByte: TypeCodePatches.
+			self pushPatches ]
 ]
 
 { #category : #synchronization }
 PaPushEndpoint >> pushFull [
 
-	self nextPutByte: TypeCodeRoot.
-	
 	root soilSerialize: self.
 	needsFull := false
 ]
 
 { #category : #synchronization }
 PaPushEndpoint >> pushPatches [
+	"Encode the patcheables that are dirty (i.e. patches were added after last serialization)"
 
-	| patches |
-	"Encode the patcheables that are dirty
-	(i.e. patches were added after last serialization)"
+	[ dirtyPatcheables isEmpty ] whileFalse: [
+		| each |
+		each := dirtyPatcheables removeFirst.
+		each ifNil: [ 1halt. "TODO: Not yet tested but could happen (GCed)" ].
 
-	self nextPutByte: TypeCodePatches.
+		"Only patcheables that were serialized in a previous push should 
+		be in this collection, so encode its internal index."
+		self nextPutIndexOfInternalObject: each.
+		"Serialize patch chain (they have a special encoding)"
+		each firstPatch soilSerialize: self.
+		"Apply patches of this patcheable"
+		each applyPatches ].
 
-	patches := Array streamContents: [ :str |
-		dirtyPatcheables do: [ :each |
-			"If the patcheable was previously serialized,
-				then only an index will be encoded,
-				otherwise, it will be fully encoded."
-			str
-				nextPut: each;
-				nextPut: each firstPatch.
-			each applyPatches ].
-		dirtyPatcheables removeAll ].
-
-	patches soilSerialize: self
+	"Mark the end of the patches"
+	self nextPutByte: 0
 ]
 
 { #category : #initialization }
@@ -162,4 +176,10 @@ PaPushEndpoint >> root: aPatcheable [
 	self reset.
 
 	root := aPatcheable
+]
+
+{ #category : #accessing }
+PaPushEndpoint >> subscriptions [
+
+	^ subscriptions
 ]

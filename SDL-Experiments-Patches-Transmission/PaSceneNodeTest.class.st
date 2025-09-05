@@ -35,6 +35,81 @@ PaSceneNodeTest >> testLevel [
 ]
 
 { #category : #tests }
+PaSceneNodeTest >> testRemoveChild [
+
+	| a b c d |
+	a := PaSceneNode new.
+	b := PaSceneNode new.
+	c := PaSceneNode new.
+	d := PaSceneNode new.
+	a addChildren: {b. c. d}.
+
+	a opacity: 0.1.
+	b opacity: 0.2.
+	c opacity: 0.3.
+	d opacity: 0.4.
+
+	self assert: a children asCollection equals: { b. c. d }.
+	a children do: [ :each | self assert: each parent identicalTo: a ].
+
+	a removeChild: c.
+	self assert: a children asCollection equals: { b. d }.
+	self deny: c hasParent.
+	a children do: [ :each | self assert: each parent identicalTo: a ].
+
+	self should: [ a removeChild: c ] raise: NotFound.
+	self should: [ b removeChild: a ] raise: NotFound.
+
+	a removeChildAt: 2.
+	self assert: a children asCollection equals: { b }.
+	self deny: d hasParent.
+
+	a addChildren: { d. c }.
+	a removeChild: c.
+	self assert: a children asCollection equals: { b. d }.
+	self deny: c hasParent
+]
+
+{ #category : #tests }
+PaSceneNodeTest >> testReplaceChild [
+
+	| a b c d e |
+	a := PaSceneNode new.
+	b := PaSceneNode new.
+	c := PaSceneNode new.
+	d := PaSceneNode new.
+	e := PaSceneNode new.
+	a addChildren: {b. c. d}.
+
+	a opacity: 0.1.
+	b opacity: 0.2.
+	c opacity: 0.3.
+	d opacity: 0.4.
+	e opacity: 0.5.
+	
+	self assert: a children asCollection equals: { b. c. d }.
+	a children do: [ :each | self assert: each parent identicalTo: a ].
+	self deny: e hasParent.
+
+	"Replace via child"
+	a replaceChild: c with: e.
+	self assert: a children asCollection equals: { b. e. d }.
+	a children do: [ :each | self assert: each parent identicalTo: a ].
+	self deny: c hasParent.
+
+	"Replace via child index"
+	a replaceChildAt: 3 with: c.
+	self assert: a children asCollection equals: { b. e. c }.
+	a children do: [ :each | self assert: each parent identicalTo: a ].
+	self deny: d hasParent.
+
+	self should: [ a replaceChild: a with: d ] raise: NotFound.
+	self should: [ a replaceChildAt: 50 with: d ] raise: SubscriptOutOfBounds.
+	self should: [ b replaceChild: a with: d ] raise: NotFound.
+	self should: [ b replaceChildAt: 50 with: d ] raise: SubscriptOutOfBounds
+]
+
+{ #category : #tests }
 PaSceneNodeTest >> testTreeCreation [
 
 	| a b c d |
@@ -54,14 +129,16 @@ PaSceneNodeTest >> testTreeCreation [
 	d addChildren: ((1 to: 5) collect: [ :i | PaSceneNode new ]).
 	d addChildren: ((1 to: 5) collect: [ :i | PaSceneNode new ]).
 	
+	self deny: a hasParent.
+	self assert: b hasParent.
 	self assert: a opacity equals: 0.1.
-	self assert: b identicalTo: (a children at: 1).
+	self assert: b identicalTo: (a childAt: 1).
 	self assert: b parent identicalTo: a.
 	self assert: b opacity equals: 0.2.
-	self assert: c identicalTo: (b children at: 1).
+	self assert: c identicalTo: (b childAt: 1).
 	self assert: c parent identicalTo: b.
 	self assert: c opacity equals: 0.3.
-	self assert: d identicalTo: (b children at: 2).
+	self assert: d identicalTo: (b childAt: 2).
 	self assert: d parent identicalTo: b.
 	self assert: d opacity equals: 0.4.
 	self assert: d children size equals: 10.
