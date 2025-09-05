@@ -103,6 +103,19 @@ PaPushEndpoint >> nextPutPaInstVarAtPutPatch: aPatch [
 ]
 
 { #category : #writing }
+PaPushEndpoint >> nextPutPatcheableOrInternalReference: patcheable [
+
+	| index |
+	(objectIdTable isEmpty or: [
+	(index := objectIdTable identityIndexOf: patcheable) = 0 ])
+		ifTrue: [
+			objectIdTable add: patcheable.
+			patcheable soilBasicSerialize: self ]
+		ifFalse: [
+			self nextPutInternalReference: index ]
+]
+
+{ #category : #writing }
 PaPushEndpoint >> nextPutVariableLayoutPatcheable: patcheable [
 	"Encode the patcheable. Prepare it by applying any available patch."
 

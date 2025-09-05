@@ -41,3 +41,10 @@ PaBaseObject >> soilBasicSerialize: serializer [
 
 	self class classLayout patcheableSoilBasicSerialize: self with: serializer
 ]
+
+{ #category : #soil }
+PaBaseObject >> soilSerialize: serializer [ 
+	"Override to optimize"
+
+	serializer nextPutPatcheableOrInternalReference: self
+]
