@@ -1,53 +1,85 @@
 Class {
 	#name : #PaPullEndpoint,
-	#superclass : #PaEndpoint,
+	#superclass : #SoilMaterializer,
 	#instVars : [
-		'materializer'
+		'root'
 	],
-	#category : #'SDL-Experiments-Patches-Transmission-Core'
+	#pools : [
+		'PaSoilTypeCodes'
+	],
+	#category : #'SDL-Experiments-Patches-Transmission-Soil'
 }
+
+{ #category : #initialization }
+PaPullEndpoint >> initialize [
+
+	super initialize.
+
+	self externalObjectRegistry: PaSoilRegistry new
+]
+
+{ #category : #reading }
+PaPullEndpoint >> nextPaAtPutPatch [
+
+	^ PaAtPutPatch
+		index: self nextByte
+		value: self nextSoilObject
+		nextPatch: self nextSoilObject
+]
+
+{ #category : #reading }
+PaPullEndpoint >> nextPaInstVarAtPutPatchAt: anIndex [
+
+	^ PaInstVarAtPutPatch
+		index: anIndex
+		value: self nextSoilObject
+		nextPatch: self nextSoilObject
+]
+
+{ #category : #reading }
+PaPullEndpoint >> nextSoilObject [ 
+	"Hacky: Override this key Soil method. Ignore #soilMaterializationReplacement."
+
+	^ (PaTypeCodeMapping at: self nextByte) soilMaterialize: self
+]
 
 { #category : #synchronization }
 PaPullEndpoint >> pull [
 
 	| pullType |
-	pullType := stream next.
-	pullType = PatchesByte ifTrue: [ ^ self pullPatches ].
-	pullType = FullByte ifTrue: [ ^ self pullFull ].
+	pullType := self nextByte.
+	pullType = TypeCodePatches ifTrue: [ ^ self pullPatches ].
+	pullType = TypeCodeRoot ifTrue: [ ^ self pullFull ].
 	self error
 ]
 
 { #category : #synchronization }
 PaPullEndpoint >> pullFull [
+	"Materialize a new root. Reset index table (via initialize)"
 
-	"IMPORTANT: the other endpoint registers the same known objects and classes, in same order"
-	materializer := PaSoilMaterializer new
-		stream: stream;
-		yourself.
-	self wellKnownObjects do: [ :each | materializer registerObject: each ].
-
-	root := materializer materialize
+	self initialize.
+	root := self nextSoilObject
 ]
 
 { #category : #synchronization }
 PaPullEndpoint >> pullPatches [
+	"Root remains the same, but patches are applied to objects previously materialized."
 
 	| patches |
-	patches := materializer materialize.
+	patches := self nextSoilObject.
 
 	patches pairsDo: [ :patcheable :firstPatch |
 		patcheable applyPatches: firstPatch ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #synchronization }
 PaPullEndpoint >> pullUntilEnd [
 
 	[ stream atEnd ] whileFalse: [ self pull ]
 ]
 
-{ #category : #initialization }
-PaPullEndpoint >> reset [
+{ #category : #accessing }
+PaPullEndpoint >> root [
 
-	materializer := nil.
-	root := nil
+	^ root
 ]

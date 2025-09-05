@@ -8,7 +8,9 @@ Class {
 		'TypeCodeFloatOne',
 		'TypeCodeFloatZero',
 		'TypeCodeInstVarAtPutPatch',
-		'TypeCodeNullPatch'
+		'TypeCodeNullPatch',
+		'TypeCodePatches',
+		'TypeCodeRoot'
 	],
 	#category : #'SDL-Experiments-Patches-Transmission-Soil'
 }
@@ -23,7 +25,6 @@ PaSoilTypeCodes class >> initialize [
 { #category : #initialization }
 PaSoilTypeCodes class >> initializeTypeCodeMapping [
 	"Extend Soil v3 typecodes, to optimize space and speed performance."
-	<script>
 
 	PaTypeCodeMapping := self originalTypeCodes copy.
 
@@ -35,37 +36,31 @@ PaSoilTypeCodes class >> initializeTypeCodeMapping [
 	"Singleton instance (anyway we may avoid all references in the graph to this instance)"
 	self mapAt: TypeCodeNullPatch put: [ :_ | PaNullPatch instance ].
 
+
+
 	"We do not register the patches because we assume it is not referenced by other
 	object in the graph"
-	self mapAt: TypeCodeAtPutPatch put: [ :materializer |
-		PaAtPutPatch
-			index: materializer nextByte
-			value: materializer nextSoilObject
-			nextPatch: materializer nextSoilObject ].
+	self mapAt: TypeCodeAtPutPatch put: [ :materializer | materializer nextPaAtPutPatch ].
 
 	"Map the PaInstVarAtPutPatch generically for all indices"
 	self mapAt: TypeCodeInstVarAtPutPatch put: [ :materializer |
-		PaInstVarAtPutPatch
-			index: materializer nextByte
-			value: materializer nextSoilObject
-			nextPatch: materializer nextSoilObject ].
+		materializer nextPaInstVarAtPutPatchAt: materializer nextByte ].
 
 	"Map PaInstVarAtPutPatch for small indices (reduces 1 byte)"
 	1 to: NumberOfEmbeddedIndexInstVarAtPutPatchTypeCode do: [ :index |
 		self mapAt: TypeCodeInstVarAtPutPatch + index put: [ :materializer |
-			PaInstVarAtPutPatch
-				index: index
-				value: materializer nextSoilObject
-				nextPatch: materializer nextSoilObject ] ]
+			materializer nextPaInstVarAtPutPatchAt: index ] ]
 ]
 
 { #category : #initialization }
 PaSoilTypeCodes class >> initializeTypeCodes [
-	<script>
 	
 	TypeCodeFloatZero := 11.
 	TypeCodeFloatOne := 12.
-	
+
+	TypeCodeRoot := 68.
+	TypeCodePatches := 69.
+		
 	TypeCodeNullPatch := 70.
 	TypeCodeAtPutPatch := 71.
 	TypeCodeInstVarAtPutPatch := 72.

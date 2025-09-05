@@ -102,7 +102,7 @@ PaBenchmarks >> benchRoot: root mutateBlock: mutateBlock [
 	'  bytes:    ' trace. (writeStream position - initialPosition) traceCr.
 
 	mutateBlock value: root.
-	'- push 2 (dirty nodes): ' trace. pushEndpoint dirtyPatcheablesCount traceCr.
+	'- push 2 (dirty nodes): ' trace. pushEndpoint dirtyPatcheables size traceCr.
 	initialPosition := writeStream position.
 	'  duration: ' trace. [ pushEndpoint push ] timeToRun traceCr.
 	'  bytes: ' trace. (writeStream position - initialPosition) traceCr.

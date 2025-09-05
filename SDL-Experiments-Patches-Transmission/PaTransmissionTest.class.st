@@ -12,6 +12,7 @@ PaTransmissionTest >> test0PushEmptyNode [
 
 	pushEndpoint := PaPushEndpoint new.
 	pushEndpoint stream: writeStream.
+	pushEndpoint root: PaSceneNode new.
 	pushEndpoint push.
 
 	pullEndpoint := PaPullEndpoint new.
@@ -32,6 +33,7 @@ PaTransmissionTest >> test1PushWithOpacity [
 
 	pushEndpoint := PaPushEndpoint new.
 	pushEndpoint stream: writeStream.
+	pushEndpoint root: PaSceneNode new.
 	pushEndpoint root opacity: 0.1.
 	pushEndpoint push.
 
@@ -52,9 +54,11 @@ PaTransmissionTest >> test2PushOpacityPatch [
 
 	pushEndpoint := PaPushEndpoint new.
 	pushEndpoint stream: writeStream.
+	pushEndpoint root: PaSceneNode new.
 	pushEndpoint push.
 	pushEndpoint root opacity: 0.0.
 	pushEndpoint root opacity: 0.1.
+
 	pushEndpoint push.
 
 	pullEndpoint := PaPullEndpoint new.
@@ -64,7 +68,7 @@ PaTransmissionTest >> test2PushOpacityPatch [
 	self deny: pullEndpoint root identicalTo: pushEndpoint root.
 	self assert: pullEndpoint root opacity isNil.
 	self deny: pullEndpoint root hasPatches.
-	
+
 	pullEndpoint pull.
 	self assert: pullEndpoint root opacity equals: 0.1.
 	self deny: pullEndpoint root hasPatches
@@ -77,6 +81,7 @@ PaTransmissionTest >> test3PushTree [
 	writeStream := WriteStream on: #[].
 
 	pushEndpoint := PaPushEndpoint new.
+	pushEndpoint root: PaSceneNode new.
 	pushEndpoint stream: writeStream.
 
 	a := pushEndpoint root.
@@ -127,6 +132,7 @@ PaTransmissionTest >> test4PushTreeGradually [
 
 	pushEndpoint := PaPushEndpoint new.
 	pushEndpoint stream: writeStream.
+	pushEndpoint root: PaSceneNode new.
 
 	a := pushEndpoint root.
 	a opacity: 0.1.
@@ -187,6 +193,7 @@ PaTransmissionTest >> test5PushAfterReset [
 
 	pushEndpoint := PaPushEndpoint new.
 	pushEndpoint stream: writeStream.
+	pushEndpoint root: PaSceneNode new.
 
 	a := pushEndpoint root.
 	a opacity: 0.1.
@@ -234,8 +241,9 @@ PaTransmissionTest >> test6PushAfterNewRoot [
 	pushEndpoint := PaPushEndpoint new.
 	pushEndpoint stream: writeStream.
 
-	a := pushEndpoint root.
+	a := PaSceneNode new.
 	a opacity: 0.1.
+	pushEndpoint root: a.
 	pushEndpoint push.
 
 	b := PaArray new: 1.
@@ -243,11 +251,14 @@ PaTransmissionTest >> test6PushAfterNewRoot [
 	pushEndpoint root: b.
 	pushEndpoint push.
 
+	b at: 1 put: $b.
+	pushEndpoint push.
+
 	pullEndpoint := PaPullEndpoint new.
 	pullEndpoint stream: writeStream contents readStream.
 	pullEndpoint pullUntilEnd.
 
 	self assert: pullEndpoint root class equals: PaArray.
-	self assert: (pullEndpoint root at: 1) equals: $a.
+	self assert: (pullEndpoint root at: 1) equals: $b.
 	self deny: b identicalTo: pullEndpoint root
 ]
