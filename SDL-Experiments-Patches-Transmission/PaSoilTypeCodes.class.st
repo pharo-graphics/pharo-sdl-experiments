@@ -10,7 +10,8 @@ Class {
 		'TypeCodeInstVarAtPutPatch',
 		'TypeCodeNullPatch',
 		'TypeCodePatches',
-		'TypeCodeRoot'
+		'TypeCodeRoot',
+		'WellKnownObjects'
 	],
 	#category : #'SDL-Experiments-Patches-Transmission-Soil'
 }
@@ -19,7 +20,8 @@ Class {
 PaSoilTypeCodes class >> initialize [
 
 	self initializeTypeCodes.
-	self initializeTypeCodeMapping
+	self initializeTypeCodeMapping.
+	self initializeWellKnownObjects
 ]
 
 { #category : #initialization }
@@ -65,6 +67,12 @@ PaSoilTypeCodes class >> initializeTypeCodes [
 	TypeCodeAtPutPatch := 71.
 	TypeCodeInstVarAtPutPatch := 72.
 	NumberOfEmbeddedIndexInstVarAtPutPatchTypeCode := 7
+]
+
+{ #category : #'class initialization' }
+PaSoilTypeCodes class >> initializeWellKnownObjects [
+
+	WellKnownObjects := { PaArray empty }
 ]
 
 { #category : #initialization }

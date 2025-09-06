@@ -21,7 +21,9 @@ TPaSubscribableAPI >> addPatchFirst: aLinkPatch [
 { #category : #subscription }
 TPaSubscribableAPI >> addSubscriber: aSubscriber [
 
-	subscriber ifNotNil: [ self error: 'only single subscriber is implemented' ].
+	(subscriber isNotNil and: [ subscriber ~~ aSubscriber ])
+		ifTrue: [ self error: 'Only single subscriber is implemented' ].
+
 	subscriber := aSubscriber
 ]
 

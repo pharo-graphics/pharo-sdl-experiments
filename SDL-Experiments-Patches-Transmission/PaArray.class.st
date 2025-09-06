@@ -4,8 +4,17 @@ Class {
 	#type : #variable,
 	#traits : 'TPaIndexedVariablesAPI - {#addPatchFirst:} + TPaSubscribableAPI',
 	#classTraits : 'TPaIndexedVariablesAPI classTrait + TPaSubscribableAPI classTrait',
+	#classInstVars : [
+		'empty'
+	],
 	#category : #'SDL-Experiments-Patches-Transmission-Core'
 }
+
+{ #category : #singleton }
+PaArray class >> empty [
+
+	^ empty ifNil: [ empty := self new: 0 ]
+]
 
 { #category : #'instance creation' }
 PaArray class >> with: anObject [
@@ -127,12 +136,38 @@ PaArray >> do: aBlock [
 	1 to: self size do: [ :index | aBlock value: (self at: index) ]
 ]
 
+{ #category : #testing }
+PaArray >> ifEmpty: aBlock [
+	"Evaluate the given block, answering its value if the receiver is empty, otherwise answer the receiver.
+	Note that the fact that this method returns its receiver in case the receiver is not empty allows one to write expressions like the following ones: self classifyMethodAs: (myProtocol ifEmpty: [ Protocol unclassified ])"
+
+	^ self isEmpty
+		  ifTrue: [ aBlock value ]
+		  ifFalse: [ self ]
+]
+
+{ #category : #testing }
+PaArray >> ifEmpty: emptyBlock ifNotEmpty: notEmptyBlock [
+	"Evaluate emptyBlock if I'm empty, notEmptyBlock otherwise
+	If the notEmptyBlock has an argument, eval with the receiver as its argument"
+
+	^ self isEmpty
+		ifTrue: [ emptyBlock value ]
+		ifFalse: [ notEmptyBlock cull: self ]
+]
+
 { #category : #accessing }
 PaArray >> indexOf: anObject [
 
 	self withIndexDo: [ :each :index |
 		each = anObject ifTrue: [ ^ index ] ].
 	^ 0
+]
+
+{ #category : #testing }
+PaArray >> isEmpty [
+
+	^ self size = 0
 ]
 
 { #category : #printing }

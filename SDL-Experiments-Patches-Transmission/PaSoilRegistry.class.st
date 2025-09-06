@@ -3,7 +3,8 @@ Class {
 	#superclass : #SoilStandaloneObjectRegistry,
 	#instVars : [
 		'nextId',
-		'descriptionCache'
+		'descriptionByIndex',
+		'indexByDescription'
 	],
 	#category : #'SDL-Experiments-Patches-Transmission-Soil'
 }
@@ -11,7 +12,7 @@ Class {
 { #category : #query }
 PaSoilRegistry >> behaviorDescriptionAt: anInteger [ 
 
-	^ descriptionCache
+	^ descriptionByIndex
 		at: anInteger
 		ifAbsentPut: [
 			| aClass descriptionClass |
@@ -38,6 +39,21 @@ PaSoilRegistry >> concretePatcheableClasses [
 	^ { PaArray. PaSceneNode }
 ]
 
+{ #category : #query }
+PaSoilRegistry >> indexOfBehaviorDescription: aClass [ 
+
+	^ indexByDescription 
+		at: aClass
+		ifAbsentPut: [
+			| index |
+			index := classes indexOf: aClass.
+			index > 0
+				ifTrue: [ index ]
+				ifFalse: [ 
+					classes add: aClass.
+					classes size ] ]
+]
+
 { #category : #initialization }
 PaSoilRegistry >> initialize [
 
@@ -46,7 +62,8 @@ PaSoilRegistry >> initialize [
 	"Order is IMPORTANT (their index is encoded/decoded)"
 	classes addAll: self wellKnownClasses.
 
-	descriptionCache := Dictionary new
+	descriptionByIndex := IdentityDictionary new.
+	indexByDescription := IdentityDictionary new
 ]
 
 { #category : #synchronization }

@@ -13,8 +13,10 @@ Class {
 { #category : #initialization }
 PaPullEndpoint >> initialize [
 
+	externalObjectRegistry := PaSoilRegistry new.
+
 	objects := WeakOrderedCollection new.
-	externalObjectRegistry := PaSoilRegistry new
+	WellKnownObjects do: [ :each | self registerObject: each ]
 ]
 
 { #category : #reading }

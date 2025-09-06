@@ -16,10 +16,10 @@ PaSceneNode >> addChild: aChild [
 
 	aChild basicParent: self.
 
-	children :=
-		children
-			ifNil: [ PaArray with: aChild ]
-			ifNotNil: [ children copyWith: aChild ]
+	self basicChildren:
+		(children
+			ifEmpty: [ PaArray with: aChild ]
+			ifNotEmpty: [ children copyWith: aChild ])
 ]
 
 { #category : #adding }
@@ -27,10 +27,17 @@ PaSceneNode >> addChildren: aCollection [
 
 	aCollection do: [ :each | each basicParent: self ].
 
-	children :=
-		children
-			ifNil: [ PaArray withAll: aCollection ]
-			ifNotNil: [ children copyWithAll: aCollection ]
+	self basicChildren:
+		(children
+			ifEmpty: [ PaArray withAll: aCollection ]
+			ifNotEmpty: [ children copyWithAll: aCollection ])
+]
+
+{ #category : #private }
+PaSceneNode >> basicChildren: aCollection [
+	"Set the children collection. Use the singleton empty array when possible."
+
+	children := aCollection ifEmpty: [ PaArray empty ]
 ]
 
 { #category : #private }
@@ -41,7 +48,7 @@ PaSceneNode >> basicParent: aNode [
 	parent := aNode
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #private }
 PaSceneNode >> basicRemoveParent [
 
 	parent := nil
@@ -50,7 +57,6 @@ PaSceneNode >> basicRemoveParent [
 { #category : #accessing }
 PaSceneNode >> childAt: anIndex [
 
-	children ifNil: [ SubscriptOutOfBounds signalFor: anIndex ].
 	^ children at: anIndex
 ]
 
@@ -58,8 +64,6 @@ PaSceneNode >> childAt: anIndex [
 PaSceneNode >> childIndexOf: aNode [
 	"Answer the index of the first occurrence of aNode within the  
 	receiver. If the receiver does not contain aNode, answer 0."
-
-	children ifNil: [ ^ 0 ].
 
 	^ children indexOf: aNode
 ]
@@ -73,23 +77,18 @@ PaSceneNode >> children [
 { #category : #accessing }
 PaSceneNode >> childrenArray [
 
-	^ children
-		ifNotNil: [ children asCollection ]
-		ifNil: [ #() ]
+	^ children asCollection
 ]
 
 { #category : #accessing }
 PaSceneNode >> childrenCount [
 
-	^ children
-		ifNil: [ 0 ]
-		ifNotNil: [ children size ]
+	^ children size
 ]
 
 { #category : #enumerating }
 PaSceneNode >> childrenDo: aBlock [
 
-	children ifNil: [ ^ self ].
 	children do: aBlock
 ]
 
@@ -97,6 +96,14 @@ PaSceneNode >> childrenDo: aBlock [
 PaSceneNode >> hasParent [
 
 	^ parent isNotNil
+]
+
+{ #category : #initialization }
+PaSceneNode >> initialize [
+
+	super initialize.
+	
+	children := PaArray empty
 ]
 
 { #category : #debugging }
@@ -160,8 +167,7 @@ PaSceneNode >> printDetailsOn: aStream [
 { #category : #removing }
 PaSceneNode >> removeChild: aNode [
 
-	children ifNil: [ NotFound signalFor: aNode ].
-	children := children copyWithout: aNode.
+	self basicChildren: (children copyWithout: aNode).
 
 	aNode basicRemoveParent
 ]
@@ -171,7 +177,9 @@ PaSceneNode >> removeChildAt: anIndex [
 
 	| aNode |
 	aNode := children at: anIndex.
-	children := children copyWithoutIndex: anIndex.
+
+	self basicChildren: (children copyWithoutIndex: anIndex).
+
 	aNode basicRemoveParent
 ]
 
@@ -192,7 +200,6 @@ PaSceneNode >> replaceChild: oldNode with: newNode [
 PaSceneNode >> replaceChildAt: anIndex with: newNode [
 
 	| oldNode |
-	children ifNil: [ SubscriptOutOfBounds signalFor: anIndex ].
 	oldNode := children at: anIndex.
 
 	oldNode basicRemoveParent.

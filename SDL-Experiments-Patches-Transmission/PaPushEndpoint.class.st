@@ -22,8 +22,10 @@ PaPushEndpoint >> dirtyPatcheables [
 { #category : #initialization }
 PaPushEndpoint >> initialize [
 
-	objectIdTable := PaSoilObjectTable new.
 	externalObjectRegistry := PaSoilRegistry new.
+
+	objectIdTable := PaSoilObjectTable new.
+	WellKnownObjects do: [ :each | self registerObject: each ].
 		
 	dirtyPatcheables := WeakOrderedCollection new.
 	subscriptions := WeakSet new.
@@ -39,8 +41,8 @@ PaPushEndpoint >> nextPutFixedLayoutPatcheable: patcheable [
 
 	description := self serializeBehaviorDescriptionFor: patcheable.
 
-	description patcheableSlotIndices do: [:index |
-		(patcheable instVarAt: index) soilSerialize: self ].
+	description patcheableSlotIndices do: [ :index |
+		(patcheable basicInstVarAt: index) soilSerialize: self ].
 
 	self subscribeToNewPatchesOf: patcheable
 ]
@@ -127,10 +129,10 @@ PaPushEndpoint >> nextPutVariableLayoutPatcheable: patcheable [
 	self nextPutLengthEncodedInteger: basicSize.
 
 	description patcheableSlotIndices do: [ :index |
-		(patcheable instVarAt: index) soilSerialize: self ].
+		(patcheable basicInstVarAt: index) soilSerialize: self ].
 
 	1 to: basicSize do: [ :index |
-		(patcheable at: index) soilSerialize: self ].
+		(patcheable basicAt: index) soilSerialize: self ].
 
 	self subscribeToNewPatchesOf: patcheable
 ]
