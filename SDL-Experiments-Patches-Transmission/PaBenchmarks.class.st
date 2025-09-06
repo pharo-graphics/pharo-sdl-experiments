@@ -9,7 +9,6 @@ Class {
 
 { #category : #benchmarks }
 PaBenchmarks >> benchIntegerOpacity [
-	<script: 'self new benchIntegerOpacity' >
 
 	'
 
@@ -17,7 +16,7 @@ PaBenchmarks >> benchIntegerOpacity [
 
 ' traceCr.
 
-	#(1 5 9 11) do: [ :n |
+	#(1 5 7 9 11) do: [ :n |
 		| root |
 		'
 # n: ' trace.
@@ -35,7 +34,6 @@ PaBenchmarks >> benchIntegerOpacity [
 
 { #category : #benchmarks }
 PaBenchmarks >> benchNilToOneOpacity [
-	<script: 'self new benchNilToOneOpacity' >
 
 	'
 
@@ -43,7 +41,7 @@ PaBenchmarks >> benchNilToOneOpacity [
 
 ' traceCr.
 
-	#(1 5 9 11) do: [ :n |
+	#(1 5 7 9 11) do: [ :n |
 		| root |
 		'
 # n: ' trace.
@@ -68,7 +66,7 @@ PaBenchmarks >> benchRandomOpacity [
 
 ' traceCr.
 
-	#(1 5 9 11) do: [ :n |
+	#(1 5 7 9 11) do: [ :n |
 		| random root mutateBlock |
 		'
 # n: ' trace.
