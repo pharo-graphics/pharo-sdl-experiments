@@ -5,7 +5,9 @@ Class {
 		'renderer',
 		'osWindow',
 		'osWindowAttributes',
-		'renderDeferrer'
+		'renderingLoopProcess',
+		'sceneTree',
+		'sceneTreeMutex'
 	],
 	#category : #'SDL-Experiments-App2'
 }
@@ -19,7 +21,8 @@ IPC2Window >> attributes: aOSWindowAttributes [
 { #category : #deleting }
 IPC2Window >> basicDestroy [
 
-	osWindow destroy
+	osWindow destroy.
+	osWindow := nil
 ]
 
 { #category : #'instance creation' }
@@ -32,10 +35,8 @@ IPC2Window >> create [
 	
 	renderer := osWindow newAthensRenderer.
 	
-	renderDeferrer := MinMaxDeferrer
-		value: (MessageSend receiver: self selector: #render)
-		minMSDeferral: 5
-		maxMSDeferral: 25
+	sceneTree := IPC2TreeNode new.
+	sceneTreeMutex := Semaphore forMutualExclusion.
 ]
 
 { #category : #'api - event managing' }
@@ -57,18 +58,11 @@ IPC2Window >> isValid [
 	^ osWindow isValid
 ]
 
-{ #category : #accessing }
-IPC2Window >> mainLoopIteration [
-
-	'Events: ' trace. self pendingEvents size traceCr.
-	self render
-]
-
 { #category : #drawing }
 IPC2Window >> render [
 
-	sceneTree ifNotNil: [
-		renderer drawDuring: [ :canvas |
+	renderer drawDuring: [ :canvas |
+		self sceneTreeCritical: [
 			sceneTree drawOnAthensCanvas: canvas ] ].
 
 	renderer
@@ -76,9 +70,45 @@ IPC2Window >> render [
 		present
 ]
 
-{ #category : #rendering }
-IPC2Window >> sceneTree: anObject [
+{ #category : #'instance creation' }
+IPC2Window >> renderAndWait [
 
-	super sceneTree: anObject.
-	renderDeferrer schedule
+	| startMS usedMS targetMS delayMS |
+	targetMS := 100.
+	startMS := Time millisecondClockValue.
+	self render.
+	usedMS := Time millisecondClockValue - startMS.
+	
+	delayMS := (targetMS - usedMS) max: 0.
+
+	#renderAndWait trace. ' (ms): ' trace. usedMS traceCr.
+
+	delayMS > 0 ifTrue: [
+		(Delay forMilliseconds: delayMS) wait ]
+]
+
+{ #category : #accessing }
+IPC2Window >> sceneTree [
+
+	^ sceneTree
+]
+
+{ #category : #accessing }
+IPC2Window >> sceneTree: aTreeNode [
+
+	sceneTree := aTreeNode
+]
+
+{ #category : #drawing }
+IPC2Window >> sceneTreeCritical: aBlock [
+
+	sceneTreeMutex critical: aBlock
+]
+
+{ #category : #'instance creation' }
+IPC2Window >> startRenderingLoop [
+
+	renderingLoopProcess := [
+		[ self renderAndWait ] doWhileTrue: [ osWindow notNil ]
+		] forkAt: 41 named: 'Rendering loop ', self id asString
 ]

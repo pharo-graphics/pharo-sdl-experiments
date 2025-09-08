@@ -1,8 +1,9 @@
 Class {
 	#name : #IPC2OpenWindowCommand,
-	#superclass : #IPC2Command,
+	#superclass : #IPC2SecondaryCompositorCommand,
 	#instVars : [
-		'attributes'
+		'attributes',
+		'sceneTreeBytes'
 	],
 	#category : #'SDL-Experiments-App2'
 }
@@ -20,7 +21,16 @@ IPC2OpenWindowCommand >> attributes: anObject [
 ]
 
 { #category : #accessing }
-IPC2OpenWindowCommand >> value: _ [
+IPC2OpenWindowCommand >> sceneTreeBytes: aByteArray [
 
-	^ (IPC2SecondaryCompositor current newWindow: attributes) id
+	sceneTreeBytes := aByteArray
+]
+
+{ #category : #accessing }
+IPC2OpenWindowCommand >> value: aCommandService [
+	"Sender needs the window's id for further commands"
+
+	^ (aCommandService owner
+		   newWindow: attributes
+		   sceneTreeBytes: sceneTreeBytes) id
 ]

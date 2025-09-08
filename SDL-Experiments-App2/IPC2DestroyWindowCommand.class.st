@@ -1,6 +1,6 @@
 Class {
 	#name : #IPC2DestroyWindowCommand,
-	#superclass : #IPC2Command,
+	#superclass : #IPC2SecondaryCompositorCommand,
 	#instVars : [
 		'windowId'
 	],

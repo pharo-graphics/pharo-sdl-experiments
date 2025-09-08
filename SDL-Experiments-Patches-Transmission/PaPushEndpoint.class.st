@@ -5,7 +5,8 @@ Class {
 		'dirtyPatcheables',
 		'subscriptions',
 		'needsFull',
-		'root'
+		'root',
+		'dirtyPatcheablesSubscription'
 	],
 	#pools : [
 		'PaSoilTypeCodes'
@@ -17,6 +18,14 @@ Class {
 PaPushEndpoint >> dirtyPatcheables [
 
 	^ dirtyPatcheables
+]
+
+{ #category : #subscription }
+PaPushEndpoint >> dirtyPatcheablesSubscription: aMessageSend [
+
+	Halt if: [ dirtyPatcheablesSubscription notNil ].
+
+	dirtyPatcheablesSubscription := aMessageSend
 ]
 
 { #category : #initialization }
@@ -140,18 +149,21 @@ PaPushEndpoint >> nextPutVariableLayoutPatcheable: patcheable [
 { #category : #subscription }
 PaPushEndpoint >> notifyDirty: aPatcheable [
 	
-	dirtyPatcheables add: aPatcheable
+	dirtyPatcheables add: aPatcheable.
+	
+	dirtyPatcheablesSubscription value
 ]
 
 { #category : #synchronization }
 PaPushEndpoint >> push [
-	"Only do full serialization when it was required. Else, only serialize the patches."
+	"Only do full serialization when it was required. Else, only serialize the patches of the dirty patcheables i.e. that notified mutations."
 
 	needsFull
 		ifTrue: [
 			self nextPutByte: TypeCodeRoot.
 			self pushFull ]
 		ifFalse: [
+			dirtyPatcheables ifEmpty: [ ^ self ].
 			self nextPutByte: TypeCodePatches.
 			self pushPatches ]
 ]
@@ -170,18 +182,25 @@ PaPushEndpoint >> pushPatches [
 	[ dirtyPatcheables isEmpty ] whileFalse: [
 		| each |
 		each := dirtyPatcheables removeFirst.
-		each ifNil: [ 1halt. "TODO: Not yet tested but could happen (GCed)" ].
-
-		"Only patcheables that were serialized in a previous push should 
-		be in this collection, so encode its internal index."
-		self nextPutIndexOfInternalObject: each.
-		"Serialize patch chain (they have a special encoding)"
-		each firstPatch soilSerialize: self.
-		"Apply patches of this patcheable"
-		each applyPatches ].
+		"If patchceable was GCed, then we will get nil"
+		each ifNotNil: [
+			"Only patcheables that were serialized in a previous push should 
+			be in this collection, so encode its internal index."
+			self nextPutIndexOfInternalObject: each.
+			"Serialize patch chain (they have a special encoding)"
+			each firstPatch soilSerialize: self.
+			"Apply patches of this patcheable"
+			each applyPatches ] ].
 
 	"Mark the end of the patches"
 	self nextPutByte: 0
+]
+
+{ #category : #initialization }
+PaPushEndpoint >> registerClass: aClass [
+	"Useful to preset well-known classes. The sequence of classes MUST match in both endpoints."
+
+	externalObjectRegistry add: aClass
 ]
 
 { #category : #initialization }

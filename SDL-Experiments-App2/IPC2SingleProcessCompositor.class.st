@@ -40,6 +40,7 @@ IPC2SingleProcessCompositor >> newWindow: aOSWindowAttributes [
 	aWindow compositor: self.
 	aWindow attributes: aOSWindowAttributes.
 	aWindow create.
+	aWindow startRenderingLoop.
 	^ aWindow
 ]
 
@@ -50,11 +51,8 @@ IPC2SingleProcessCompositor >> terminate [
 	windows removeAll
 ]
 
-{ #category : #'window API' }
-IPC2SingleProcessCompositor >> updateSceneGraph: update windowId: windowId [
+{ #category : #'as yet unclassified' }
+IPC2SingleProcessCompositor >> windowAtId: id [
 
-	| aWindow |
-	aWindow := windows at: windowId.
-
-	aWindow sceneTree: update
+	^ windows at: id
 ]

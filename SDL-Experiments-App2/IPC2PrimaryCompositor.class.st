@@ -75,16 +75,29 @@ IPC2PrimaryCompositor >> maxSecondsToLaunch [
 { #category : #'window API' }
 IPC2PrimaryCompositor >> newWindow: osWindowAttributes [
 
-	| windowId aWindow |
+	| windowId aWindow bytes pushEndpoint |
+
+	pushEndpoint := PaPushEndpoint new.
+	pushEndpoint root: IPC2TreeNode new.
+	pushEndpoint root
+		shape: (0 @ 0 extent: osWindowAttributes extent);
+		strokeColor: Color black.
+		
+	bytes := ByteArray streamContents: [ :stream |
+		pushEndpoint stream: stream.
+		pushEndpoint push ].
+
 	windowId := commandService sendCommandSync:
 		(IPC2OpenWindowCommand new
 			attributes: osWindowAttributes;
+			sceneTreeBytes: bytes;
 			yourself).
 	
 	aWindow :=
 		IPC2RemoteWindow new
 			compositor: self; 
 			id: windowId;
+			pushEndpoint: pushEndpoint;
 			yourself.
 			
 	windows at: aWindow id put: aWindow.
@@ -134,11 +147,11 @@ IPC2PrimaryCompositor >> terminate [
 ]
 
 { #category : #'as yet unclassified' }
-IPC2PrimaryCompositor >> updateSceneGraph: anObject windowId: windowId [
+IPC2PrimaryCompositor >> updateSceneGraph: bytes windowId: windowId [
 
 	commandService sendCommandIgnoringResult:
 		(IPC2UpdateSceneGraphCommand new
 			windowId: windowId;
-			content: anObject;
+			content: bytes;
 			yourself)
 ]

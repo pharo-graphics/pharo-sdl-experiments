@@ -18,7 +18,7 @@ PaSoilRegistry >> behaviorDescriptionAt: anInteger [
 			| aClass descriptionClass |
 			aClass := classes at: anInteger.
 			descriptionClass :=
-			 	(self concretePatcheableClasses includes: aClass)
+			 	(self patcheableClasses includes: aClass)
 					ifTrue: [ PaSoilBehaviorDescription ]
 					ifFalse: [ SoilBehaviorDescription ].
 
@@ -31,12 +31,6 @@ PaSoilRegistry >> behaviorDescriptionAt: anInteger [
 PaSoilRegistry >> behaviorDescriptionWithObjectId: aSoilObjectId andVersion: version [
 
 	^ self behaviorDescriptionAt: aSoilObjectId index
-]
-
-{ #category : #query }
-PaSoilRegistry >> concretePatcheableClasses [
-
-	^ { PaArray. PaSceneNode }
 ]
 
 { #category : #query }
@@ -67,8 +61,21 @@ PaSoilRegistry >> initialize [
 ]
 
 { #category : #synchronization }
+PaSoilRegistry >> patchClasses [
+
+	^ PaPatch allSubclasses
+]
+
+{ #category : #query }
+PaSoilRegistry >> patcheableClasses [
+
+	^ PaBaseObject allSubclasses
+]
+
+{ #category : #synchronization }
 PaSoilRegistry >> wellKnownClasses [
 	
-	^ (self concretePatcheableClasses, PaPatch allSubclasses)
+	self flag: #todo. "Make this extensible"
+	^ (self patcheableClasses, self patchClasses, { Point. Rectangle })
 			sorted: [ :a :b | a name < b name ]
 ]

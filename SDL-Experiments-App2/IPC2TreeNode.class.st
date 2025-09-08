@@ -1,33 +1,14 @@
 Class {
 	#name : #IPC2TreeNode,
-	#superclass : #Object,
+	#superclass : #PaSceneNode,
 	#instVars : [
-		'children',
-		'strokeWidth',
-		'shape',
-		'fillColorHexString',
-		'strokeColorHexString'
+		'#strokeWidth => PaSlot',
+		'#shape => PaSlot',
+		'#fillColorHexString => PaSlot',
+		'#strokeColorHexString => PaSlot'
 	],
 	#category : #'SDL-Experiments-App2'
 }
-
-{ #category : #adding }
-IPC2TreeNode >> addChild: anotherTreeNode [
-
-	children := children copyWith: anotherTreeNode
-]
-
-{ #category : #accessing }
-IPC2TreeNode >> children [
-
-	^ children
-]
-
-{ #category : #accessing }
-IPC2TreeNode >> children: anObject [
-
-	children := anObject
-]
 
 { #category : #drawing }
 IPC2TreeNode >> drawOnAthensCanvas: anAthensCanvas [
@@ -35,7 +16,7 @@ IPC2TreeNode >> drawOnAthensCanvas: anAthensCanvas [
 	self hasFillColor ifTrue: [
 		anAthensCanvas setPaint: self fillColor.
 		anAthensCanvas drawShape: shape ].
-	self hasStrokeColor ifTrue: [
+	self hasStroke ifTrue: [
 		(anAthensCanvas setStrokePaint: self strokeColor) width: strokeWidth.
 		anAthensCanvas drawShape: shape ].
 	
@@ -73,23 +54,17 @@ IPC2TreeNode >> hasFillColor [
 ]
 
 { #category : #testing }
-IPC2TreeNode >> hasStrokeColor [
+IPC2TreeNode >> hasStroke [
 
-	^ strokeColorHexString isNotNil
+	^ strokeColorHexString isNotNil and: [ strokeWidth notNil ]
 ]
 
-{ #category : #initialization }
-IPC2TreeNode >> initialize [
+{ #category : #printing }
+IPC2TreeNode >> printDetailsOn: aStream [
 
-	super initialize.
-
-	children := #()
-]
-
-{ #category : #adding }
-IPC2TreeNode >> removeChild: childTreeNode [
-
-	children := children copyWithout: childTreeNode
+	aStream
+		nextPutAll: 'opacity: ';
+		print: opacity
 ]
 
 { #category : #accessing }

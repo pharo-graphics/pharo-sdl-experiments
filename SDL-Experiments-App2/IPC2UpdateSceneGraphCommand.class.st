@@ -1,6 +1,6 @@
 Class {
 	#name : #IPC2UpdateSceneGraphCommand,
-	#superclass : #IPC2Command,
+	#superclass : #IPC2SecondaryCompositorCommand,
 	#instVars : [
 		'windowId',
 		'content'
@@ -23,9 +23,9 @@ IPC2UpdateSceneGraphCommand >> content: anObject [
 { #category : #accessing }
 IPC2UpdateSceneGraphCommand >> value: aCommandService [
 
-	| compositor |
-	compositor := aCommandService owner.
-	compositor updateSceneGraph: content windowId: windowId
+	| secondaryCompositor |
+	secondaryCompositor := aCommandService owner.
+	secondaryCompositor updateSceneGraph: content windowId: windowId
 ]
 
 { #category : #accessing }

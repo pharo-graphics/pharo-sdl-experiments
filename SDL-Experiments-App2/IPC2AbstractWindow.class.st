@@ -3,8 +3,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'compositor',
-		'eventAnnouncer',
-		'sceneTree'
+		'eventAnnouncer'
 	],
 	#category : #'SDL-Experiments-App2'
 }
@@ -48,16 +47,4 @@ IPC2AbstractWindow >> id [
 IPC2AbstractWindow >> initialize [
 
 	eventAnnouncer := Announcer new
-]
-
-{ #category : #accessing }
-IPC2AbstractWindow >> sceneTree [
-
-	^ sceneTree
-]
-
-{ #category : #accessing }
-IPC2AbstractWindow >> sceneTree: anObject [
-
-	sceneTree := anObject
 ]

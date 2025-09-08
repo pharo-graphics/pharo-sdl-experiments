@@ -157,11 +157,11 @@ PaSceneNode >> parent [
 PaSceneNode >> printDetailsOn: aStream [
 
 	aStream
-		nextPutAll: 'opacity: ';
-		print: opacity.
-	aStream
 		nextPutAll: ' #children: ';
-		print: self childrenCount
+		print: self childrenCount.
+	aStream
+		nextPutAll: 'opacity: ';
+		print: opacity
 ]
 
 { #category : #removing }

@@ -11,7 +11,10 @@ Class {
 { #category : #'instance creation' }
 IPC2MovingSquareApp >> close [
 
-	window destroy
+	window ifNil: [ ^ self ].
+
+	window destroy.
+	window := nil
 ]
 
 { #category : #accessing }
@@ -52,18 +55,15 @@ IPC2MovingSquareApp >> open [
 			window sceneTree addChild: 
 				(IPC2TreeNode new
 					shape: (event position extent: 50 @ 50);
+					strokeWidth: 2;
+					strokeColor: Color random;
 					fillColor: Color random;
-					yourself).
-			window sceneTree: window sceneTree ]
+					yourself) ]
 		for: self.
 	
-	window sceneTree:
-		(IPC2TreeNode new
-			shape: (0 @ 0 extent: self initialExtent);
-			strokeWidth: 5;
-			strokeColor: Color green;
-			fillColor: Color blue;
-			yourself)
+	window sceneTree
+		shape: (0 @ 0 extent: self initialExtent);
+		fillColor: Color blue muchDarker
 ]
 
 { #category : #accessing }

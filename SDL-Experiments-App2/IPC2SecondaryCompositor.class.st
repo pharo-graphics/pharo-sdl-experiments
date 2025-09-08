@@ -2,7 +2,8 @@ Class {
 	#name : #IPC2SecondaryCompositor,
 	#superclass : #IPC2DualProcessCompositor,
 	#instVars : [
-		'singleProcessCompositor'
+		'singleProcessCompositor',
+		'pullEndpointByWindowId'
 	],
 	#classInstVars : [
 		'current'
@@ -47,7 +48,9 @@ IPC2SecondaryCompositor >> initialize [
 
 	super initialize.
 
-	singleProcessCompositor := IPC2SingleProcessCompositor new
+	singleProcessCompositor := IPC2SingleProcessCompositor new.
+	
+	pullEndpointByWindowId := Dictionary new
 ]
 
 { #category : #'window API' }
@@ -59,7 +62,34 @@ IPC2SecondaryCompositor >> newWindow: attributes [
 ]
 
 { #category : #'window API' }
-IPC2SecondaryCompositor >> updateSceneGraph: update windowId: windowId [
+IPC2SecondaryCompositor >> newWindow: attributes sceneTreeBytes: sceneTreeBytes [
 
-	^ singleProcessCompositor updateSceneGraph: update windowId: windowId
+	| pullEndpoint window |
+	pullEndpoint := PaPullEndpoint new.
+	pullEndpoint stream: sceneTreeBytes readStream.
+	pullEndpoint pull.
+
+	window := (singleProcessCompositor newWindow: attributes)
+		compositor: self;
+		yourself.
+	
+	pullEndpointByWindowId at: window id put: pullEndpoint.
+	
+	^ window
+]
+
+{ #category : #'window API' }
+IPC2SecondaryCompositor >> updateSceneGraph: bytes windowId: windowId [
+
+	| aWindow pullEndpoint |
+	aWindow := singleProcessCompositor windowAtId: windowId.
+	pullEndpoint := pullEndpointByWindowId at: windowId.
+
+	aWindow sceneTreeCritical: [
+		| root |
+		root := pullEndpoint
+			stream: bytes readStream;
+			pull;
+			root.
+		aWindow sceneTree: root ]
 ]
