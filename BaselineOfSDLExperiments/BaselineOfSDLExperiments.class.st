@@ -31,13 +31,20 @@ BaselineOfSDLExperiments >> baseline: spec [
 				declareOSWinSubprocessOn: spec.
 			spec
 				package: 'SDL-Experiments-App';
+
 				package: 'SDL-Experiments-Patches';
+				package: 'SDL-Experiments-Patches-Tests' with: [
+					spec requires: #('SDL-Experiments-Patches') ];
+
 				package: 'SDL-Experiments-Patches-Transmission' with: [
 					spec requires: #('SDL-Experiments-Patches') ];
+				package: 'SDL-Experiments-Patches-Transmission-Tests' with: [
+					spec requires: #('SDL-Experiments-Patches-Transmission') ];
+
 				package: 'SDL-Experiments-App2' with: [
 					spec requires: #(
 						'SDL-Experiments-App'
-						'SDL-Experiments-Patches-Transmission'
+						'SDL-Experiments-Patches-Transmission-Tests'
 						'Soil'
 						'OSSubprocess'
 						'OSWinSubprocess') ]

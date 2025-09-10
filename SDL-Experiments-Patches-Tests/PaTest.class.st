@@ -388,6 +388,14 @@ PaTest >> testMultipleMutatorsReusesPatch [
 	self assert: e opacity equals: 0.1
 ]
 
+{ #category : #tests }
+PaTest >> testPatcheableSlotNames [
+
+	self
+		assertCollection: PaTestingElement patcheableSlotNames
+		hasSameElements: #( #opacity #background )
+]
+
 { #category : #'tests - resizing' }
 PaTest >> testRemoveAtConflictingWithAtPut [
 
