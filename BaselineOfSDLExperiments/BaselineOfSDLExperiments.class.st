@@ -26,9 +26,9 @@ BaselineOfSDLExperiments >> baseline: spec [
 
 			"Experimental IPC window compositor architecture"
 			self
+				declareSoilOn: spec;
 				declareOSSubprocessOn: spec;
-				declareOSWindowOn: spec;
-				declareSoilOn: spec.
+				declareOSWinSubprocessOn: spec.
 			spec
 				package: 'SDL-Experiments-App';
 				package: 'SDL-Experiments-Patches';
@@ -38,8 +38,9 @@ BaselineOfSDLExperiments >> baseline: spec [
 					spec requires: #(
 						'SDL-Experiments-App'
 						'SDL-Experiments-Patches-Transmission'
+						'Soil'
 						'OSSubprocess'
-						'OSWindow') ]
+						'OSWinSubprocess') ]
 
 			]
 ]
@@ -61,10 +62,10 @@ BaselineOfSDLExperiments >> declareOSSubprocessOn: spec [
 ]
 
 { #category : #'external projects' }
-BaselineOfSDLExperiments >> declareOSWindowOn: spec [
+BaselineOfSDLExperiments >> declareOSWinSubprocessOn: spec [
 
 	spec
-		baseline: 'OSWindow'
+		baseline: 'OSWinSubprocess'
 		with: [ spec repository: 'github://pharo-contributions/OSWinSubprocess:master/repository' ]
 ]
 
