@@ -77,7 +77,7 @@ PaSceneNode >> children [
 { #category : #accessing }
 PaSceneNode >> childrenArray [
 
-	^ children asCollection
+	^ children asArray
 ]
 
 { #category : #accessing }

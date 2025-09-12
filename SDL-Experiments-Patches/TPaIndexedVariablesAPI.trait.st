@@ -19,7 +19,7 @@ TPaIndexedVariablesAPI >> addPatchForAt: anInteger put: aValue [
 ]
 
 { #category : #converting }
-TPaIndexedVariablesAPI >> asCollection [
+TPaIndexedVariablesAPI >> asArray [
 
 	^ self as: Array
 ]
@@ -40,5 +40,5 @@ TPaIndexedVariablesAPI >> at: index put: aValue [
 TPaIndexedVariablesAPI >> inspectionItems: aBuilder [
 	<inspectorPresentationOrder: 0 title: 'Items'> 
 
-	^ self asCollection inspectionItems: aBuilder
+	^ self asArray inspectionItems: aBuilder
 ]

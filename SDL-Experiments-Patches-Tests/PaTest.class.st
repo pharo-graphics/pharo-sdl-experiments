@@ -83,7 +83,7 @@ PaTest >> testCondensePatches [
 	self deny: q identicalTo: p.
 	self deny: q hasPatches.
 	self assert: q size equals: 3.
-	self assert: q asCollection equals: p asCollection.
+	self assert: q asArray equals: p asArray.
 	self assert: (q at: 2) equals: $b.
 	self assert: q opacity equals: 0.5.
 
@@ -105,19 +105,19 @@ PaTest >> testCopy [
 	"(opacity and second index remain untouched)"
 	self assert: p opacity equals: 0.1.
 	self assert: p background equals: Color green.
-	self assert: p asCollection equals: #($c $b $d).
+	self assert: p asArray equals: #($c $b $d).
 	
 	q := p copy.
 	"q has same values as p; patches are applied"
 	self deny: q hasPatches.
 	self assert: q opacity equals: 0.1.
 	self assert: q background equals: Color green.
-	self assert: q asCollection equals: #($c $b $d).
+	self assert: q asArray equals: #($c $b $d).
 	"p keeps same values and patches unapplied"
 	self assert: p hasPatches.
 	self assert: p opacity equals: 0.1.
 	self assert: p background equals: Color green.
-	self assert: p asCollection equals: #($c $b $d).
+	self assert: p asArray equals: #($c $b $d).
 
 ]
 

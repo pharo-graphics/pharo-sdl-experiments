@@ -49,11 +49,11 @@ PaSceneNodeTest >> testRemoveChild [
 	c opacity: 0.3.
 	d opacity: 0.4.
 
-	self assert: a children asCollection equals: { b. c. d }.
+	self assert: a children asArray equals: { b. c. d }.
 	a children do: [ :each | self assert: each parent identicalTo: a ].
 
 	a removeChild: c.
-	self assert: a children asCollection equals: { b. d }.
+	self assert: a children asArray equals: { b. d }.
 	self deny: c hasParent.
 	a children do: [ :each | self assert: each parent identicalTo: a ].
 
@@ -61,12 +61,12 @@ PaSceneNodeTest >> testRemoveChild [
 	self should: [ b removeChild: a ] raise: NotFound.
 
 	a removeChildAt: 2.
-	self assert: a children asCollection equals: { b }.
+	self assert: a children asArray equals: { b }.
 	self deny: d hasParent.
 
 	a addChildren: { d. c }.
 	a removeChild: c.
-	self assert: a children asCollection equals: { b. d }.
+	self assert: a children asArray equals: { b. d }.
 	self deny: c hasParent
 ]
 
@@ -87,19 +87,19 @@ PaSceneNodeTest >> testReplaceChild [
 	d opacity: 0.4.
 	e opacity: 0.5.
 	
-	self assert: a children asCollection equals: { b. c. d }.
+	self assert: a children asArray equals: { b. c. d }.
 	a children do: [ :each | self assert: each parent identicalTo: a ].
 	self deny: e hasParent.
 
 	"Replace via child"
 	a replaceChild: c with: e.
-	self assert: a children asCollection equals: { b. e. d }.
+	self assert: a children asArray equals: { b. e. d }.
 	a children do: [ :each | self assert: each parent identicalTo: a ].
 	self deny: c hasParent.
 
 	"Replace via child index"
 	a replaceChildAt: 3 with: c.
-	self assert: a children asCollection equals: { b. e. c }.
+	self assert: a children asArray equals: { b. e. c }.
 	a children do: [ :each | self assert: each parent identicalTo: a ].
 	self deny: d hasParent.
 
