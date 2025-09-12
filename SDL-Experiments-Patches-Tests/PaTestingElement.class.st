@@ -5,8 +5,8 @@ Class {
 	#name : #PaTestingElement,
 	#superclass : #Object,
 	#type : #variable,
-	#traits : 'TPaInstanceVariablesAPI + TPaResizeAPI',
-	#classTraits : 'TPaInstanceVariablesAPI classTrait + TPaResizeAPI classTrait',
+	#traits : 'TPaInstanceVariablesAPI + TPaIndexedVariablesAPI',
+	#classTraits : 'TPaInstanceVariablesAPI classTrait + TPaIndexedVariablesAPI classTrait',
 	#instVars : [
 		'#opacity => PaSlot',
 		'#background => PaSlot'

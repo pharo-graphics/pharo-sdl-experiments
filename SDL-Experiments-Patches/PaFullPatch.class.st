@@ -64,18 +64,6 @@ PaFullPatch >> read: aPatcheable instVarAt: anInteger [
 	^ patcheableCopy instVarAt: anInteger
 ]
 
-{ #category : #public }
-PaFullPatch >> sizeOf: aPatcheable [
-
-	^ patcheableCopy size
-]
-
-{ #category : #writing }
-PaFullPatch >> write: aPatcheable add: aValue at: anInteger [
-
-	patcheableCopy add: aValue at: anInteger
-]
-
 { #category : #writing }
 PaFullPatch >> write: aPatcheable at: anInteger put: aValue [
 
@@ -86,10 +74,4 @@ PaFullPatch >> write: aPatcheable at: anInteger put: aValue [
 PaFullPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
 
 	patcheableCopy instVarAt: anInteger put: aValue
-]
-
-{ #category : #writing }
-PaFullPatch >> write: aPatcheable removeAt: anInteger [
-
-	patcheableCopy removeAt: anInteger
 ]

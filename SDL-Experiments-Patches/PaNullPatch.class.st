@@ -40,18 +40,6 @@ PaNullPatch >> read: aPatcheable instVarAt: anInteger [
 	^ aPatcheable basicInstVarAt: anInteger
 ]
 
-{ #category : #public }
-PaNullPatch >> sizeOf: aPatcheable [
-
-	^ aPatcheable basicSize
-]
-
-{ #category : #writing }
-PaNullPatch >> write: aPatcheable add: aValue at: anInteger [
-
-	aPatcheable addPatchForAdd: aValue at: anInteger
-]
-
 { #category : #writing }
 PaNullPatch >> write: aPatcheable at: anInteger put: aValue [ 
 
@@ -62,10 +50,4 @@ PaNullPatch >> write: aPatcheable at: anInteger put: aValue [
 PaNullPatch >> write: aPatcheable instVarAt: anInteger put: aValue [ 
 
 	aPatcheable addPatchForInstVarAt: anInteger put: aValue
-]
-
-{ #category : #writing }
-PaNullPatch >> write: aPatcheable removeAt: anInteger [
-
-	aPatcheable addPatchForRemoveAt: anInteger
 ]

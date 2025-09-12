@@ -77,18 +77,6 @@ PaLinkPatch >> read: aPatcheable instVarAt: anInteger [
 	^ nextPatch read: aPatcheable instVarAt: anInteger
 ]
 
-{ #category : #public }
-PaLinkPatch >> sizeOf: aPatcheable [
-
-	^ nextPatch sizeOf: aPatcheable
-]
-
-{ #category : #writing }
-PaLinkPatch >> write: aPatcheable add: aValue at: anInteger [
-
-	nextPatch write: aPatcheable add: aValue at: anInteger
-]
-
 { #category : #writing }
 PaLinkPatch >> write: aPatcheable at: anInteger put: aValue [
 
@@ -99,10 +87,4 @@ PaLinkPatch >> write: aPatcheable at: anInteger put: aValue [
 PaLinkPatch >> write: aPatcheable instVarAt: anInteger put: aValue [
 
 	nextPatch write: aPatcheable instVarAt: anInteger put: aValue
-]
-
-{ #category : #writing }
-PaLinkPatch >> write: aPatcheable removeAt: anInteger [
-
-	nextPatch write: aPatcheable removeAt: anInteger
 ]

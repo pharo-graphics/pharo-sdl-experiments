@@ -64,22 +64,6 @@ PaTest >> testAccessors [
 	self assert: e background isNil
 ]
 
-{ #category : #'tests - resizing' }
-PaTest >> testAddAtConflictingWithAtPut [
-
-	| p |
-	p := PaTestingElement new: 2.
-	p at: 1 put: $a.
-	p add: $b at: 1.
-	self assert: (p at: 1) equals: $b.
-	p at: 1 put: $c.
-	self assert: (p at: 1) equals: $c.
-
-	self assert: p size equals: 3.
-	self should: [ p add: $d at: 5 ] raise: SubscriptOutOfBounds.
-	self should: [ p add: $d at: 0 ] raise: SubscriptOutOfBounds.
-]
-
 { #category : #tests }
 PaTest >> testCopy [
 
@@ -109,56 +93,6 @@ PaTest >> testCopy [
 	self assert: p opacity equals: 0.1.
 	self assert: p background equals: Color green.
 	self assert: p asCollection equals: #($c $b $d).
-
-]
-
-{ #category : #'tests - resizing' }
-PaTest >> testCopyWithResize [
-
-	| p q |
-	"Prepare a patcheable with some values applied and some unapplied"
-	p := PaTestingElement new: 4.
-	p opacity: 0.1.
-	p at: 2 put: $b.
-	p applyPatches.
-	p background: false.
-	p at: 3 put: $c.
-	p add: $d at: 4.
-	self assert: p opacity equals: 0.1.
-	self assert: p background equals: false.
-	self assert: p asCollection equals: #(nil $b $c $d nil).
-	
-	q := p copy.
-	"q has same values as p; patches are applied"
-	self deny: q hasPatches.
-	self assert: q opacity equals: 0.1.
-	self assert: q background equals: false.
-	self assert: q asCollection equals: #(nil $b $c $d nil).
-	"p keeps same values and patches unapplied"
-	self assert: p hasPatches.
-	self assert: p opacity equals: 0.1.
-	self assert: p background equals: false.
-	self assert: p asCollection equals: #(nil $b $c $d nil).
-
-]
-
-{ #category : #'tests - resizing' }
-PaTest >> testFullPatch [
-
-	| p q |
-	"Produce a conflict"
-	p := PaTestingElement new: 1.
-	p at: 1 put: $b.
-	p addLast: $c.
-	p addFirst: $a.
-	p add: $d.
-	
-	self assert: (p patches collect: #class) equals: { PaFullPatch }.
-	
-	q := p copy.
-	self assert: q size equals: 4.
-	self deny: q hasPatches.
-	self assert: q asCollection equals: p asCollection
 
 ]
 
@@ -394,114 +328,6 @@ PaTest >> testPatcheableSlotNames [
 	self
 		assertCollection: PaTestingElement patcheableSlotNames
 		hasSameElements: #( #opacity #background )
-]
-
-{ #category : #'tests - resizing' }
-PaTest >> testRemoveAtConflictingWithAtPut [
-
-	| p |
-	p := PaTestingElement new: 2.
-	p at: 1 put: $a.
-	p removeAt: 1.
-	p at: 1 put: $c.
-	self assert: (p at: 1) equals: $c.
-
-	self assert: p size equals: 1.
-	self should: [ p removeAt: 2 ] raise: SubscriptOutOfBounds.
-	self should: [ p removeAt: 0 ] raise: SubscriptOutOfBounds
-]
-
-{ #category : #'tests - resizing' }
-PaTest >> testRemoveAtConflictingWithAtPut2 [
-
-	| p |
-	p := PaTestingElement new: 2.
-	p at: 1 put: $a.
-	p at: 2 put: $b.
-	p removeAt: 1.
-	p at: 1 put: $c.
-	self assertCollection: p asCollection equals: { $c }
-]
-
-{ #category : #'tests - resizing' }
-PaTest >> testRemoveAtConflictingWithAtPut3 [
-
-	| p |
-	p := PaTestingElement new: 2.
-	p at: 2 put: $b.
-	p removeAt: 1.
-	self assert: (p at: 1) equals: $b.
-	p at: 1 put: $c.
-	self assert: (p at: 1) equals: $c
-]
-
-{ #category : #'tests - resizing' }
-PaTest >> testResizingPatches [
-
-	| p q |
-	p := PaTestingElement new: 2.
-	p at: 1 put: $a.
-	p at: 2 put: $b.
-	self assertCollection: p asCollection equals: #($a $b).
-	p applyPatches.
-
-	p add: $c at: 2.
-	self assertCollection: p asCollection equals: #($a $c $b).
-	
-	p add: $d at: 2.
-	self assertCollection: p asCollection equals: #($a $d $c $b).
-
-	p add: $e at: 1.
-	self assertCollection: p asCollection equals: #($e $a $d $c $b).
-
-	p add: $f at: 6.
-	self assertCollection: p asCollection equals: #($e $a $d $c $b $f).
-
-	self should: [ p add: $g at: 8 ] raise: SubscriptOutOfBounds.
-	self should: [ p add: $g at: 0 ] raise: SubscriptOutOfBounds.
-
-	1 to: 6 do: [ :index | p at: index put: index ].
-	self assertCollection: p asCollection equals: (1 to: 6).
-
-	q := p copy.
-	self assert: p hasPatches.
-	self assertCollection: p asCollection equals: (1 to: 6).
-	self deny: q hasPatches.
-	self assertCollection: q asCollection equals: p asCollection.
-
-	p removeAt: 3.
-	q removeAt: 3.
-	self assertCollection: p asCollection equals: #(1 2 4 5 6).
-	self assertCollection: q asCollection equals: p asCollection.
-
-	p removeAt: 5.
-	q removeAt: 5.
-	self assertCollection: p asCollection equals: #(1 2 4 5).
-	self assertCollection: q asCollection equals: p asCollection.
-
-	p removeAt: 1.
-	q removeAt: 1.
-	self assertCollection: p asCollection equals: #(2 4 5).
-	self assertCollection: q asCollection equals: p asCollection.
-	
-	"Make patches conflict"
-	1 to: 3 do: [ :index |
-		p at: index put: index.
-		q at: index put: index ].
-	self assertCollection: p asCollection equals: (1 to: 3).
-	self assertCollection: q asCollection equals: p asCollection.
-
-	(1 to: 3) reverseDo: [ :index |
-		p add: 10 + index at: index.
-		q add: 10 + index at: index ].
-	self assertCollection: p asCollection equals: #(11 1 12 2 13 3).
-	self assertCollection: q asCollection equals: p asCollection.
-
-	1 to: p size do: [ :index |
-		p at: index put: 100 + index.
-		q at: index put: 100 + index ].
-	self assertCollection: p asCollection equals: #(101 102 103 104 105 106).
-	self assertCollection: q asCollection equals: p asCollection
 ]
 
 { #category : #tests }
