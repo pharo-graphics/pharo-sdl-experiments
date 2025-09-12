@@ -14,8 +14,7 @@ TPaPatcheableAPI classSide >> patcheableSlotIndices [
 
 	| result |
 	result := OrderedCollection new.
-	self classLayout allSlotsDo: [ :each |
-		each class = PaSlot ifTrue: [ result add: each index ] ].
+	self patcheableSlotsDo: [ :each | result add: each index ].
 	^ result
 ]
 
@@ -24,8 +23,7 @@ TPaPatcheableAPI classSide >> patcheableSlotNames [
 
 	| result |
 	result := OrderedCollection new.
-	self classLayout allSlotsDo: [ :each |
-		each class = PaSlot ifTrue: [ result add: each name ] ].
+	self patcheableSlotsDo: [ :each | result add: each name ].
 	^ result
 ]
 
@@ -34,9 +32,15 @@ TPaPatcheableAPI classSide >> patcheableSlots [
 
 	| result |
 	result := OrderedCollection new.
-	self classLayout allSlotsDo: [ :each |
-		each class = PaSlot ifTrue: [ result add: each ] ].
+	self patcheableSlotsDo: [ :each | result add: each ].
 	^ result
+]
+
+{ #category : #accessing }
+TPaPatcheableAPI classSide >> patcheableSlotsDo: aBlock [
+
+	self classLayout allSlotsDo: [ :each |
+		each class = PaSlot ifTrue: [ aBlock value: each ] ]
 ]
 
 { #category : #patching }
