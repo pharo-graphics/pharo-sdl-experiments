@@ -64,6 +64,31 @@ PaTest >> testAccessors [
 	self assert: e background isNil
 ]
 
+{ #category : #'tests - resizing' }
+PaTest >> testCondensePatches [
+
+	| p q |
+	p := PaTestingElement new: 3.
+	p at: 2 put: $b.
+	p opacity: 0.5.
+	self assert: p patchCount equals: 2.
+
+	p condensePatches.
+	self assert: p patchCount equals: 1.	
+	self assert: (p patches collect: #class) equals: { PaFullPatch }.
+	self assert: (p at: 2) equals: $b.
+	self assert: p opacity equals: 0.5.
+
+	q := p copy.
+	self deny: q identicalTo: p.
+	self deny: q hasPatches.
+	self assert: q size equals: 3.
+	self assert: q asCollection equals: p asCollection.
+	self assert: (q at: 2) equals: $b.
+	self assert: q opacity equals: 0.5.
+
+]
+
 { #category : #tests }
 PaTest >> testCopy [
 

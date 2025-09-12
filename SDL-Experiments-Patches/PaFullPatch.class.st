@@ -7,6 +7,22 @@ Class {
 	#category : #'SDL-Experiments-Patches-Core'
 }
 
+{ #category : #applying }
+PaFullPatch >> applyPatchTo: aPatcheable [
+
+	"Copy the variable part of the patcheable"
+	1 to: aPatcheable basicSize do: [ :index |
+		aPatcheable
+			basicAt: index
+			put: (patcheableCopy at: index) ].
+
+	"Copy only the values in patched instance variables"
+	aPatcheable class patcheableSlotsDo: [ :slot |
+		aPatcheable
+			basicInstVarAt: slot index
+			put: (patcheableCopy instVarAt: slot index) ]
+]
+
 { #category : #accessing }
 PaFullPatch >> count [
 
