@@ -1,18 +1,18 @@
 Extension { #name : #OSEvent }
 
-{ #category : #'*SDL-Experiments-App2' }
+{ #category : #'*SDLExperiments-IPC' }
 OSEvent >> asAnnouncement [
 
 	^ self
 ]
 
-{ #category : #'*SDL-Experiments-App2' }
+{ #category : #'*SDLExperiments-IPC' }
 OSEvent class >> handlesAnnouncement: anObject [
 
 	^ anObject isKindOf: self
 ]
 
-{ #category : #'*SDL-Experiments-App2' }
+{ #category : #'*SDLExperiments-IPC' }
 OSEvent >> prepareForDelivery [
 
 ]

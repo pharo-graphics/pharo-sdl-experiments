@@ -1,6 +1,6 @@
 Extension { #name : #OSSDL2AthensRenderer }
 
-{ #category : #'*SDL-Experiments-App2' }
+{ #category : #'*SDLExperiments-IPC' }
 OSSDL2AthensRenderer >> canvasExtent [
 
 	^ self pixelExtent

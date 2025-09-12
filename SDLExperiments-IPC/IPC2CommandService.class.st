@@ -1,5 +1,5 @@
 Class {
-	#name : #IPCCommandService,
+	#name : #IPC2CommandService,
 	#superclass : #TKTService,
 	#instVars : [
 		'socketStream',
@@ -15,11 +15,11 @@ Class {
 		'CommandIgnoringResultByte',
 		'ReturnByte'
 	],
-	#category : #'SDL-Experiments-App-Core'
+	#category : #'SDLExperiments-IPC'
 }
 
 { #category : #'class initialization' }
-IPCCommandService class >> initialize [
+IPC2CommandService class >> initialize [
 
 	CommandIgnoringResultByte := 6.
 	CommandByte := 7.
@@ -27,7 +27,7 @@ IPCCommandService class >> initialize [
 ]
 
 { #category : #'instance creation' }
-IPCCommandService class >> on: aSocketStream [
+IPC2CommandService class >> on: aSocketStream [
 
 	^ self basicNew
 		initializeWith: aSocketStream;
@@ -35,7 +35,7 @@ IPCCommandService class >> on: aSocketStream [
 ]
 
 { #category : #initialization }
-IPCCommandService >> initializeWith: aSocketStream [
+IPC2CommandService >> initializeWith: aSocketStream [
 
 	self initialize.
 
@@ -55,25 +55,25 @@ IPCCommandService >> initializeWith: aSocketStream [
 ]
 
 { #category : #accessing }
-IPCCommandService >> name [
+IPC2CommandService >> name [
 
 	^ self className, self hash printString
 ]
 
 { #category : #accessing }
-IPCCommandService >> owner [
+IPC2CommandService >> owner [
 
 	^ owner
 ]
 
 { #category : #accessing }
-IPCCommandService >> owner: anObject [
+IPC2CommandService >> owner: anObject [
 
 	owner := anObject
 ]
 
 { #category : #API }
-IPCCommandService >> pingStatsTraceCr [
+IPC2CommandService >> pingStatsTraceCr [
 
 	| n delay samples semaphore |
 	n := 100.
@@ -111,7 +111,7 @@ IPCCommandService >> pingStatsTraceCr [
 ]
 
 { #category : #private }
-IPCCommandService >> pingStatsTraceCrSamples: collectionOfMilliseconds on: stream [
+IPC2CommandService >> pingStatsTraceCrSamples: collectionOfMilliseconds on: stream [
 
 	stream tab; << '- mean: '.
 	MeanConfidenceIntervalPrinter new
@@ -123,7 +123,7 @@ IPCCommandService >> pingStatsTraceCrSamples: collectionOfMilliseconds on: strea
 ]
 
 { #category : #API }
-IPCCommandService >> pingTraceCr [
+IPC2CommandService >> pingTraceCr [
 
 	self
 		sendCommand: IPCPing new
@@ -137,7 +137,7 @@ IPCCommandService >> pingTraceCr [
 ]
 
 { #category : #stepping }
-IPCCommandService >> receive [
+IPC2CommandService >> receive [
 
 	| mark id payload |
 	socketStream socket
@@ -162,13 +162,13 @@ IPCCommandService >> receive [
 ]
 
 { #category : #accessing }
-IPCCommandService >> runningStartBlock: aUnaryBlock [
+IPC2CommandService >> runningStartBlock: aUnaryBlock [
 
 	runningStartBlock := aUnaryBlock
 ]
 
 { #category : #API }
-IPCCommandService >> sendCommand: aCommand onSuccess: successBlock [
+IPC2CommandService >> sendCommand: aCommand onSuccess: successBlock [
 
 	mutexToWrite critical: [
 		lastCommandId := lastCommandId + 1.
@@ -186,7 +186,7 @@ IPCCommandService >> sendCommand: aCommand onSuccess: successBlock [
 ]
 
 { #category : #API }
-IPCCommandService >> sendCommandIgnoringResult: aCommand [
+IPC2CommandService >> sendCommandIgnoringResult: aCommand [
 
 	mutexToWrite critical: [
 		socketStream nextPut: CommandIgnoringResultByte.
@@ -197,7 +197,7 @@ IPCCommandService >> sendCommandIgnoringResult: aCommand [
 ]
 
 { #category : #API }
-IPCCommandService >> sendCommandSync: aCommand [
+IPC2CommandService >> sendCommandSync: aCommand [
 
 	| semaphore result |
 	semaphore := Semaphore new.
@@ -211,7 +211,7 @@ IPCCommandService >> sendCommandSync: aCommand [
 ]
 
 { #category : #private }
-IPCCommandService >> sendResult: anObject of: id [
+IPC2CommandService >> sendResult: anObject of: id [
 
 	mutexToWrite critical: [
 		socketStream nextPut: ReturnByte.
@@ -222,7 +222,7 @@ IPCCommandService >> sendResult: anObject of: id [
 ]
 
 { #category : #initialization }
-IPCCommandService >> setServerSocketOptions: socket [
+IPC2CommandService >> setServerSocketOptions: socket [
 
 	socket
 		setOption: 'TCP_NODELAY' value: 1;
@@ -231,7 +231,7 @@ IPCCommandService >> setServerSocketOptions: socket [
 ]
 
 { #category : #initialization }
-IPCCommandService >> setSocketStreamParameters: stream [
+IPC2CommandService >> setSocketStreamParameters: stream [
 
 	stream
 		binary;
@@ -242,27 +242,27 @@ IPCCommandService >> setSocketStreamParameters: stream [
 ]
 
 { #category : #stepping }
-IPCCommandService >> setUp [
+IPC2CommandService >> setUp [
 
 	super setUp.
 	runningStartBlock cull: self
 ]
 
 { #category : #initialization }
-IPCCommandService >> socketBufferSize [
+IPC2CommandService >> socketBufferSize [
 	"Size in bytes for Sockets and SocketStream IO buffers"
 
 	^ 4096 * 4
 ]
 
 { #category : #initialization }
-IPCCommandService >> socketTimeoutInSeconds [
+IPC2CommandService >> socketTimeoutInSeconds [
 
 	^ 2
 ]
 
 { #category : #stepping }
-IPCCommandService >> stepService [
+IPC2CommandService >> stepService [
 
 	[ self receive ] onErrorDo: [ :error |
 			error debug.
@@ -270,7 +270,7 @@ IPCCommandService >> stepService [
 ]
 
 { #category : #stepping }
-IPCCommandService >> tearDown [
+IPC2CommandService >> tearDown [
 
 	socketStream ifNotNil: [
 		socketStream close.
@@ -278,7 +278,7 @@ IPCCommandService >> tearDown [
 ]
 
 { #category : #stepping }
-IPCCommandService >> valueSuccess: payload of: id [
+IPC2CommandService >> valueSuccess: payload of: id [
 
 	| successValuable |
 	successValuable := pendingResults removeKey: id ifAbsent: [ ^ self ].

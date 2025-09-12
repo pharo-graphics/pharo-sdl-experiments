@@ -5,7 +5,7 @@ Class {
 		'osSubprocess',
 		'windows'
 	],
-	#category : #'SDL-Experiments-App2'
+	#category : #'SDLExperiments-IPC'
 }
 
 { #category : #'window API' }

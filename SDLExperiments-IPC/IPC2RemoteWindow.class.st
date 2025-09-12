@@ -7,7 +7,7 @@ Class {
 		'pushLoopProcess',
 		'pushDeferrer'
 	],
-	#category : #'SDL-Experiments-App2'
+	#category : #'SDLExperiments-IPC'
 }
 
 { #category : #'as yet unclassified' }

@@ -1,7 +1,7 @@
 Class {
 	#name : #IPC2Compositor,
 	#superclass : #Object,
-	#category : #'SDL-Experiments-App2'
+	#category : #'SDLExperiments-IPC'
 }
 
 { #category : #testing }

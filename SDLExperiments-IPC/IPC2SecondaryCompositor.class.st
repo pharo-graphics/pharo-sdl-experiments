@@ -8,7 +8,7 @@ Class {
 	#classInstVars : [
 		'current'
 	],
-	#category : #'SDL-Experiments-App2'
+	#category : #'SDLExperiments-IPC'
 }
 
 { #category : #accessing }

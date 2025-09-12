@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'commandService'
 	],
-	#category : #'SDL-Experiments-App2'
+	#category : #'SDLExperiments-IPC'
 }
 
 { #category : #testing }
@@ -22,7 +22,7 @@ IPC2DualProcessCompositor >> commandService [
 { #category : #initialization }
 IPC2DualProcessCompositor >> startCommandServiceOn: socketStream onSuccess: aBlock [
 
-	commandService := IPCCommandService on: socketStream.
+	commandService := IPC2CommandService on: socketStream.
 	commandService owner: self.
 	commandService runningStartBlock: aBlock.
 	commandService start

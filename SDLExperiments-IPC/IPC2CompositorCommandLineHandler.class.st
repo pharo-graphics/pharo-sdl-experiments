@@ -1,7 +1,7 @@
 Class {
 	#name : #IPC2CompositorCommandLineHandler,
 	#superclass : #CommandLineHandler,
-	#category : #'SDL-Experiments-App2'
+	#category : #'SDLExperiments-IPC'
 }
 
 { #category : #accessing }
