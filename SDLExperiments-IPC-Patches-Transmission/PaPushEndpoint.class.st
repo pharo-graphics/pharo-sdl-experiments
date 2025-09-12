@@ -87,6 +87,16 @@ PaPushEndpoint >> nextPutNullPatch [
 ]
 
 { #category : #writing }
+PaPushEndpoint >> nextPutOpaqueColor: aColor [
+
+	self
+		nextPutByte: TypeCodeOpaqueColor;
+		nextPutByte: (aColor red * 255.0) asInteger;
+		nextPutByte: (aColor green * 255.0) asInteger;
+		nextPutByte: (aColor blue * 255.0) asInteger
+]
+
+{ #category : #writing }
 PaPushEndpoint >> nextPutPaAtPutPatch: aPatch [
 
 	self
@@ -124,6 +134,17 @@ PaPushEndpoint >> nextPutPatcheableOrInternalReference: patcheable [
 			patcheable soilBasicSerialize: self ]
 		ifFalse: [
 			self nextPutInternalReference: index ]
+]
+
+{ #category : #writing }
+PaPushEndpoint >> nextPutTranslucentColor: aColor [
+
+	self
+		nextPutByte: TypeCodeTranslucentColor;
+		nextPutByte: (aColor red * 255.0) asInteger;
+		nextPutByte: (aColor green * 255.0) asInteger;
+		nextPutByte: (aColor blue * 255.0) asInteger;
+		nextPutByte: aColor privateAlpha "Internally, already alpha <= 255"
 ]
 
 { #category : #writing }

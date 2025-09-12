@@ -34,6 +34,14 @@ PaPullEndpoint >> nextFixedLayoutPatcheable: description [
 ]
 
 { #category : #reading }
+PaPullEndpoint >> nextOpaqueColor [
+	"RGB values are expected between 0 and 255."
+
+	^ self registerObject:
+		  (Color R: self nextByte G: self nextByte B: self nextByte)
+]
+
+{ #category : #reading }
 PaPullEndpoint >> nextPaAtPutPatch [
 
 	^ PaAtPutPatch
@@ -56,6 +64,18 @@ PaPullEndpoint >> nextSoilObject [
 	"Hacky: Override this key Soil method. Ignore #soilMaterializationReplacement."
 
 	^ (PaTypeCodeMapping at: self nextByte) soilMaterialize: self
+]
+
+{ #category : #reading }
+PaPullEndpoint >> nextTranslucentColor [
+
+	"Alpha is the only expected value between 0.0 and 1.0. RGB are between 0 and 255."
+	^ self registerObject:
+		(Color
+			R: self nextByte
+			G: self nextByte
+			B: self nextByte
+			A: self nextByte / 255.0)
 ]
 
 { #category : #reading }

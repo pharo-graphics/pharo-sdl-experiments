@@ -9,8 +9,10 @@ Class {
 		'TypeCodeFloatZero',
 		'TypeCodeInstVarAtPutPatch',
 		'TypeCodeNullPatch',
+		'TypeCodeOpaqueColor',
 		'TypeCodePatches',
 		'TypeCodeRoot',
+		'TypeCodeTranslucentColor',
 		'WellKnownObjects'
 	],
 	#category : #'SDLExperiments-IPC-Patches-Transmission-Soil'
@@ -35,9 +37,13 @@ PaSoilTypeCodes class >> initializeTypeCodeMapping [
 		mapAt: TypeCodeFloatZero put: [ :_ | 0.0 ];
 		mapAt: TypeCodeFloatOne  put: [ :_ | 1.0 ].
 
+
+	self mapAt: TypeCodeOpaqueColor      put: [ :materializer | materializer nextOpaqueColor ].
+	self mapAt: TypeCodeTranslucentColor put: [ :materializer | materializer nextTranslucentColor ].
+
+
 	"Singleton instance (anyway we may avoid all references in the graph to this instance)"
 	self mapAt: TypeCodeNullPatch put: [ :_ | PaNullPatch instance ].
-
 
 
 	"We do not register the patches because we assume it is not referenced by other
@@ -66,7 +72,10 @@ PaSoilTypeCodes class >> initializeTypeCodes [
 	TypeCodeNullPatch := 70.
 	TypeCodeAtPutPatch := 71.
 	TypeCodeInstVarAtPutPatch := 72.
-	NumberOfEmbeddedIndexInstVarAtPutPatchTypeCode := 7
+	NumberOfEmbeddedIndexInstVarAtPutPatchTypeCode := 7.
+	
+	TypeCodeOpaqueColor := 80.
+	TypeCodeTranslucentColor := 81
 ]
 
 { #category : #'class initialization' }

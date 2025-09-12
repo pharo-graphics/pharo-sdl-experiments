@@ -4,8 +4,8 @@ Class {
 	#instVars : [
 		'#strokeWidth => PaSlot',
 		'#shape => PaSlot',
-		'#fillColorHexString => PaSlot',
-		'#strokeColorHexString => PaSlot'
+		'#fillColor => PaSlot',
+		'#strokeColor => PaSlot'
 	],
 	#category : #'SDLExperiments-IPC-App'
 }
@@ -26,37 +26,25 @@ IPC2TreeNode >> drawOnAthensCanvas: anAthensCanvas [
 { #category : #accessing }
 IPC2TreeNode >> fillColor [
 
-	^ Color fromHexString: fillColorHexString
+	^ fillColor
 ]
 
 { #category : #accessing }
 IPC2TreeNode >> fillColor: aColor [
 
-	fillColorHexString := aColor asHexString
-]
-
-{ #category : #accessing }
-IPC2TreeNode >> fillColorHexString [
-
-	^ fillColorHexString
-]
-
-{ #category : #accessing }
-IPC2TreeNode >> fillColorHexString: anObject [
-
-	fillColorHexString := anObject
+	fillColor := aColor
 ]
 
 { #category : #testing }
 IPC2TreeNode >> hasFillColor [
 
-	^ fillColorHexString isNotNil
+	^ fillColor isNotNil
 ]
 
 { #category : #testing }
 IPC2TreeNode >> hasStroke [
 
-	^ strokeColorHexString isNotNil and: [ strokeWidth notNil ]
+	^ strokeColor isNotNil and: [ strokeWidth notNil ]
 ]
 
 { #category : #printing }
@@ -82,25 +70,13 @@ IPC2TreeNode >> shape: anObject [
 { #category : #accessing }
 IPC2TreeNode >> strokeColor [
 
-	^ Color fromHexString: strokeColorHexString
+	^ strokeColor
 ]
 
 { #category : #accessing }
 IPC2TreeNode >> strokeColor: aColor [
 
-	strokeColorHexString := aColor asHexString
-]
-
-{ #category : #accessing }
-IPC2TreeNode >> strokeColorHexString [
-
-	^ strokeColorHexString
-]
-
-{ #category : #accessing }
-IPC2TreeNode >> strokeColorHexString: anObject [
-
-	strokeColorHexString := anObject
+	strokeColor := aColor
 ]
 
 { #category : #accessing }
