@@ -85,7 +85,7 @@ IPC2CommandService >> pingStatsTraceCr [
 	
 	[ (1 to: n) do: [ :_ |
 		self
-			sendCommand: IPCPing new
+			sendCommand: IPC2Ping new
 			onSuccess: [ :data |
 				| t1 t2 t3 |
 				t1 := data first.
@@ -126,7 +126,7 @@ IPC2CommandService >> pingStatsTraceCrSamples: collectionOfMilliseconds on: stre
 IPC2CommandService >> pingTraceCr [
 
 	self
-		sendCommand: IPCPing new
+		sendCommand: IPC2Ping new
 		onSuccess: [ :data |
 			| t1 t2 t3 |
 			t1 := data first.
