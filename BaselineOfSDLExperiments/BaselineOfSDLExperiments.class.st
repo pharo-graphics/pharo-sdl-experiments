@@ -30,18 +30,18 @@ BaselineOfSDLExperiments >> baseline: spec [
 				declareOSSubprocessOn: spec;
 				declareOSWinSubprocessOn: spec.
 			spec
-				package: 'SDL-Experiments-Patches';
-				package: 'SDL-Experiments-Patches-Tests' with: [
-					spec requires: #('SDL-Experiments-Patches') ];
+				package: 'SDLExperiments-IPC-Patches';
+				package: 'SDLExperiments-IPC-Patches-Tests' with: [
+					spec requires: #('SDLExperiments-IPC-Patches') ];
 
-				package: 'SDL-Experiments-Patches-Transmission' with: [
-					spec requires: #('SDL-Experiments-Patches') ];
-				package: 'SDL-Experiments-Patches-Transmission-Tests' with: [
-					spec requires: #('SDL-Experiments-Patches-Transmission') ];
+				package: 'SDLExperiments-IPC-Patches-Transmission' with: [
+					spec requires: #('SDLExperiments-IPC-Patches') ];
+				package: 'SDLExperiments-IPC-Patches-Transmission-Tests' with: [
+					spec requires: #('SDLExperiments-IPC-Patches-Transmission') ];
 
-				package: 'SDLExperiments-IPC' with: [
+				package: 'SDLExperiments-IPC-App' with: [
 					spec requires: #(
-						'SDL-Experiments-Patches-Transmission-Tests'
+						'SDLExperiments-IPC-Patches-Transmission-Tests'
 						'Soil'
 						'OSSubprocess'
 						'OSWinSubprocess') ]
