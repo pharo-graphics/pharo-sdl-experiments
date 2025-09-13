@@ -35,16 +35,18 @@ BaselineOfSDLExperiments >> baseline: spec [
 					spec requires: #('SDLExperiments-IPC-Patches') ];
 
 				package: 'SDLExperiments-IPC-Patches-Transmission' with: [
-					spec requires: #('SDLExperiments-IPC-Patches') ];
+					spec requires: #(
+						'SDLExperiments-IPC-Patches'
+						'Soil'
+						'OSSubprocess'
+						'OSWinSubprocess' ) ];
 				package: 'SDLExperiments-IPC-Patches-Transmission-Tests' with: [
 					spec requires: #('SDLExperiments-IPC-Patches-Transmission') ];
 
 				package: 'SDLExperiments-IPC-App' with: [
 					spec requires: #(
-						'SDLExperiments-IPC-Patches-Transmission-Tests'
-						'Soil'
-						'OSSubprocess'
-						'OSWinSubprocess') ]
+						'SDLExperiments-RTree'
+						'SDLExperiments-IPC-Patches-Transmission-Tests') ]
 
 			]
 ]
