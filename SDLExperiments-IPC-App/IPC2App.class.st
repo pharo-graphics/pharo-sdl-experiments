@@ -1,11 +1,14 @@
 Class {
-	#name : #IPC2MovingSquareApp,
-	#superclass : #IPC2SimpleApp,
+	#name : #IPC2App,
+	#superclass : #Object,
+	#instVars : [
+		'compositor'
+	],
 	#category : #'SDLExperiments-IPC-App'
 }
 
 { #category : #'as yet unclassified' }
-IPC2MovingSquareApp class >> exampleDualProcess [
+IPC2App class >> exampleDualProcess [
 	"Tear down:
 
 	app close.
@@ -25,7 +28,7 @@ IPC2MovingSquareApp class >> exampleDualProcess [
 ]
 
 { #category : #'as yet unclassified' }
-IPC2MovingSquareApp class >> exampleSingleProcess [
+IPC2App class >> exampleSingleProcess [
 	"Tear down:
 
 	app close.
@@ -44,21 +47,25 @@ IPC2MovingSquareApp class >> exampleSingleProcess [
 ]
 
 { #category : #'instance creation' }
-IPC2MovingSquareApp >> initializeWindow [
+IPC2App >> close [
 
-	window eventAnnouncer
-		when: OSMouseButtonPressEvent
-		do: [ :event |
-			window sceneTree addChild: 
-				(IPC2TreeNode new
-					shape: (event position extent: 50 @ 50);
-					strokeWidth: 2;
-					strokeColor: Color random;
-					fillColor: Color random;
-					yourself) ]
-		for: self.
-	
-	window sceneTree
-		shape: (0 @ 0 extent: self initialExtent);
-		fillColor: Color blue muchDarker
+	self subclassResponsibility
+]
+
+{ #category : #accessing }
+IPC2App >> compositor [
+
+	^ compositor
+]
+
+{ #category : #accessing }
+IPC2App >> compositor: anIPC2Compositor [
+
+	compositor := anIPC2Compositor
+]
+
+{ #category : #'instance creation' }
+IPC2App >> open [
+
+	self subclassResponsibility
 ]

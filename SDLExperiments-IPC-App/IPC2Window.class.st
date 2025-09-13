@@ -32,6 +32,7 @@ IPC2Window >> create [
 		OSWindow
 			createWithAttributes: osWindowAttributes
 			eventHandler: self. "See #handleEvent:"
+	osWindow focus. "Raise on top"
 	
 	renderer := osWindow newAthensRenderer.
 	
