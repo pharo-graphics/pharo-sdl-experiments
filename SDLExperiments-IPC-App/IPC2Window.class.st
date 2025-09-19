@@ -79,10 +79,10 @@ IPC2Window >> renderAndWait [
 	startMS := Time millisecondClockValue.
 	self render.
 	usedMS := Time millisecondClockValue - startMS.
-	
-	delayMS := (targetMS - usedMS) max: 0.
 
-	#renderAndWait trace. ' (ms): ' trace. usedMS traceCr.
+	IPC2Log current logRender: usedMS.
+
+	delayMS := (targetMS - usedMS) max: 0.
 
 	delayMS > 0 ifTrue: [
 		(Delay forMilliseconds: delayMS) wait ]

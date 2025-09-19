@@ -86,10 +86,18 @@ IPC2SecondaryCompositor >> updateSceneGraph: bytes windowId: windowId [
 	pullEndpoint := pullEndpointByWindowId at: windowId.
 
 	aWindow sceneTreeCritical: [
-		| root |
-		root := pullEndpoint
-			stream: bytes readStream;
-			pull;
-			root.
-		aWindow sceneTree: root ]
+		
+		IPC2Log current
+			logPull: bytes
+			with: [
+				"TODO: If patches are received, we could avoid
+				setting a new root, as we know its the same."
+				| root |
+				root := pullEndpoint
+					stream: bytes readStream;
+					pull;
+					root.
+				aWindow sceneTree: root ]
+
+		]
 ]

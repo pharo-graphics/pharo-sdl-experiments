@@ -77,21 +77,23 @@ IPC2PrimaryCompositor >> newWindow: osWindowAttributes [
 
 	| windowId aWindow bytes pushEndpoint |
 
-	pushEndpoint := PaPushEndpoint new.
-	pushEndpoint root: IPC2TreeNode new.
-	pushEndpoint root
-		shape: (0 @ 0 extent: osWindowAttributes extent);
-		strokeColor: Color black.
-		
-	bytes := ByteArray streamContents: [ :stream |
-		pushEndpoint stream: stream.
-		pushEndpoint push ].
+	IPC2Log current logCreateWindow: [
 
-	windowId := commandService sendCommandSync:
-		(IPC2OpenWindowCommand new
-			attributes: osWindowAttributes;
-			sceneTreeBytes: bytes;
-			yourself).
+		pushEndpoint := PaPushEndpoint new.
+		pushEndpoint root: IPC2TreeNode new.
+		pushEndpoint root
+			shape: (0 @ 0 extent: osWindowAttributes extent);
+			strokeColor: Color black.
+			
+		bytes := ByteArray streamContents: [ :stream |
+			pushEndpoint stream: stream.
+			pushEndpoint push ].
+
+		windowId := commandService sendCommandSync:
+			(IPC2OpenWindowCommand new
+				attributes: osWindowAttributes;
+				sceneTreeBytes: bytes;
+				yourself) ].
 	
 	aWindow :=
 		IPC2RemoteWindow new

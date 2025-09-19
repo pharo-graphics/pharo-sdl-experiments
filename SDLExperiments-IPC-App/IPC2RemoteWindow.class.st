@@ -46,9 +46,9 @@ IPC2RemoteWindow >> initialize [
 { #category : #'API - remotes' }
 IPC2RemoteWindow >> push [
 
-	'push (ms): ' trace.
+	IPC2Log current logPush: [
 
-	[	| bytes |
+		| bytes |
 		"Reuse the endpoint as it keeps track of the already pushed nodes."
 		bytes := ByteArray streamContents: [ :stream |
 			pushEndpoint
@@ -59,7 +59,7 @@ IPC2RemoteWindow >> push [
 		bytes ifNotEmpty: [
 			compositor updateSceneGraph: bytes windowId: id ]
 	
-		] millisecondsToRun traceCr
+		]
 ]
 
 { #category : #accessing }

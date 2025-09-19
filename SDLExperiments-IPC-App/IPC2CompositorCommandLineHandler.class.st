@@ -15,9 +15,10 @@ IPC2CompositorCommandLineHandler >> activate [
 
 	| socketStream portNumber |
 	OSWindowDriver current startUp: true.
+
 	"to visually differenciate"
 	World color: Color random.
-	
+
 	portNumber := self arguments first asInteger.
 	socketStream :=
 		ZdcSocketStream
@@ -26,5 +27,7 @@ IPC2CompositorCommandLineHandler >> activate [
 
 	IPC2SecondaryCompositor current
 		startCommandServiceOn: socketStream
-		onSuccess: []
+		onSuccess: [].
+
+	IPC2Log current logSecondaryProcessActivateOnPort: portNumber
 ]
