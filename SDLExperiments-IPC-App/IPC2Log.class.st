@@ -72,7 +72,10 @@ IPC2Log >> logCreateWindow: aBlock [
 
 	self
 		beginRow: 'create window';
+
+		nextPutColumnHeader: 'duration';
 		nextPutMillisecondsToRun: aBlock;
+
 		endRow
 ]
 
@@ -81,9 +84,14 @@ IPC2Log >> logPull: bytes with: aBlock [
 
 	self
 		beginRow: 'pull';
+
+		nextPutColumnHeader: 'duration';
 		nextPutMillisecondsToRun: aBlock;
 		nextPutColumnSeparator;
+
+		nextPutColumnHeader: 'size';
 		nextPutByteCount: bytes size;
+
 		endRow
 ]
 
@@ -92,7 +100,10 @@ IPC2Log >> logPush: aBlock [
 
 	self
 		beginRow: 'push';
+
+		nextPutColumnHeader: 'duration';
 		nextPutMillisecondsToRun: aBlock;
+
 		endRow
 ]
 
@@ -101,17 +112,21 @@ IPC2Log >> logRender: usedMS [
 
 	self
 		beginRow: 'render';
+
+		nextPutColumnHeader: 'duration';
 		nextPutMilliseconds: usedMS;
+
 		endRow
 ]
 
 { #category : #logging }
 IPC2Log >> logSecondaryProcessActivateOnPort: portNumber [
 
-	self beginRow: 'secondary process'.
-	currentLineStream
-		nextPutAll: 'port: ';
-		print: portNumber.
+	self beginRow: 'launch secondary process'.
+
+	self nextPutColumnHeader: 'port'.
+	currentLineStream print: portNumber.
+
 	self endRow
 ]
 
@@ -122,6 +137,14 @@ IPC2Log >> nextPutByteCount: aNumber [
 	currentLineStream print: aNumber; nextPutAll: ' B'
 ]
 
+{ #category : #logging }
+IPC2Log >> nextPutColumnHeader: aString [
+
+	currentLineStream
+		nextPutAll: aString;
+		nextPutAll: ': '
+]
+
 { #category : #private }
 IPC2Log >> nextPutColumnSeparator [
 
@@ -129,9 +152,17 @@ IPC2Log >> nextPutColumnSeparator [
 ]
 
 { #category : #private }
+IPC2Log >> nextPutMicroseconds: aNumber [
+
+	(aNumber / 1e3) printOn: currentLineStream showingDecimalPlaces: 2.
+
+	currentLineStream nextPutAll: ' ms'
+]
+
+{ #category : #private }
 IPC2Log >> nextPutMilliseconds: aNumber [
 
-	aNumber printOn: currentLineStream showingDecimalPlaces: 1.
+	aNumber printOn: currentLineStream showingDecimalPlaces: 2.
 
 	currentLineStream nextPutAll: ' ms'
 ]
