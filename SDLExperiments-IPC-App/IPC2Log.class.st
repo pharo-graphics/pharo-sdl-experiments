@@ -11,7 +11,7 @@ Class {
 	#category : #'SDLExperiments-IPC-App'
 }
 
-{ #category : #nil }
+{ #category : #accessing }
 IPC2Log class >> current [
 
 	^ current ifNil: [ current := self new ]
@@ -20,14 +20,24 @@ IPC2Log class >> current [
 { #category : #accessing }
 IPC2Log class >> initialize [
 
+	self openSyslog.
+	
 	SessionManager default registerGuiClassNamed: self name
+]
+
+{ #category : #accessing }
+IPC2Log class >> openSyslog [
+	"Open a connection to the system logging facility, and affect this OS process"
+	<script>
+
+	UnixSyslog
+		openLog: self name;
+		setlogmaskUpToInfo
 ]
 
 { #category : #accessing }
 IPC2Log class >> resetCurrent [
 	<script>
-
-	UnixSyslog openLog: self name.
 
 	current := nil
 ]
@@ -35,7 +45,10 @@ IPC2Log class >> resetCurrent [
 { #category : #accessing }
 IPC2Log class >> startUp: isResuming [
 
-	isResuming ifTrue: [ self resetCurrent ]
+	isResuming ifTrue: [
+		self
+			openSyslog;
+			resetCurrent ]
 ]
 
 { #category : #private }
@@ -53,7 +66,7 @@ IPC2Log >> beginRow: typeString [
 { #category : #private }
 IPC2Log >> endRow [
 
-	UnixSyslog syslogNotice: currentLineStream contents
+	UnixSyslog syslogInfo: currentLineStream contents
 ]
 
 { #category : #initialization }

@@ -1,5 +1,5 @@
 "
-I implement FFI bindings to Unix syslog
+I implement FFI bindings to Unix syslog.
 
 See: https://sourceware.org/glibc/manual/latest/html_mono/libc.html#Syslog-Example-1
 "
@@ -20,6 +20,7 @@ UnixSyslog class >> closeLog [
 
 { #category : #convenience }
 UnixSyslog class >> openLog: aString [
+	"Open a connection to the logging facility"
 
 	| optionPid optionCons optionNDelay optionNoWait optionPError |
 	optionPid := 1. "Include the caller's PID with each message."
@@ -38,15 +39,59 @@ UnixSyslog class >> openLog: aString [
 
 { #category : #'ffi methods' }
 UnixSyslog class >> openLog: identifier optionFlags: logopt facility: facility [
-	"openlog — open a connection to the logging facility
+	"Open a connection to the logging facility.
 	
 	See: https://sourceware.org/glibc/manual/latest/html_mono/libc.html#openlog"
 
-	 self ffiCall: #(void openlog(String identifier, int logopt, int facility)) module: LibC
+	 self
+		ffiCall: #(void openlog(String identifier, int logopt, int facility))
+		module: LibC
+]
+
+{ #category : #'ffi methods' }
+UnixSyslog class >> setlogmask: maskpri [
+
+	 self ffiCall: #(int setlogmask(int maskpri)) module: LibC
+]
+
+{ #category : #'ffi methods' }
+UnixSyslog class >> setlogmaskUpTo: pri [
+	"all priorities through pri"
+
+	 self setlogmask: ((1 << ((pri)+1)) - 1)
+]
+
+{ #category : #'ffi methods' }
+UnixSyslog class >> setlogmaskUpToInfo [
+	"#define LOG_INFO        6       /* informational */"
+
+	 self setlogmaskUpTo: 6
+]
+
+{ #category : #'ffi methods' }
+UnixSyslog class >> syslog: aString priority: pri [
+	"
+	Priorities:
+	#define LOG_EMERG       0       /* system is unusable */
+	#define LOG_ALERT       1       /* action must be taken immediately */
+	#define LOG_CRIT        2       /* critical conditions */
+	#define LOG_ERR         3       /* error conditions */
+	#define LOG_WARNING     4       /* warning conditions */
+	#define LOG_NOTICE      5       /* normal but significant condition */
+	#define LOG_INFO        6       /* informational */
+	#define LOG_DEBUG       7       /* debug-level messages */
+	"
+	self ffiCall: #(void syslog(int pri, String aString)) module: LibC
+]
+
+{ #category : #'ffi methods' }
+UnixSyslog class >> syslogInfo: aString [
+
+	self syslog: aString priority: 6
 ]
 
 { #category : #'ffi methods' }
 UnixSyslog class >> syslogNotice: aString [
 
-	 self ffiCall: #(void syslog(int 5, String aString)) module: LibC
+	self syslog: aString priority: 5
 ]
