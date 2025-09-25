@@ -2,7 +2,8 @@ Class {
 	#name : #IPC2Log,
 	#superclass : #Object,
 	#instVars : [
-		'currentLineStream'
+		'currentLineStream',
+		'lineIdentifier'
 	],
 	#classInstVars : [
 		'current'
@@ -26,6 +27,8 @@ IPC2Log class >> initialize [
 IPC2Log class >> resetCurrent [
 	<script>
 
+	UnixSyslog openLog: self name.
+
 	current := nil
 ]
 
@@ -40,30 +43,27 @@ IPC2Log >> beginRow: typeString [
 
 	currentLineStream
 		reset;
+		nextPutAll: lineIdentifier;
+		space;
 		nextPutAll: typeString.
 
 	self nextPutColumnSeparator
 ]
 
-{ #category : #'private - ffi - syslog' }
-IPC2Log >> closeLog [
-
-	 self ffiCall: #(void closelog()) module: LibC
-]
-
 { #category : #private }
 IPC2Log >> endRow [
 
-	self syslogNotice: currentLineStream contents
+	UnixSyslog syslogNotice: currentLineStream contents
 ]
 
 { #category : #initialization }
 IPC2Log >> initialize [
 
 	super initialize.
-	
-	self openSystemLog.
-	
+
+	"identifier to ease filtering"
+	lineIdentifier := 'PharoIPC(', (self identityHash printStringBase: 36), ')'.
+
 	currentLineStream := String new writeStream
 ]
 
@@ -106,7 +106,7 @@ IPC2Log >> logPull: bytes with: aBlock [
 		nextPutColumnSeparator;
 
 		nextPutColumnHeader: 'size';
-		nextPutByteCount: bytes size;
+		nextPutByteSize: bytes size;
 
 		endRow
 ]
@@ -147,10 +147,10 @@ IPC2Log >> logSecondaryProcessActivateOnPort: portNumber [
 ]
 
 { #category : #private }
-IPC2Log >> nextPutByteCount: aNumber [
+IPC2Log >> nextPutByteSize: aNumber [
 
 "	stream nextPutAll: aNumber humanReadableByteSizeString"
-	currentLineStream print: aNumber; nextPutAll: ' B'
+	currentLineStream print: aNumber; nextPutAll: ' b'
 ]
 
 { #category : #logging }
@@ -189,39 +189,8 @@ IPC2Log >> nextPutMillisecondsToRun: aBlock [
 	self nextPutMilliseconds: aBlock microsecondsToRun / 1e3
 ]
 
-{ #category : #'private - ffi - syslog' }
-IPC2Log >> openLog: identifier optionFlags: logopt facility: facility [
-
-	 self ffiCall: #(void openlog(char * identifier, int logopt, int facility)) module: LibC
-]
-
-{ #category : #initialization }
-IPC2Log >> openSystemLog [
-
-	| optionPid optionCons optionNDelay optionNoWait optionPError |
-	optionPid := 1. "Include the caller's PID with each message."
-	optionCons := 2. "Write directly to the system console if there is
-		an error while sending to the system logger."
-	optionNDelay := 8. "Open the connection immediately"
-	optionNoWait := 16. "Don't wait for child processes that may have been created
-              while logging the message."
-	optionPError := 32. "Also log the message to stderr."
-
-	self
-		openLog: self className
-		optionFlags: optionPid | optionCons | optionNDelay | optionNoWait | optionPError
-		facility: 0.
-
-]
-
 { #category : #accessing }
 IPC2Log >> stream: aWriteStream [
 
 	currentLineStream := aWriteStream
-]
-
-{ #category : #'private - ffi - syslog' }
-IPC2Log >> syslogNotice: aString [
-
-	 self ffiCall: #(void syslog(int 5, String aString)) module: LibC
 ]
