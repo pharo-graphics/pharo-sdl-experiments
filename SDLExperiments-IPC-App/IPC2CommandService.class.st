@@ -122,20 +122,6 @@ IPC2CommandService >> pingStatsTraceCrSamples: collectionOfMilliseconds on: stre
 	stream tab; << '- min: '; print: collectionOfMilliseconds min; << 'ms'; cr
 ]
 
-{ #category : #API }
-IPC2CommandService >> pingTraceCr [
-
-	self
-		sendCommand: IPC2Ping new
-		onSuccess: [ :data |
-			| t1 t2 t3 |
-			t1 := data first.
-			t2 := data second.
-			t3 := Time microsecondClockValue.
-			('total: {1} ms;	command: {2} ms;	return: {3} ms'
-				format: { t3 - t1. t2 - t1. t3 - t2 } / 1000.0) traceCr ]
-]
-
 { #category : #stepping }
 IPC2CommandService >> receive [
 

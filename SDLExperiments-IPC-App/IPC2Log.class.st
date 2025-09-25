@@ -80,6 +80,22 @@ IPC2Log >> logCreateWindow: aBlock [
 ]
 
 { #category : #logging }
+IPC2Log >> logPingSendMicroseconds: sendMicroseconds answerMicroseconds: answerMicroseconds [
+
+	self
+		beginRow: 'ping';
+
+		nextPutColumnHeader: 'send';
+		nextPutMicroseconds: sendMicroseconds;
+		nextPutColumnSeparator;
+
+		nextPutColumnHeader: 'answer';
+		nextPutMicroseconds: answerMicroseconds;
+
+		endRow
+]
+
+{ #category : #logging }
 IPC2Log >> logPull: bytes with: aBlock [
 
 	self
