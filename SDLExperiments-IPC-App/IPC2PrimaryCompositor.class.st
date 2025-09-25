@@ -38,32 +38,34 @@ IPC2PrimaryCompositor >> initialize [
 { #category : #private }
 IPC2PrimaryCompositor >> launchHeadless: isHeadless [
 
-	| launchDoneSemaphore listenerSocket |
-	launchDoneSemaphore := Semaphore new.
+	IPC2Log current logLaunchingSecondaryProcess: [
 
-	listenerSocket := Socket newTCP.
-	listenerSocket
-		bindToPort: Socket wildcardPort;
-		listenWithBacklog: 2.
+		| launchDoneSemaphore listenerSocket |
+		launchDoneSemaphore := Semaphore new.
 
-	[	self
-			startCommandServiceIfAccept: listenerSocket
-			thenSignal: launchDoneSemaphore
-	]	forkAt: Processor lowIOPriority
-		named: 'Wait connection from subprocess'.
+		listenerSocket := Socket newTCP.
+		listenerSocket
+			bindToPort: Socket wildcardPort;
+			listenWithBacklog: 2.
 
-	[	self
-			runAndWaitSubprocess: isHeadless
-			port: listenerSocket localPort.
-		self terminate
-	]	forkAt: Processor lowIOPriority - 1
-		named: 'Wait subprocess to connect (and quit)'.
+		[	self
+				startCommandServiceIfAccept: listenerSocket
+				thenSignal: launchDoneSemaphore
+		]	forkAt: Processor lowIOPriority
+			named: 'Wait connection from subprocess'.
 
-	launchDoneSemaphore waitTimeoutSeconds: self maxSecondsToLaunch.
+		[	self
+				runAndWaitSubprocess: isHeadless
+				port: listenerSocket localPort.
+			self terminate
+		]	forkAt: Processor lowIOPriority - 1
+			named: 'Run and wait subprocess (must connect)'.
 
-	listenerSocket ifNotNil: [
+		launchDoneSemaphore waitTimeoutSeconds: self maxSecondsToLaunch.
+
+		listenerSocket ifNotNil: [
 			listenerSocket destroy.
-			listenerSocket := nil ]
+			listenerSocket := nil ] ]
 ]
 
 { #category : #private }

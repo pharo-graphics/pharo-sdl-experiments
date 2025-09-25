@@ -93,6 +93,18 @@ IPC2Log >> logCreateWindow: aBlock [
 ]
 
 { #category : #logging }
+IPC2Log >> logLaunchingSecondaryProcess: aBlock [
+
+	self
+		beginRow: 'launch secondary process';
+
+		nextPutColumnHeader: 'duration';
+		nextPutMillisecondsToRun: aBlock;
+
+		endRow
+]
+
+{ #category : #logging }
 IPC2Log >> logPingSendMicroseconds: sendMicroseconds answerMicroseconds: answerMicroseconds [
 
 	self
@@ -104,6 +116,10 @@ IPC2Log >> logPingSendMicroseconds: sendMicroseconds answerMicroseconds: answerM
 
 		nextPutColumnHeader: 'answer';
 		nextPutMicroseconds: answerMicroseconds;
+		nextPutColumnSeparator;
+
+		nextPutColumnHeader: 'total';
+		nextPutMicroseconds: sendMicroseconds + answerMicroseconds;
 
 		endRow
 ]
@@ -162,8 +178,8 @@ IPC2Log >> logSecondaryProcessActivateOnPort: portNumber [
 { #category : #private }
 IPC2Log >> nextPutByteSize: aNumber [
 
-"	stream nextPutAll: aNumber humanReadableByteSizeString"
-	currentLineStream print: aNumber; nextPutAll: ' b'
+	self flag: #todo. "Use aNumber humanReadableByteSizeString?"
+	currentLineStream print: aNumber; nextPutAll: 'b'
 ]
 
 { #category : #logging }
@@ -185,7 +201,7 @@ IPC2Log >> nextPutMicroseconds: aNumber [
 
 	(aNumber / 1e3) printOn: currentLineStream showingDecimalPlaces: 2.
 
-	currentLineStream nextPutAll: ' ms'
+	currentLineStream nextPutAll: 'ms'
 ]
 
 { #category : #private }
@@ -193,7 +209,7 @@ IPC2Log >> nextPutMilliseconds: aNumber [
 
 	aNumber printOn: currentLineStream showingDecimalPlaces: 2.
 
-	currentLineStream nextPutAll: ' ms'
+	currentLineStream nextPutAll: 'ms'
 ]
 
 { #category : #private }
