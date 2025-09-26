@@ -146,7 +146,13 @@ IPC2PrimaryCompositor >> terminate [
 	super terminate.
 	
 	osSubprocess ifNotNil: [
-		osSubprocess isRunning ifTrue: [ osSubprocess terminate ].
+		(osSubprocess isRunning and: [
+			self flag: #todo. "After reopening the image with an instance of
+			this primary compositor running, the result of #isRunning is not
+			as expected.
+			See: https://github.com/pharo-contributions/OSSubprocess/pull/86"
+			OSSVMProcess vmProcess childPids includes: osSubprocess pid ])
+				ifTrue: [ osSubprocess terminate ].
 		osSubprocess := nil ]
 ]
 

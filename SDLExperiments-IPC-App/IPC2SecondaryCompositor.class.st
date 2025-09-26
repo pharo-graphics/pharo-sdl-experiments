@@ -18,9 +18,23 @@ IPC2SecondaryCompositor class >> current [
 ]
 
 { #category : #'class initialization' }
+IPC2SecondaryCompositor class >> initialize [
+
+	SessionManager default registerSystemClassNamed: self name
+]
+
+{ #category : #'class initialization' }
 IPC2SecondaryCompositor class >> reset [
 	
 	current := nil
+]
+
+{ #category : #'system startup' }
+IPC2SecondaryCompositor class >> startUp: isImageStarting [
+
+	super startUp: isImageStarting.
+
+	isImageStarting ifTrue: [ self reset ]
 ]
 
 { #category : #'window API' }
