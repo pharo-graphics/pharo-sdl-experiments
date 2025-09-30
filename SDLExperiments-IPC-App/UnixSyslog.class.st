@@ -6,20 +6,58 @@ See: https://sourceware.org/glibc/manual/latest/html_mono/libc.html#Syslog-Examp
 Class {
 	#name : #UnixSyslog,
 	#superclass : #Object,
+	#classInstVars : [
+		'current'
+	],
 	#category : #'SDLExperiments-IPC-App'
 }
 
+{ #category : #accessing }
+UnixSyslog class >> current [
+
+	^ current ifNil: [ current := self new ]
+]
+
+{ #category : #accessing }
+UnixSyslog class >> initialize [
+
+	SessionManager default registerToolClassNamed: self name
+]
+
+{ #category : #accessing }
+UnixSyslog class >> resetCurrent [
+	<script>
+
+	current := nil
+]
+
+{ #category : #accessing }
+UnixSyslog class >> startUp: isResuming [
+
+	isResuming ifTrue: [ self resetCurrent ]
+]
+
 { #category : #'ffi methods' }
-UnixSyslog class >> closeLog [
+UnixSyslog >> closeLog [
 	"closelog closes the current Syslog connection, if there is one.
 	
 	See: https://sourceware.org/glibc/manual/latest/html_mono/libc.html#closelog"
 
-	 self ffiCall: #(void closelog()) module: LibC
+	self ffiCall: #(void closelog()) module: LibC
+]
+
+{ #category : #initialization }
+UnixSyslog >> initialize [
+
+	super initialize.
+
+	self
+		openLog: 'IPC2';
+		setlogmaskUpToInfo
 ]
 
 { #category : #convenience }
-UnixSyslog class >> openLog: aString [
+UnixSyslog >> openLog: aString [
 	"Open a connection to the logging facility"
 
 	| optionPid optionCons optionNDelay optionNoWait optionPError |
@@ -38,38 +76,38 @@ UnixSyslog class >> openLog: aString [
 ]
 
 { #category : #'ffi methods' }
-UnixSyslog class >> openLog: identifier optionFlags: logopt facility: facility [
+UnixSyslog >> openLog: identifier optionFlags: logopt facility: facility [
 	"Open a connection to the logging facility.
 	
 	See: https://sourceware.org/glibc/manual/latest/html_mono/libc.html#openlog"
 
-	 self
+	self
 		ffiCall: #(void openlog(String identifier, int logopt, int facility))
 		module: LibC
 ]
 
 { #category : #'ffi methods' }
-UnixSyslog class >> setlogmask: maskpri [
+UnixSyslog >> setlogmask: maskpri [
 
-	 self ffiCall: #(int setlogmask(int maskpri)) module: LibC
+	self ffiCall: #(int setlogmask(int maskpri)) module: LibC
 ]
 
 { #category : #'ffi methods' }
-UnixSyslog class >> setlogmaskUpTo: pri [
+UnixSyslog >> setlogmaskUpTo: pri [
 	"all priorities through pri"
 
-	 self setlogmask: ((1 << ((pri)+1)) - 1)
+	self setlogmask: ((1 << ((pri)+1)) - 1)
 ]
 
 { #category : #'ffi methods' }
-UnixSyslog class >> setlogmaskUpToInfo [
+UnixSyslog >> setlogmaskUpToInfo [
 	"#define LOG_INFO        6       /* informational */"
 
-	 self setlogmaskUpTo: 6
+	self setlogmaskUpTo: 6
 ]
 
 { #category : #'ffi methods' }
-UnixSyslog class >> syslog: aString priority: pri [
+UnixSyslog >> syslog: aString priority: pri [
 	"
 	Priorities:
 	#define LOG_EMERG       0       /* system is unusable */
@@ -85,13 +123,13 @@ UnixSyslog class >> syslog: aString priority: pri [
 ]
 
 { #category : #'ffi methods' }
-UnixSyslog class >> syslogInfo: aString [
+UnixSyslog >> syslogInfo: aString [
 
 	self syslog: aString priority: 6
 ]
 
 { #category : #'ffi methods' }
-UnixSyslog class >> syslogNotice: aString [
+UnixSyslog >> syslogNotice: aString [
 
 	self syslog: aString priority: 5
 ]

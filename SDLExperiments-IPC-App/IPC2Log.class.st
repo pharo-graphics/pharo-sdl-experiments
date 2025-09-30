@@ -1,9 +1,17 @@
+"
+I'm a facade to log IPC2 lifecycle messages, where each message is a one-line string.
+
+The main API selectors begin with `log`. Browse `#logLine:` method, which is the more lowest-level of such API.
+"
 Class {
 	#name : #IPC2Log,
 	#superclass : #Object,
 	#instVars : [
 		'currentLineStream',
 		'lineIdentifier'
+	],
+	#classVars : [
+		'LineLogBlock'
 	],
 	#classInstVars : [
 		'current'
@@ -20,19 +28,9 @@ IPC2Log class >> current [
 { #category : #accessing }
 IPC2Log class >> initialize [
 
-	self openSyslog.
-	
-	SessionManager default registerGuiClassNamed: self name
-]
+	self useTranscript.
 
-{ #category : #accessing }
-IPC2Log class >> openSyslog [
-	"Open a connection to the system logging facility, and affect this OS process"
-	<script>
-
-	UnixSyslog
-		openLog: self name;
-		setlogmaskUpToInfo
+	SessionManager default registerToolClassNamed: self name
 ]
 
 { #category : #accessing }
@@ -45,10 +43,19 @@ IPC2Log class >> resetCurrent [
 { #category : #accessing }
 IPC2Log class >> startUp: isResuming [
 
-	isResuming ifTrue: [
-		self
-			openSyslog;
-			resetCurrent ]
+	isResuming ifTrue: [ self resetCurrent ]
+]
+
+{ #category : #accessing }
+IPC2Log class >> useSyslog [
+
+	LineLogBlock := [ :aString | UnixSyslog current syslogInfo: aString ]
+]
+
+{ #category : #accessing }
+IPC2Log class >> useTranscript [
+
+	LineLogBlock := [ :aString | aString traceCr ]
 ]
 
 { #category : #private }
@@ -66,7 +73,7 @@ IPC2Log >> beginRow: typeString [
 { #category : #private }
 IPC2Log >> endRow [
 
-	UnixSyslog syslogInfo: currentLineStream contents
+	self logLine: currentLineStream contents
 ]
 
 { #category : #initialization }
@@ -102,6 +109,12 @@ IPC2Log >> logLaunchingSecondaryProcess: aBlock [
 		nextPutMillisecondsToRun: aBlock;
 
 		endRow
+]
+
+{ #category : #private }
+IPC2Log >> logLine: aString [
+
+	LineLogBlock value: aString
 ]
 
 { #category : #logging }
@@ -199,9 +212,7 @@ IPC2Log >> nextPutColumnSeparator [
 { #category : #private }
 IPC2Log >> nextPutMicroseconds: aNumber [
 
-	(aNumber / 1e3) printOn: currentLineStream showingDecimalPlaces: 2.
-
-	currentLineStream nextPutAll: 'ms'
+	self nextPutMilliseconds: aNumber / 1e3
 ]
 
 { #category : #private }
