@@ -5,5 +5,5 @@ Class {
 }
 
 { #category : #accessing }
-IPC2Command >> value: commandService [
+IPC2Command >> value: anObject [
 ]

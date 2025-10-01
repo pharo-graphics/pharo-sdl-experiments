@@ -8,9 +8,9 @@ Class {
 }
 
 { #category : #accessing }
-IPC2DestroyWindowCommand >> value: _ [
+IPC2DestroyWindowCommand >> value: secondaryCompositor [
 
-	^ IPC2SecondaryCompositor current destroyWindow: windowId
+	^ secondaryCompositor destroyWindow: windowId
 ]
 
 { #category : #accessing }

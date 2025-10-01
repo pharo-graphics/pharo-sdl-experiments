@@ -27,10 +27,10 @@ IPC2OpenWindowCommand >> sceneTreeBytes: aByteArray [
 ]
 
 { #category : #accessing }
-IPC2OpenWindowCommand >> value: aCommandService [
+IPC2OpenWindowCommand >> value: secondaryCompositor [
 	"Sender needs the window's id for further commands"
 
-	^ (aCommandService owner
+	^ (secondaryCompositor
 		   newWindow: attributes
 		   sceneTreeBytes: sceneTreeBytes) id
 ]

@@ -21,10 +21,8 @@ IPC2UpdateSceneGraphCommand >> content: anObject [
 ]
 
 { #category : #accessing }
-IPC2UpdateSceneGraphCommand >> value: aCommandService [
+IPC2UpdateSceneGraphCommand >> value: secondaryCompositor [
 
-	| secondaryCompositor |
-	secondaryCompositor := aCommandService owner.
 	secondaryCompositor updateSceneGraph: content windowId: windowId
 ]
 

@@ -21,7 +21,7 @@ IPC2Ping >> initialize [
 ]
 
 { #category : #accessing }
-IPC2Ping >> value: aCommandService [
+IPC2Ping >> value: _ [
 
 	^ Array
 		with: initialMicroseconds

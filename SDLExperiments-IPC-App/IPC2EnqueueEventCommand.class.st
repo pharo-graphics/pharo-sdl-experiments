@@ -21,11 +21,9 @@ IPC2EnqueueEventCommand >> event: anObject [
 ]
 
 { #category : #accessing }
-IPC2EnqueueEventCommand >> value: aCommandService [
+IPC2EnqueueEventCommand >> value: primaryCompositor [
 
-	| compositor |
-	compositor := aCommandService owner.
-	compositor announceEvent: event windowId: windowId
+	primaryCompositor announceEvent: event windowId: windowId
 ]
 
 { #category : #accessing }

@@ -72,44 +72,6 @@ IPC2CommandService >> owner: anObject [
 	owner := anObject
 ]
 
-{ #category : #API }
-IPC2CommandService >> pingStatsTraceCr [
-
-	| n delay samples semaphore |
-	n := 100.
-	delay := Delay forMilliseconds: 100.
-	samples := OrderedCollection new.
-	semaphore := Semaphore new.
-
-	('Ping ', n asString, ' times:') traceCr.
-	
-	[ (1 to: n) do: [ :_ |
-		self
-			sendCommand: IPC2Ping new
-			onSuccess: [ :data |
-				| t1 t2 t3 |
-				t1 := data first.
-				t2 := data second.
-				t3 := Time microsecondClockValue.
-				samples add: { t3 - t1. t2 - t1. t3 - t2 } / 1000.0 ].
-		semaphore signal.
-		delay wait ] ]
-			forkAt: Processor userSchedulingPriority + 1.
-
-	n timesRepeat: [ semaphore wait ].
-	
-	(String streamContents: [ :stream |
-		stream << '* total:'; cr.
-		self pingStatsTraceCrSamples: (samples collect: #first) on: stream.
-
-		stream << '* command:'; cr.
-		self pingStatsTraceCrSamples: (samples collect: #second) on: stream.
-
-		stream << '* return:'; cr.
-		self pingStatsTraceCrSamples: (samples collect: #third) on: stream.
-		]) traceCr
-]
-
 { #category : #private }
 IPC2CommandService >> pingStatsTraceCrSamples: collectionOfMilliseconds on: stream [
 
@@ -139,9 +101,9 @@ IPC2CommandService >> receive [
 		payload := FLMaterializer materializeFrom: socketStream  ].
 
 	mark = CommandIgnoringResultByte ifTrue: [
-		^ payload value: self ].
+		^ payload value: owner ].
 	mark = CommandByte ifTrue: [
-		^ self sendResult: (payload value: self) of: id ].
+		^ self sendResult: (payload value: owner) of: id ].
 	mark = ReturnByte ifTrue: [
 		^ self valueSuccess: payload of: id ].
 	self error: 'Corrupt command header'
