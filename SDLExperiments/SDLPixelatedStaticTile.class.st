@@ -4,12 +4,14 @@ I'm a texture tile that uses `SDL_SetTextureScaleMode()` to set SDL_ScaleModeNea
 Accidentally, I also use a static-access SDL texture, but that's not the point of myself.
 "
 Class {
-	#name : #SDLPixelatedStaticTile,
-	#superclass : #StaticTextureTile,
-	#category : #'SDLExperiments-Manager-Texture'
+	#name : 'SDLPixelatedStaticTile',
+	#superclass : 'StaticTextureTile',
+	#category : 'SDLExperiments-Other',
+	#package : 'SDLExperiments',
+	#tag : 'Other'
 }
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 SDLPixelatedStaticTile >> createTexture [
 
 	"Texture will have reduced physical extent, as initialization specified."
@@ -19,7 +21,7 @@ SDLPixelatedStaticTile >> createTexture [
 	sdlTexture setScaleModeNearest
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SDLPixelatedStaticTile >> initializeSDLRenderer: aRenderer pixelExtent: aPoint deviceScalePoint: anotherPoint [
 
 	super initializeSDLRenderer: aRenderer pixelExtent: aPoint deviceScalePoint: anotherPoint.
@@ -28,7 +30,7 @@ SDLPixelatedStaticTile >> initializeSDLRenderer: aRenderer pixelExtent: aPoint d
 	pixelExtent := aPoint // self pixalationLevel
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SDLPixelatedStaticTile >> pixalationLevel [
 
 	^ 8

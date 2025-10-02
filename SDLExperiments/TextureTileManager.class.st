@@ -1,15 +1,17 @@
 Class {
-	#name : #TextureTileManager,
-	#superclass : #TileManager,
+	#name : 'TextureTileManager',
+	#superclass : 'TileManager',
 	#instVars : [
 		'sceneWindow',
 		'directTileClass',
 		'tiles'
 	],
-	#category : #'SDLExperiments-Manager-Texture'
+	#category : 'SDLExperiments-Manager-Texture',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Texture'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 TextureTileManager class >> newStatic [
 
 	^ self new
@@ -17,7 +19,7 @@ TextureTileManager class >> newStatic [
 		  yourself
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 TextureTileManager class >> newStreaming [
 
 	^ self new
@@ -25,7 +27,7 @@ TextureTileManager class >> newStreaming [
 		  yourself
 ]
 
-{ #category : #'tile creation' }
+{ #category : 'tile creation' }
 TextureTileManager >> addTileOf: aPixelExtent [
 
 	| newTile |
@@ -40,13 +42,13 @@ TextureTileManager >> addTileOf: aPixelExtent [
 	^ newTile
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 TextureTileManager >> finalize [
 
 	tiles do: [ :each | each destroyTexture ]
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 TextureTileManager >> prepareOn: aSceneWindow [
 
 	sceneWindow := aSceneWindow.
@@ -55,7 +57,7 @@ TextureTileManager >> prepareOn: aSceneWindow [
 
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 TextureTileManager >> printOn: aStream [
 	"Generate a string representation of the receiver based on its instance variables."
 
@@ -66,25 +68,25 @@ TextureTileManager >> printOn: aStream [
 		nextPut: $)
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTileManager >> useSDLPixelatedStaticTile [
 	
 	directTileClass := SDLPixelatedStaticTile
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTileManager >> useSDLRenderGeometryStaticTile [
 	
 	directTileClass := SDLRenderGeometryStaticTile
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTileManager >> useStaticTexture [
 	
 	directTileClass := StaticTextureTile
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTileManager >> useStreamingTexture [
 	
 	directTileClass := StreamingTextureTile

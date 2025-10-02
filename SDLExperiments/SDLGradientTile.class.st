@@ -1,6 +1,6 @@
 Class {
-	#name : #SDLGradientTile,
-	#superclass : #Tile,
+	#name : 'SDLGradientTile',
+	#superclass : 'Tile',
 	#instVars : [
 		'sdlRenderer',
 		'verticesExternalArray',
@@ -11,29 +11,26 @@ Class {
 		'bottomRightPosition',
 		'color'
 	],
-	#category : #'SDLExperiments-ColorFlood'
+	#category : 'SDLExperiments-Other',
+	#package : 'SDLExperiments',
+	#tag : 'Other'
 }
 
-{ #category : #enumerating }
-SDLGradientTile >> cairoContextToOverrideDo: aBlock [
-	"Nothing to do"
-]
-
-{ #category : #rendering }
+{ #category : 'rendering' }
 SDLGradientTile >> color: aColor [
 
 	color := aColor.
 	verticesExternalArray do: [ :each | each color updateFrom: color ]
 ]
 
-{ #category : #finalization }
+{ #category : 'finalization' }
 SDLGradientTile >> finalize [
 
 	verticesExternalArray free.
 	indicesExternalArray free.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SDLGradientTile >> initialize [
 
 	super initialize.
@@ -53,7 +50,7 @@ SDLGradientTile >> initialize [
 	indicesExternalArray at: 6 put: 0
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 SDLGradientTile >> prepareToRenderTo: aSDLFRect [
 
 	| dstRectangle |
@@ -69,7 +66,7 @@ SDLGradientTile >> prepareToRenderTo: aSDLFRect [
 	bottomLeftPosition y: dstRectangle bottom
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 SDLGradientTile >> prepareToRenderWithOpacity: alphaByte [
 
 	| alphaFloat |
@@ -79,7 +76,7 @@ SDLGradientTile >> prepareToRenderWithOpacity: alphaByte [
 		each color a: (SDL2 fromFloatToByte: color alpha * alphaFloat) ]
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 SDLGradientTile >> renderTo: aSDLFRect opacity: alphaByte [
 
 	self prepareToRenderTo: aSDLFRect.
@@ -93,7 +90,7 @@ SDLGradientTile >> renderTo: aSDLFRect opacity: alphaByte [
 		texture: ExternalAddress null
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SDLGradientTile >> sdlRenderer: aSDLRenderer [
 
 	sdlRenderer := aSDLRenderer

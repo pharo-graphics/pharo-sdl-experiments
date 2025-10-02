@@ -5,23 +5,25 @@ For further information, please read Jukka Jylänki's article titled ""A Thousan
 
 "
 Class {
-	#name : #SkylinePacker,
-	#superclass : #Object,
+	#name : 'SkylinePacker',
+	#superclass : 'Object',
 	#instVars : [
 		'nodes',
 		'extent'
 	],
-	#category : #'SDLExperiments-Manager-Atlas-Skyline'
+	#category : 'SDLExperiments-Manager-Atlas-Skyline',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Atlas-Skyline'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 SkylinePacker class >> newWithExtent: aPoint [
 
 	^ self newWithExtent: aPoint numberOfNodes: 10
 
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 SkylinePacker class >> newWithExtent: aPoint numberOfNodes: anInteger [
 
 	^ self basicNew
@@ -30,7 +32,7 @@ SkylinePacker class >> newWithExtent: aPoint numberOfNodes: anInteger [
 		yourself
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 SkylinePacker >> addSkylineLevel: index position: xy extent: wh [
 
 	| insertedNode |
@@ -45,7 +47,7 @@ SkylinePacker >> addSkylineLevel: index position: xy extent: wh [
 	self mergeContiguousNodesWithSameHeight.
 ]
 
-{ #category : #public }
+{ #category : 'public' }
 SkylinePacker >> allocateExtent: desiredExtent ifSuccess: packedBlock ifFailure: noSpaceBlock [
 	"Use bottom-left fit heuristic."
 
@@ -79,7 +81,7 @@ SkylinePacker >> allocateExtent: desiredExtent ifSuccess: packedBlock ifFailure:
 	^ packedBlock value: bestPosition
 ]
 
-{ #category : #public }
+{ #category : 'public' }
 SkylinePacker >> expandExtent: aPoint [
 
 	aPoint x > extent x ifTrue: [
@@ -93,7 +95,7 @@ SkylinePacker >> expandExtent: aPoint [
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SkylinePacker >> initializeWithExtent: aPoint numberOfNodes: anInteger [
 
 	self initialize.
@@ -104,7 +106,7 @@ SkylinePacker >> initializeWithExtent: aPoint numberOfNodes: anInteger [
 	self resetExtent: aPoint.
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 SkylinePacker >> insertNodeAt: index x: x y: y width: w [
 
 	^ nodes
@@ -116,7 +118,7 @@ SkylinePacker >> insertNodeAt: index x: x y: y width: w [
 		beforeIndex: index
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 SkylinePacker >> mergeContiguousNodesWithSameHeight [
 	"Merge same height skyline segments that are next to each other."
 
@@ -137,12 +139,12 @@ SkylinePacker >> mergeContiguousNodesWithSameHeight [
 				currentNode := nextNode ] ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 SkylinePacker >> nodes [
 	^ nodes
 ]
 
-{ #category : #public }
+{ #category : 'public' }
 SkylinePacker >> resetExtent: aPoint [
 	
 	nodes
@@ -154,7 +156,7 @@ SkylinePacker >> resetExtent: aPoint [
 	extent := aPoint
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 SkylinePacker >> shrinkOrDeleteToTheRightOf: insertedNode at: indexOfInsertedNode [
 	"After insertion, we may need to shrink or remove following nodes."
 
@@ -182,7 +184,7 @@ SkylinePacker >> shrinkOrDeleteToTheRightOf: insertedNode at: indexOfInsertedNod
 
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 SkylinePacker >> tryToFit: anExtent at: startIndex maxHeightDo: fitBlock ifNoSpaceDo: noSpaceBlock [
 	"Checks if there is enough space at the location of a skyline span,
 	and return the max height of all skyline spans under that at that location,

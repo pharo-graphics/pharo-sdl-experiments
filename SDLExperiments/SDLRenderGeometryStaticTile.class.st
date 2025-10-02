@@ -4,8 +4,8 @@ I'm a texture tile that uses `SDL_RenderGeometry()` to copy the texture into the
 Accidentally, I also use a static-access SDL texture, but that's not the point of myself.
 "
 Class {
-	#name : #SDLRenderGeometryStaticTile,
-	#superclass : #StaticTextureTile,
+	#name : 'SDLRenderGeometryStaticTile',
+	#superclass : 'StaticTextureTile',
 	#instVars : [
 		'verticesExternalArray',
 		'topLeftPosition',
@@ -14,10 +14,12 @@ Class {
 		'indicesExternalArray',
 		'bottomRightPosition'
 	],
-	#category : #'SDLExperiments-Manager-Texture'
+	#category : 'SDLExperiments-Other',
+	#package : 'SDLExperiments',
+	#tag : 'Other'
 }
 
-{ #category : #finalization }
+{ #category : 'finalization' }
 SDLRenderGeometryStaticTile >> destroyTexture [
 
 	super destroyTexture.
@@ -25,7 +27,7 @@ SDLRenderGeometryStaticTile >> destroyTexture [
 	indicesExternalArray free.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SDLRenderGeometryStaticTile >> initialize [
 
 	super initialize.
@@ -56,7 +58,7 @@ SDLRenderGeometryStaticTile >> initialize [
 
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 SDLRenderGeometryStaticTile >> prepareToRenderTo: aSDLFRect [
 
 	| top left right bottom |
@@ -75,7 +77,7 @@ SDLRenderGeometryStaticTile >> prepareToRenderTo: aSDLFRect [
 	bottomLeftPosition y: bottom
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 SDLRenderGeometryStaticTile >> prepareToRenderWithOpacity: alphaByte [
 
 	verticesExternalArray do: [ :each |
@@ -86,7 +88,7 @@ SDLRenderGeometryStaticTile >> prepareToRenderWithOpacity: alphaByte [
 			a: alphaByte ]
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 SDLRenderGeometryStaticTile >> renderTo: aSDLFRect opacity: alphaByte [
 
 	self prepareToRenderTo: aSDLFRect.

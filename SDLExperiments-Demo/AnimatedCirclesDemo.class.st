@@ -3,16 +3,18 @@ I'm a demo where multiple circles translate, and only some of them are animated.
 
 "
 Class {
-	#name : #AnimatedCirclesDemo,
-	#superclass : #BenchmarkingDemo,
+	#name : 'AnimatedCirclesDemo',
+	#superclass : 'BenchmarkingDemo',
 	#instVars : [
 		'numberOfCircles',
 		'numberOfAnimatedCircles'
 	],
-	#category : #'SDLExperiments-Demo-Benchmarks'
+	#category : 'SDLExperiments-Demo-Benchmarks',
+	#package : 'SDLExperiments-Demo',
+	#tag : 'Benchmarks'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 AnimatedCirclesDemo class >> driverNames [
 
 	| driverNames |
@@ -24,11 +26,11 @@ AnimatedCirclesDemo class >> driverNames [
 	^ driverNames
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 AnimatedCirclesDemo class >> runAlternatives [
 	<script: '[ self runAlternatives ] fork'>
 
-	| managers driverNames |
+	| managers |
 	managers := {
 		AtlasTileManager new
 			atlasPixelExtent: 2048 asPoint;
@@ -77,7 +79,7 @@ AnimatedCirclesDemo class >> runAlternatives [
 
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 AnimatedCirclesDemo class >> runAnimatedTiles [
 	<script: '[ self runAnimatedTiles ] fork'>
 
@@ -131,7 +133,7 @@ AnimatedCirclesDemo class >> runAnimatedTiles [
 
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 AnimatedCirclesDemo class >> runAtlasExtents [
 	<script: '[ self runAtlasExtents ] fork'>
 
@@ -189,7 +191,7 @@ AnimatedCirclesDemo class >> runAtlasExtents [
 
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 AnimatedCirclesDemo class >> runCopyVsRenderGeometry [
 	<script: '[ self runCopyVsRenderGeometry ] fork'>
 
@@ -240,7 +242,7 @@ AnimatedCirclesDemo class >> runCopyVsRenderGeometry [
 
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 AnimatedCirclesDemo class >> runPixelatedOffVsOn [
 	<script: '[ self runPixelatedOffVsOn ] fork'>
 
@@ -293,7 +295,7 @@ AnimatedCirclesDemo class >> runPixelatedOffVsOn [
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 AnimatedCirclesDemo >> initialize [
 
 	super initialize.
@@ -303,19 +305,19 @@ AnimatedCirclesDemo >> initialize [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 AnimatedCirclesDemo >> numberOfAnimatedCircles: aNumber [
 
 	numberOfAnimatedCircles := aNumber
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 AnimatedCirclesDemo >> numberOfCircles: aNumber [
 
 	numberOfCircles := aNumber
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 AnimatedCirclesDemo >> prepareSceneWindow [
 
 	1 to: numberOfCircles do: [ :index |
@@ -343,20 +345,20 @@ AnimatedCirclesDemo >> prepareSceneWindow [
 		anElement := sceneWindow addElement.
 		
 		anElement
-			isAnimated: isAnimated;
 			opacity: (random next >= 0.5
 				ifTrue: [ 1.0 ]
 				ifFalse: [ 0.5 ]);
 			position: from;
 			extent: ((circleRadius + padding) *2) asPoint;
-			stepBlock: [ :deltaMS :totalMS |
+			stepBlock: [ :deltaMS :totalMS :damage |
 				| amount |
 				amount := totalMS / durationMS.
-				anElement position: from + (relativeTo * amount) ];
+				anElement position: from + (relativeTo * amount).
+				isAnimated ifTrue: [ damage addAll ] ];
 			renderBlock: [ :cairoContext |
 				cairoContext
 					sourceColor: (isAnimated
-						ifTrue: [ Color random: random ]
+						ifTrue: [ Color newRandomWith: random ]
 						ifFalse: [ initialColor ]);
 					translateByX: padding y: padding;
 					lineWidth: lineWidth;
@@ -370,7 +372,7 @@ AnimatedCirclesDemo >> prepareSceneWindow [
 
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 AnimatedCirclesDemo >> run [
 	<script: '[self new run; reportOnTranscript] fork'>
 

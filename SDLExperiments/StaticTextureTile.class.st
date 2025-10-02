@@ -4,24 +4,41 @@ I am a `TextureTile` that uses `SDL_UpdateTexture` API to update pixel contents.
 See: https://wiki.libsdl.org/SDL2/SDL_UpdateTexture
 "
 Class {
-	#name : #StaticTextureTile,
-	#superclass : #TextureTile,
+	#name : 'StaticTextureTile',
+	#superclass : 'TextureTile',
 	#instVars : [
 		'cairoSurface',
 		'cairoContext',
 		'cairoSurfacePixels',
 		'cairoSurfaceStride'
 	],
-	#category : #'SDLExperiments-Manager-Texture'
+	#category : 'SDLExperiments-Manager-Texture',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Texture'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 StaticTextureTile >> cairoContext [
 
 	^ cairoContext
 ]
 
-{ #category : #enumerating }
+{ #category : 'enumerating' }
+StaticTextureTile >> cairoContextToOverride: sdlRect do: aBlock [
+
+	cairoContext
+		clearTransparent;
+		restoreStateAfter: [
+			aBlock value: cairoContext ].
+	cairoSurface flush.
+
+	sdlTexture
+		updateTextureRect: sdlRect
+			pixels: cairoSurfacePixels
+			pitch:  cairoSurfaceStride
+]
+
+{ #category : 'enumerating' }
 StaticTextureTile >> cairoContextToOverrideDo: aBlock [
 
 	cairoContext
@@ -37,7 +54,7 @@ StaticTextureTile >> cairoContextToOverrideDo: aBlock [
 
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 StaticTextureTile >> createCairoObjects [
 
 	cairoSurface := AeCairoImageSurface
@@ -52,13 +69,13 @@ StaticTextureTile >> createCairoObjects [
 
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 StaticTextureTile >> sdlTextureAccess [
 
 	^ SDL_TEXTUREACCESS_STATIC
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 StaticTextureTile >> sdlTextureBlendMode [
 
 	^ SDL2 premultipliedAlphaBlendMode

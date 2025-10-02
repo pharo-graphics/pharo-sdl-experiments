@@ -1,6 +1,6 @@
-Extension { #name : #'SDL_Renderer' }
+Extension { #name : 'SDL_Renderer' }
 
-{ #category : #'*SDLExperiments' }
+{ #category : '*SDLExperiments' }
 SDL_Renderer >> asFormARGB32 [
 	"Answer a Form with my pixels. Tip: use it before present.
 	Assumes the format is SDL_PIXELFORMAT_ARGB8888."

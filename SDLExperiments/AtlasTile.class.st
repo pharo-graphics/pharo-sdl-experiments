@@ -6,17 +6,19 @@ I could bacame outdated and if the texture has any issue. This must be managed e
 I may be applied zero or more times on a scene refresh.
 "
 Class {
-	#name : #AtlasTile,
-	#superclass : #Tile,
+	#name : 'AtlasTile',
+	#superclass : 'DrawableTile',
 	#instVars : [
 		'atlas',
 		'bounds',
 		'boundsAsSdlRect'
 	],
-	#category : #'SDLExperiments-Manager-Atlas'
+	#category : 'SDLExperiments-Manager-Atlas',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Atlas'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 AtlasTile class >> newFor: anAtlas pixelBounds: aPixelRectangle [ 
 	
 	^ self basicNew
@@ -24,13 +26,22 @@ AtlasTile class >> newFor: anAtlas pixelBounds: aPixelRectangle [
 		yourself
 ]
 
-{ #category : #enumerating }
+{ #category : 'enumerating' }
+AtlasTile >> cairoContextToOverride: sdlRect do: aBlock [
+
+	self flag: #todo. "It's wrong to modify the argument!"
+	sdlRect x: sdlRect x + bounds left.
+	sdlRect y: sdlRect y + bounds top.
+	atlas cairoContextToOverride: sdlRect do: aBlock
+]
+
+{ #category : 'enumerating' }
 AtlasTile >> cairoContextToOverrideDo: aBlock [
 
 	atlas cairoContextToOverride: boundsAsSdlRect do: aBlock
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 AtlasTile >> initializeIn: anAtlas pixelBounds: aPixelRectangle [ 
 
 	self initialize.
@@ -40,12 +51,12 @@ AtlasTile >> initializeIn: anAtlas pixelBounds: aPixelRectangle [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 AtlasTile >> pixelBounds [
 	^ bounds
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 AtlasTile >> pixelBounds: aPixelRectangle [
 
 	bounds := aPixelRectangle.
@@ -56,7 +67,7 @@ AtlasTile >> pixelBounds: aPixelRectangle [
 
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 AtlasTile >> renderTo: aSDLFRect opacity: alphaByte [
 
 	atlas renderTileAt: boundsAsSdlRect to: aSDLFRect opacity: alphaByte

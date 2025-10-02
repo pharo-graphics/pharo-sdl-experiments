@@ -1,13 +1,15 @@
 Class {
-	#name : #ClipDemo,
-	#superclass : #BenchmarkingDemo,
+	#name : 'ClipDemo',
+	#superclass : 'BenchmarkingDemo',
 	#instVars : [
 		'numberOfRectangles'
 	],
-	#category : #'SDLExperiments-Demo-Benchmarks'
+	#category : 'SDLExperiments-Demo-Benchmarks',
+	#package : 'SDLExperiments-Demo',
+	#tag : 'Benchmarks'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 ClipDemo class >> runAlternatives [
 	<script: '[ self runAlternatives ] fork'>
 
@@ -64,7 +66,7 @@ ClipDemo class >> runAlternatives [
 
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 ClipDemo >> addNewElement [
 
 	| sideLength from relativeTo anElement |
@@ -91,7 +93,7 @@ ClipDemo >> addNewElement [
 		outerColor: Color red"(Color random: random)".
 	anElement
 		position: from;
-		stepBlock: [ :deltaMS :totalMS |
+		stepBlock: [ :deltaMS :totalMS :damage |
 			| amount |
 			amount := totalMS / durationMS.
 			anElement position: from + (relativeTo * amount) ].
@@ -99,7 +101,7 @@ ClipDemo >> addNewElement [
 	sceneWindow addElement: anElement
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ClipDemo >> initialize [
 
 	super initialize.
@@ -110,7 +112,7 @@ ClipDemo >> initialize [
 
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 ClipDemo >> newGradientSquareElement: squareSide innerColor: aColor outerColor: anotherColor [
 
 	| padding cornerRadius |
@@ -153,19 +155,19 @@ ClipDemo >> newGradientSquareElement: squareSide innerColor: aColor outerColor: 
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ClipDemo >> numberOfRectangles: anInteger [
 
 	numberOfRectangles := anInteger
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 ClipDemo >> prepareSceneWindow [
 
 	numberOfRectangles timesRepeat: [ self addNewElement ]
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 ClipDemo >> run [
 	<script: '[self new run; reportOnTranscript] fork'>
 

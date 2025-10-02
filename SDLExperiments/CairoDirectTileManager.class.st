@@ -3,16 +3,18 @@ I provide a kind of tiles that redraw every time using Cairo.
 
 "
 Class {
-	#name : #CairoDirectTileManager,
-	#superclass : #TileManager,
+	#name : 'CairoDirectTileManager',
+	#superclass : 'TileManager',
 	#instVars : [
 		'sceneWindow',
 		'wholeWindowTile'
 	],
-	#category : #'SDLExperiments-Manager-Cairo'
+	#category : 'SDLExperiments-Manager-Cairo',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Cairo'
 }
 
-{ #category : #'tile creation' }
+{ #category : 'tile creation' }
 CairoDirectTileManager >> addTileOf: aPixelExtent [
 
 	^ CairoLazyTile new
@@ -21,13 +23,13 @@ CairoDirectTileManager >> addTileOf: aPixelExtent [
 		yourself
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 CairoDirectTileManager >> finalize [
 
 	wholeWindowTile destroyTexture
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 CairoDirectTileManager >> prepareOn: aSceneWindow [
 
 	| aPixelExtent |
@@ -42,7 +44,7 @@ CairoDirectTileManager >> prepareOn: aSceneWindow [
 
 ]
 
-{ #category : #'rendering cycle' }
+{ #category : 'rendering cycle' }
 CairoDirectTileManager >> renderTilesWith: aBlock [
 
 	wholeWindowTile renderWith: aBlock

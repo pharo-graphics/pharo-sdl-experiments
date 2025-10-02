@@ -2,17 +2,19 @@
 I'm a node for SkylinePacker.
 "
 Class {
-	#name : #SkylinePackerNode,
-	#superclass : #Object,
+	#name : 'SkylinePackerNode',
+	#superclass : 'Object',
 	#instVars : [
 		'width',
 		'x',
 		'y'
 	],
-	#category : #'SDLExperiments-Manager-Atlas-Skyline'
+	#category : 'SDLExperiments-Manager-Atlas-Skyline',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Atlas-Skyline'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 SkylinePackerNode class >> newWithPosition: aPoint width: aNumber [
 
 	^ self new
@@ -22,13 +24,13 @@ SkylinePackerNode class >> newWithPosition: aPoint width: aNumber [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SkylinePackerNode >> addWidth: aNumber [
 
 	width := width + aNumber
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 SkylinePackerNode >> printOn: aStream [
 
 	super printOn: aStream.
@@ -43,13 +45,13 @@ SkylinePackerNode >> printOn: aStream [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SkylinePackerNode >> right [
 
 	^ x + width
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SkylinePackerNode >> shrinkLeft: shrink [
 
 	x := x + shrink.
@@ -57,37 +59,37 @@ SkylinePackerNode >> shrinkLeft: shrink [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SkylinePackerNode >> width [
 
 	^ width
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SkylinePackerNode >> width: aNumber [
 
 	width := aNumber
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SkylinePackerNode >> x [
 
 	^ x
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SkylinePackerNode >> x: aNumber [
 
 	x := aNumber
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SkylinePackerNode >> y [
 
 	^ y
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 SkylinePackerNode >> y: aNumber [
 
 	y := aNumber

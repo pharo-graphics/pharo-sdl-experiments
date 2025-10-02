@@ -1,13 +1,15 @@
 Class {
-	#name : #FadingDemo,
-	#superclass : #BenchmarkingDemo,
+	#name : 'FadingDemo',
+	#superclass : 'BenchmarkingDemo',
 	#instVars : [
 		'numberOfCircles'
 	],
-	#category : #'SDLExperiments-Demo-Benchmarks'
+	#category : 'SDLExperiments-Demo-Benchmarks',
+	#package : 'SDLExperiments-Demo',
+	#tag : 'Benchmarks'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 FadingDemo class >> runAlternatives [
 	<script: '[ self runAlternatives ] fork'>
 
@@ -62,7 +64,7 @@ FadingDemo class >> runAlternatives [
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 FadingDemo >> initialize [
 
 	super initialize.
@@ -71,13 +73,13 @@ FadingDemo >> initialize [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 FadingDemo >> numberOfCircles: aNumber [
 
 	numberOfCircles := aNumber
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 FadingDemo >> prepareSceneWindow [
 
 	1 to: numberOfCircles do: [ :index |
@@ -97,10 +99,9 @@ FadingDemo >> prepareSceneWindow [
 		anElement := sceneWindow addElement.
 		
 		anElement
-			isAnimated: false;
 			position: position;
 			extent: (circleRadius*2) asPoint;
-			stepBlock: [ :deltaMS :totalMS |
+			stepBlock: [ :deltaMS :totalMS :damage |
 				| progress |
 				progress := totalMS / durationMS.
 				anElement opacityAsByte: (255 - (255.0 * progress) asInteger max: 0) ];
@@ -113,7 +114,7 @@ FadingDemo >> prepareSceneWindow [
 
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 FadingDemo >> run [
 	<script: '[self new run; reportOnTranscript] fork'>
 

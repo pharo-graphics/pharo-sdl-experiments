@@ -1,6 +1,6 @@
-Extension { #name : #AeCairoImageSurface }
+Extension { #name : 'AeCairoImageSurface' }
 
-{ #category : #'*SDLExperiments' }
+{ #category : '*SDLExperiments' }
 AeCairoImageSurface >> asSDLSurface [
 
 	| data |

@@ -1,16 +1,18 @@
 Class {
-	#name : #AtlasTileManager,
-	#superclass : #TileManager,
+	#name : 'AtlasTileManager',
+	#superclass : 'TileManager',
 	#instVars : [
 		'transientsTile',
 		'sceneWindow',
 		'atlasPixelExtent',
 		'atlases'
 	],
-	#category : #'SDLExperiments-Manager-Atlas'
+	#category : 'SDLExperiments-Manager-Atlas',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Atlas'
 }
 
-{ #category : #'tile creation' }
+{ #category : 'tile creation' }
 AtlasTileManager >> addTileOf: aPixelExtent [
 
 	| newAtlas |
@@ -28,26 +30,26 @@ AtlasTileManager >> addTileOf: aPixelExtent [
 		ifFailure: [ self notYetImplemented ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 AtlasTileManager >> atlasPixelExtent [
 
 	^ atlasPixelExtent ifNil: [ 
 		  atlasPixelExtent := sceneWindow sdlRenderer info maxTextureExtent ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 AtlasTileManager >> atlasPixelExtent: aPoint [
 
 	atlasPixelExtent := aPoint
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 AtlasTileManager >> finalize [
 
 	atlases do: #destroyTexture
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 AtlasTileManager >> newAtlasOf: aPixelExtent [
 	
 	| newAtlas |
@@ -60,7 +62,7 @@ AtlasTileManager >> newAtlasOf: aPixelExtent [
 
 ]
 
-{ #category : #lifecycle }
+{ #category : 'lifecycle' }
 AtlasTileManager >> prepareOn: aSceneWindow [
 
 	sceneWindow := aSceneWindow.
@@ -68,7 +70,7 @@ AtlasTileManager >> prepareOn: aSceneWindow [
 	atlases := OrderedCollection new
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 AtlasTileManager >> printOn: aStream [
 	"Generate a string representation of the receiver based on its instance variables."
 

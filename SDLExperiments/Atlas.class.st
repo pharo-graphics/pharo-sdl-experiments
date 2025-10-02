@@ -1,6 +1,6 @@
 Class {
-	#name : #Atlas,
-	#superclass : #Object,
+	#name : 'Atlas',
+	#superclass : 'Object',
 	#instVars : [
 		'sdlTexture',
 		'pixelExtent',
@@ -14,10 +14,12 @@ Class {
 		'SDL2Constants',
 		'SDL2Types'
 	],
-	#category : #'SDLExperiments-Manager-Atlas'
+	#category : 'SDLExperiments-Manager-Atlas',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Atlas'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 Atlas class >> newWithRenderer: aSDLRenderer pixelExtent: aPoint [
 
 	^ self basicNew
@@ -25,7 +27,7 @@ Atlas class >> newWithRenderer: aSDLRenderer pixelExtent: aPoint [
 		yourself
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 Atlas >> addTileOf: aPixelExtent ifFailure: noSpaceBlock [
 
 	^ self
@@ -34,7 +36,7 @@ Atlas >> addTileOf: aPixelExtent ifFailure: noSpaceBlock [
 		ifFailure: noSpaceBlock
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 Atlas >> addTileOf: aPixelExtent ifSuccess: successBlock ifFailure: failureBlock [
 
 	^ packer
@@ -50,7 +52,7 @@ Atlas >> addTileOf: aPixelExtent ifSuccess: successBlock ifFailure: failureBlock
 		ifFailure: failureBlock
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Atlas >> cairoContextToOverride: srcRect do: aBlock [
 	
 	| pitchAddress pixelsAddress aCairoSurface aCairoContext |
@@ -79,7 +81,7 @@ Atlas >> cairoContextToOverride: srcRect do: aBlock [
 	sdlTexture unlock "Flush to VRAM"
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 Atlas >> createTexture [
 
 	sdlTexture := 
@@ -95,20 +97,20 @@ Atlas >> createTexture [
 
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 Atlas >> destroyTexture [
 
 	sdlTexture ifNil: [ ^self ].
 	sdlTexture destroy
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Atlas >> deviceScalePoint: aPoint [
 
 	deviceScalePoint := aPoint
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 Atlas >> initializeWithRenderer: aSDLRenderer pixelExtent: aPoint [
 
 	self initialize.
@@ -121,12 +123,12 @@ Atlas >> initializeWithRenderer: aSDLRenderer pixelExtent: aPoint [
 	deviceScalePoint := 1@1.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Atlas >> pixelExtent [
 	^ pixelExtent
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 Atlas >> printOn: aStream [
 	"Generate a string representation of the receiver based on its instance variables."
 
@@ -140,7 +142,7 @@ Atlas >> printOn: aStream [
 
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 Atlas >> renderTileAt: srcRect to: aSDLFRect opacity: alphaByte [
 
 	"Can save a lot of time, e.g. in opengl"

@@ -1,6 +1,6 @@
-Extension { #name : #'SDL_Surface' }
+Extension { #name : 'SDL_Surface' }
 
-{ #category : #'*SDLExperiments' }
+{ #category : '*SDLExperiments' }
 SDL_Surface >> asFormARGB32 [
 	"Answer a Form with my pixels. Assumes my format is SDL_PIXELFORMAT_ARGB8888."
 

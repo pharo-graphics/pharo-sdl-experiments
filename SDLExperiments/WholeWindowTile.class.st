@@ -3,12 +3,14 @@ I'm a tile that's specialized to override the whole SDL window on each render.
 
 "
 Class {
-	#name : #WholeWindowTile,
-	#superclass : #StaticTextureTile,
-	#category : #'SDLExperiments-Manager-Cairo'
+	#name : 'WholeWindowTile',
+	#superclass : 'StaticTextureTile',
+	#category : 'SDLExperiments-Manager-Cairo',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Cairo'
 }
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 WholeWindowTile >> createCairoObjects [
 
 	cairoSurface := AeCairoImageSurface
@@ -25,7 +27,7 @@ WholeWindowTile >> createCairoObjects [
 
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 WholeWindowTile >> renderWith: aBlock [
 
 	"clear background (white)"
@@ -42,13 +44,13 @@ WholeWindowTile >> renderWith: aBlock [
 	sdlRenderer copy: sdlTexture
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 WholeWindowTile >> sdlTextureBlendMode [
 
 	^ SDL_BLENDMODE_NONE
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 WholeWindowTile >> sdlTextureFormat [
 
 	^ SDL_PIXELFORMAT_XRGB8888

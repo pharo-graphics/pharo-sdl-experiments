@@ -1,10 +1,12 @@
 Class {
-	#name : #TargetTextureTile,
-	#superclass : #StaticTextureTile,
-	#category : #'SDLExperiments-Manager-Cairo'
+	#name : 'TargetTextureTile',
+	#superclass : 'StaticTextureTile',
+	#category : 'SDLExperiments-Manager-Cairo',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Cairo'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 TargetTextureTile >> beTargetDuring: aBlock [
 		
 	SDL2
@@ -14,7 +16,7 @@ TargetTextureTile >> beTargetDuring: aBlock [
 	aBlock ensure: [ sdlRenderer noRenderTarget ]
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 TargetTextureTile >> createCairoObjects [
 
 	cairoSurface := AeCairoImageSurface
@@ -29,7 +31,7 @@ TargetTextureTile >> createCairoObjects [
 
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 TargetTextureTile >> sdlTextureAccess [
 
 	^ SDL_TEXTUREACCESS_TARGET

@@ -1,14 +1,16 @@
 Class {
-	#name : #ScenePositionDemo,
-	#superclass : #SceneInteractiveDemo,
+	#name : 'ScenePositionDemo',
+	#superclass : 'SceneInteractiveDemo',
 	#instVars : [
 		'theElement',
 		'mouseWheelScale'
 	],
-	#category : #'SDLExperiments-Demo-Interactive'
+	#category : 'SDLExperiments-Demo-Interactive',
+	#package : 'SDLExperiments-Demo',
+	#tag : 'Interactive'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ScenePositionDemo >> initialize [
 
 	super initialize.
@@ -16,7 +18,7 @@ ScenePositionDemo >> initialize [
 	mouseWheelScale := 0.1
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ScenePositionDemo >> prepareSceneWindow [
 
 	| squareSide lineWidth padding |
@@ -29,9 +31,7 @@ ScenePositionDemo >> prepareSceneWindow [
 
 	theElement
 		position: 0.0 asPoint;
-		opacity: 1.0;
 		extent: ((squareSide + padding) *2 + lineWidth) asPoint;
-		stepBlock: [ :deltaMS :totalMS | ];
 		renderBlock: [ :cairoContext |
 			cairoContext
 				sourceColor: Color black;
@@ -45,7 +45,7 @@ ScenePositionDemo >> prepareSceneWindow [
 
 ]
 
-{ #category : #visiting }
+{ #category : 'visiting' }
 ScenePositionDemo >> visitKeyDownEvent: aSDL_KeyDownEvent [
 
 	aSDL_KeyDownEvent keysym sym = SDLK_UP ifTrue: [
@@ -63,7 +63,7 @@ ScenePositionDemo >> visitKeyDownEvent: aSDL_KeyDownEvent [
 	super visitKeyDownEvent: aSDL_KeyDownEvent
 ]
 
-{ #category : #visiting }
+{ #category : 'visiting' }
 ScenePositionDemo >> visitMouseWheelEvent: aSDL_MouseWheelEvent [
 
 	theElement position:

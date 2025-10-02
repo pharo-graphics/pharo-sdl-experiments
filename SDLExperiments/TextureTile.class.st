@@ -2,8 +2,8 @@
 I'm a `Tile` on a `SDL_Texture`. There are multiple alternative implementations that are expressed on my subclasses.
 "
 Class {
-	#name : #TextureTile,
-	#superclass : #Tile,
+	#name : 'TextureTile',
+	#superclass : 'DrawableTile',
 	#instVars : [
 		'sdlRenderer',
 		'sdlTexture',
@@ -14,16 +14,18 @@ Class {
 	#pools : [
 		'SDL2Constants'
 	],
-	#category : #'SDLExperiments-Manager-Texture'
+	#category : 'SDLExperiments-Manager-Texture',
+	#package : 'SDLExperiments',
+	#tag : 'Manager-Texture'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 TextureTile class >> isAbstract [
 
 	^ self == TextureTile
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 TextureTile class >> newWithSDLRenderer: aRenderer pixelExtent: aPoint deviceScalePoint: anotherPoint [
 
 	^ self basicNew
@@ -33,13 +35,13 @@ TextureTile class >> newWithSDLRenderer: aRenderer pixelExtent: aPoint deviceSca
 		  yourself
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 TextureTile >> createCairoObjects [
 
 	self subclassResponsibility
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 TextureTile >> createTexture [
 
 	sdlTexture := 
@@ -55,14 +57,14 @@ TextureTile >> createTexture [
 	self createCairoObjects
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 TextureTile >> destroyTexture [
 
 	sdlTexture ifNil: [ ^self ].
 	sdlTexture destroy
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTile >> initializeSDLRenderer: aRenderer pixelExtent: aPoint deviceScalePoint: anotherPoint [
 
 	self initialize.
@@ -72,7 +74,7 @@ TextureTile >> initializeSDLRenderer: aRenderer pixelExtent: aPoint deviceScaleP
 	pixelExtent := aPoint
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 TextureTile >> renderTo: aSDLFRect opacity: alphaByte [
 
 	"Could save time if alpha didn't change"
@@ -90,55 +92,55 @@ TextureTile >> renderTo: aSDLFRect opacity: alphaByte [
 			dstRectF: aSDLFRect
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TextureTile >> sdlTexture [
 
 	^ sdlTexture
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 TextureTile >> sdlTextureAccess [
 
 	^ self subclassResponsibility
 ]
 
-{ #category : #'life cycle' }
+{ #category : 'life cycle' }
 TextureTile >> sdlTextureBlendMode [
 
 	^ SDL2 premultipliedAlphaBlendMode
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TextureTile >> sdlTextureFormat [
 
 	^ SDL_PIXELFORMAT_ARGB8888
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTile >> setBlendModeAdd [
 
 	sdlTexture blendMode: SDL_BLENDMODE_ADD
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTile >> setBlendModeBlend [
 
 	sdlTexture blendMode: SDL_BLENDMODE_BLEND
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTile >> setBlendModeMod [
 
 	sdlTexture blendMode: SDL_BLENDMODE_MOD
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTile >> setBlendModeNone [
 
 	sdlTexture blendMode: SDL_BLENDMODE_NONE
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TextureTile >> setBlendModePremultipliedAlpha [
 
 	sdlTexture blendMode: SDL2 premultipliedAlphaBlendMode 

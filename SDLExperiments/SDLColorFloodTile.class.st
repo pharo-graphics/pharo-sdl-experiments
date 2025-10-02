@@ -1,7 +1,8 @@
 Class {
-	#name : #SDLColorFloodTile,
-	#superclass : #ColorFloodTile,
+	#name : 'SDLColorFloodTile',
+	#superclass : 'Tile',
 	#instVars : [
+		'color',
 		'sdlRenderer',
 		'pixelExtent'
 	],
@@ -9,10 +10,24 @@ Class {
 		'SDL2Constants',
 		'SDL2Types'
 	],
-	#category : #'SDLExperiments-ColorFlood'
+	#category : 'SDLExperiments-Other',
+	#package : 'SDLExperiments',
+	#tag : 'Other'
 }
 
-{ #category : #enumerating }
+{ #category : 'accessing' }
+SDLColorFloodTile >> color [
+
+	^ color
+]
+
+{ #category : 'accessing' }
+SDLColorFloodTile >> color: aColor [
+
+	color := aColor
+]
+
+{ #category : 'enumerating' }
 SDLColorFloodTile >> renderTo: aSDLFRect opacity: alphaByte [
 	"Render myself on the associated SDL_Renderer, at the specified position (a SDL_FRect) and opacity (0..255 value)."
 	
@@ -31,7 +46,7 @@ SDLColorFloodTile >> renderTo: aSDLFRect opacity: alphaByte [
 	sdlRenderer fillRectF: aSDLFRect
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 SDLColorFloodTile >> sdlRenderer: aRenderer [
 
 	sdlRenderer := aRenderer
