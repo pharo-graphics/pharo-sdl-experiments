@@ -10,12 +10,12 @@ Please check the [Wiki](../../wiki) for more information.
 
 ## Installation
 
-Evaluate in Pharo 11 or 12:
+Evaluate:
 
 ```Smalltalk
 Metacello new
 	baseline: 'SDLExperiments';
-	repository: 'github://tinchodias/pharo-sdl-experiments:master/';
+	repository: 'github://pharo-graphics/pharo-sdl-experiments:master/';
 	load
 ```
 
