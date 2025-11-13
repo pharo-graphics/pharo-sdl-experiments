@@ -123,6 +123,23 @@ SDL2Test >> testPosition [
 ]
 
 { #category : #tests }
+SDL2Test >> testQueryTextureExtent [
+
+	| sdlRenderer sdlTexture pixelExtent |
+	pixelExtent := 256 @ 512.
+	sdlRenderer := sdlWindow createAcceleratedRenderer.
+	sdlTexture := 
+		sdlRenderer
+			createTextureFormat: SDL_PIXELFORMAT_ARGB8888
+			access: SDL_TEXTUREACCESS_STREAMING
+			width: pixelExtent x
+			height: pixelExtent y.
+	sdlTexture signalErrorIfNull.
+
+	self assert: sdlTexture extent equals: pixelExtent
+]
+
+{ #category : #tests }
 SDL2Test >> testRect [
 
 	| sdlRect aRectangle |
