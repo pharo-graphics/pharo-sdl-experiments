@@ -1,3 +1,6 @@
+"
+I'm a texture update benchmark for SDL2's `SDL_TEXTUREACCESS_STATIC` textures.
+"
 Class {
 	#name : #SDL2StaticTextureUpdateBench,
 	#superclass : #SDL2TextureUpdateBench,

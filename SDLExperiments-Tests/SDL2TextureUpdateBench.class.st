@@ -1,3 +1,8 @@
+"
+Benchmark the update of `SDL_Texture` pixel contents. 
+
+See: https://github.com/pharo-graphics/pharo-sdl-experiments/wiki#headless-benchmark
+"
 Class {
 	#name : #SDL2TextureUpdateBench,
 	#superclass : #Object,
@@ -5,7 +10,6 @@ Class {
 		'sdlWindow',
 		'sdlRenderer',
 		'sdlTexture',
-		'duration',
 		'extent',
 		'sdlRenderDriverName'
 	],

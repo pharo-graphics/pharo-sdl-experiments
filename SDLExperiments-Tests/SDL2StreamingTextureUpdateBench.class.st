@@ -1,3 +1,6 @@
+"
+I'm a texture update benchmark for SDL2's `SDL_TEXTUREACCESS_STREAMING` textures.
+"
 Class {
 	#name : #SDL2StreamingTextureUpdateBench,
 	#superclass : #SDL2TextureUpdateBench,
