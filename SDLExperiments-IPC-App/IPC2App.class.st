@@ -7,7 +7,7 @@ Class {
 	#category : #'SDLExperiments-IPC-App'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #examples }
 IPC2App class >> exampleDualProcess [
 	"Tear down:
 
@@ -27,7 +27,7 @@ IPC2App class >> exampleDualProcess [
 	compositor inspect
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #examples }
 IPC2App class >> exampleSingleProcess [
 	"Tear down:
 

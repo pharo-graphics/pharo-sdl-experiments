@@ -156,7 +156,7 @@ IPC2PrimaryCompositor >> terminate [
 		osSubprocess := nil ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'window API' }
 IPC2PrimaryCompositor >> updateSceneGraph: bytes windowId: windowId [
 
 	commandService sendCommandIgnoringResult:

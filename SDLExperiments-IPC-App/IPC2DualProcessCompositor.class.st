@@ -19,7 +19,7 @@ IPC2DualProcessCompositor >> commandService [
 	^ commandService
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'life cycle' }
 IPC2DualProcessCompositor >> ping [
 
 	commandService
@@ -44,7 +44,7 @@ IPC2DualProcessCompositor >> startCommandServiceOn: socketStream onSuccess: aBlo
 	commandService start
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'life cycle' }
 IPC2DualProcessCompositor >> terminate [
 
 	commandService ifNotNil: [

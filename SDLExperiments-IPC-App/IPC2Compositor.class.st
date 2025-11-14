@@ -28,13 +28,13 @@ IPC2Compositor >> newWindow: aOSWindowAttributes [
 	^ self subclassResponsibility
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'life cycle' }
 IPC2Compositor >> terminate [
 
 	^ self subclassResponsibility
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'window API' }
 IPC2Compositor >> updateSceneGraph: update windowId: windowId [
 
 	self subclassResponsibility

@@ -82,7 +82,7 @@ IPC2Log >> initialize [
 	super initialize.
 
 	"identifier to ease filtering"
-	lineIdentifier := 'PharoIPC(', (self identityHash printStringBase: 36), ')'.
+	lineIdentifier := self className, '(', (self identityHash printStringBase: 36), ')'.
 
 	currentLineStream := String new writeStream
 ]
