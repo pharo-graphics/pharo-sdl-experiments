@@ -81,7 +81,7 @@ SDL2TextureUpdateBench >> printStepA: msA stepB: msB stepC: msC [
 
 	Stdio stdout
 
-		<< (sdlRenderDriverName padRightTo: 8);
+		<< (sdlRenderDriverName padRightTo: 12);
 		<< (self title padRightTo: 8);
 		<< (self byteSize humanReadableByteSizeString padLeftTo: 9);
 		
