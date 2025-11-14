@@ -9,11 +9,24 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-SDL2StreamingTextureUpdateBench >> preparePixels [
+SDL2StreamingTextureUpdateBench >> setUp [
+
+	super setUp.
+	
+	pitchAddress := ExternalAddress newPointer.
+	pixelsAddress := ExternalAddress newPointer
+]
+
+{ #category : #'as yet unclassified' }
+SDL2StreamingTextureUpdateBench >> stepA [
+
+	sdlTexture lock: SDL_Rect null pixels: pixelsAddress pitch: pitchAddress
+]
+
+{ #category : #'as yet unclassified' }
+SDL2StreamingTextureUpdateBench >> stepB [
 
 	| cairoSurface cairoContext |
-	sdlTexture lock: SDL_Rect null pixels: pixelsAddress pitch: pitchAddress.
-
 	"Draw on the buffer"
 	cairoSurface :=
 		AeCairoImageSurface
@@ -24,16 +37,14 @@ SDL2StreamingTextureUpdateBench >> preparePixels [
 			           stride: (pitchAddress signedLongAt: 1).
 	cairoContext := cairoSurface newContext.
 	cairoContext clearColor: Color purple.
-	cairoSurface flush
+	cairoSurface flush.
+	cairoContext status ensureIsSuccess
 ]
 
 { #category : #'as yet unclassified' }
-SDL2StreamingTextureUpdateBench >> prepareToRun [
+SDL2StreamingTextureUpdateBench >> stepC [
 
-	super prepareToRun.
-	
-	pitchAddress := ExternalAddress newPointer.
-	pixelsAddress := ExternalAddress newPointer
+	sdlTexture unlock
 ]
 
 { #category : #'as yet unclassified' }
@@ -46,10 +57,4 @@ SDL2StreamingTextureUpdateBench >> textureAccessType [
 SDL2StreamingTextureUpdateBench >> title [
 
 	^ 'STREAM'
-]
-
-{ #category : #'as yet unclassified' }
-SDL2StreamingTextureUpdateBench >> updatePixels [
-
-	sdlTexture unlock
 ]

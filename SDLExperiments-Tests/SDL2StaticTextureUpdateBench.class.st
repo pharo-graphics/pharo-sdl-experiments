@@ -4,31 +4,46 @@ Class {
 	#instVars : [
 		'cairoSurface',
 		'cairoSurfaceStride',
-		'cairoSurfacePixels'
+		'cairoSurfacePixels',
+		'cairoContext'
 	],
 	#category : #'SDLExperiments-Tests'
 }
 
 { #category : #'as yet unclassified' }
-SDL2StaticTextureUpdateBench >> preparePixels [
+SDL2StaticTextureUpdateBench >> setUp [
 
-	| cairoContext |
-	cairoContext := cairoSurface newContext.
-	cairoContext clearColor: Color purple.
-	cairoSurface flush
-]
-
-{ #category : #'as yet unclassified' }
-SDL2StaticTextureUpdateBench >> prepareToRun [
-
-	super prepareToRun.
+	super setUp.
 	
 	cairoSurface := AeCairoImageSurface
 		extent: extent
 		format: AeCairoSurfaceFormat argb32.
 
+	cairoContext := cairoSurface newContext.
+
 	cairoSurfaceStride := cairoSurface stride.
 	cairoSurfacePixels := cairoSurface data
+]
+
+{ #category : #'as yet unclassified' }
+SDL2StaticTextureUpdateBench >> stepA [
+]
+
+{ #category : #'as yet unclassified' }
+SDL2StaticTextureUpdateBench >> stepB [
+
+	cairoContext clearColor: Color purple.
+	cairoSurface flush.
+	cairoContext status ensureIsSuccess
+]
+
+{ #category : #'as yet unclassified' }
+SDL2StaticTextureUpdateBench >> stepC [
+
+	sdlTexture
+		updateTextureRect: SDL_Rect null
+			pixels: cairoSurfacePixels
+			pitch:  cairoSurfaceStride
 ]
 
 { #category : #'as yet unclassified' }
@@ -40,14 +55,5 @@ SDL2StaticTextureUpdateBench >> textureAccessType [
 { #category : #accessing }
 SDL2StaticTextureUpdateBench >> title [
 
-	^ 'STATIC '
-]
-
-{ #category : #'as yet unclassified' }
-SDL2StaticTextureUpdateBench >> updatePixels [
-
-	sdlTexture
-		updateTextureRect: SDL_Rect null
-			pixels: cairoSurfacePixels
-			pitch:  cairoSurfaceStride
+	^ 'STATIC'
 ]
