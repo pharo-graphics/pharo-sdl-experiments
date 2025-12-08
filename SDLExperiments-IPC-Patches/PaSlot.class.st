@@ -8,6 +8,14 @@ Class {
 }
 
 { #category : #'meta-object-protocol' }
+PaSlot >> emitValue: aMethodBuilder [
+
+	(aMethodBuilder sourceNode methodNode hasPragmaNamed: #ignorePatches)
+		ifTrue: [ aMethodBuilder pushInstVar: index ]
+		ifFalse: [ super emitValue: aMethodBuilder ]
+]
+
+{ #category : #'meta-object-protocol' }
 PaSlot >> read: aPatcheable [
 	"If there are no patches, then read as a simple instvar."
 	<reflection: 'Object Inspection - State inspection'>

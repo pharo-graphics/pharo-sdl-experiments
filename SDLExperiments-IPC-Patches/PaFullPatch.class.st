@@ -39,6 +39,12 @@ PaFullPatch >> descriptionFor: aPatcheable [
 				nextPut: $) ]
 ]
 
+{ #category : #enumerating }
+PaFullPatch >> do: aCleanBlockClosure [ 
+	
+	patcheableCopy do: aCleanBlockClosure
+]
+
 { #category : #testing }
 PaFullPatch >> hasNextPatch [
 
