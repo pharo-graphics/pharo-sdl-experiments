@@ -7,6 +7,14 @@ Class {
 	#category : #'SDLExperiments-IPC-Patches-Core'
 }
 
+{ #category : #'code generation' }
+PaSlot >> emitStore: aMethodBuilder [
+
+	(aMethodBuilder sourceNode methodNode hasPragmaNamed: #ignorePatches)
+		ifTrue: [ aMethodBuilder storeInstVar: index ]
+		ifFalse: [ super emitStore: aMethodBuilder ]
+]
+
 { #category : #'meta-object-protocol' }
 PaSlot >> emitValue: aMethodBuilder [
 
