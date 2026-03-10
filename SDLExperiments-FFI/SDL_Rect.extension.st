@@ -30,18 +30,6 @@ SDL_Rect class >> newOrigin: origin extent: extent [
 ]
 
 { #category : #'*SDLExperiments-FFI' }
-SDL_Rect class >> newX: x y: y w: w h: h [
-
-	^ self new
-		  x: x;
-		  y: y;
-		  w: w;
-		  h: h;
-		  autoRelease;
-		  yourself
-]
-
-{ #category : #'*SDLExperiments-FFI' }
 SDL_Rect >> origin [
 
 	^ self x @ self y
