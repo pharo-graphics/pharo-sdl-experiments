@@ -228,13 +228,6 @@ SDL2 class >> renderDriverInfos [
 ]
 
 { #category : #'*SDLExperiments-FFI' }
-SDL2 class >> ticks [
-
-	^ self ffiCall: #(
-		Uint32 SDL_GetTicks() )
-]
-
-{ #category : #'*SDLExperiments-FFI' }
 SDL2 class >> ticks64 [
 
 	^ self ffiCall: #(
