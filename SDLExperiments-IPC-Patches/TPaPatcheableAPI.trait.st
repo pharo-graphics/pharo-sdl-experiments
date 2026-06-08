@@ -53,11 +53,13 @@ TPaPatcheableAPI >> addPatchFirst: aLinkPatch [
 { #category : #patching }
 TPaPatcheableAPI >> applyPatches [
 
-	self hasPatches ifFalse: [ ^ self ].
+	self hasPatches ifFalse: [ ^ false ].
 
 	self applyPatches: patch.
 
-	self resetPatches
+	self resetPatches.
+	
+	^ true
 ]
 
 { #category : #patching }
