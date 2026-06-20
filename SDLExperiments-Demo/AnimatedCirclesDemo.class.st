@@ -357,7 +357,7 @@ AnimatedCirclesDemo >> prepareSceneWindow [
 				cairoContext
 					sourceColor:
 						(isAnimated
-							ifTrue: [ Color random: random ]
+							ifTrue: [ Color newRandomWith: random ]
 							ifFalse: [ initialColor ]);
 					translateByX: padding y: padding;
 					strokeSize: lineWidth;
