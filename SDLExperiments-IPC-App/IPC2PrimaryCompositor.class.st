@@ -111,17 +111,21 @@ IPC2PrimaryCompositor >> newWindow: osWindowAttributes [
 { #category : #private }
 IPC2PrimaryCompositor >> runAndWaitSubprocess: isHeadless port: port [
 
-	osSubprocess := OSPlatform current isWindows
-			ifTrue: [ OSWSWinProcess new ]
-			ifFalse: [ OSSUnixSubprocess new ].
+	osSubprocess :=
+		(self class environment at:
+			(OSPlatform current isWindows
+				ifTrue: [ #OSWSWinProcess ]
+				ifFalse: [ #OSSUnixSubprocess ])) new.
 
 	osSubprocess command: Smalltalk vm binary fullName.
 
 	osSubprocess arguments: (Array streamContents: [ :aStream |
-		isHeadless ifTrue: [ aStream nextPut: '--headless' ].
+		isHeadless ifTrue: [
+			aStream nextPut: '--headless' ].
 		aStream
 			nextPut: Smalltalk imageFile fullName;
-			nextPut: IPC2CompositorCommandLineHandler commandName;
+			nextPut: 'clap';
+			nextPut: IPC2ClapApplication commandName;
 			nextPut: port printString ]).
 
 	osSubprocess runAndWait
